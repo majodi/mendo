@@ -1,4 +1,4 @@
-import { EntityMeta } from "./entity-meta.model";
+import { EntityMeta } from '../../models/entity-meta.model';
 
 export interface User {
     uid: string;

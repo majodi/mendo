@@ -11,12 +11,7 @@ import { Observable, Subject } from 'rxjs';
 import { User } from '../models/system/user.model';
 import { EntityMeta } from '../models/system/entity-meta.model';
 
-const userLevel = {
-    admin: 100,
-    tenant: 50,
-    superUser: 25,
-    user: 0
-}
+set tenant id in glob!!
 
 @Injectable()
 export class AuthService {

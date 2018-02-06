@@ -1,5 +1,5 @@
-import { EntityMeta } from "./entity-meta.model";
-import { Address } from "./address.model";
+import { EntityMeta } from "../../models/entity-meta.model";
+import { Address } from "../../models/address.model";
 
 export interface Tenant {
     id: string;
@@ -7,4 +7,5 @@ export interface Tenant {
     address: Address;
     banner?: string; // asset
     logo?: string; // asset
+    order_count: number
 }
