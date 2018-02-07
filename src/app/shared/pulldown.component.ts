@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { LookupItem } from '../models/system/lookup-item.model';
+import { LookupItem } from '../models/lookup-item.model';
 
 import { Observable, Subject } from 'rxjs';
 

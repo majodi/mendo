@@ -10,11 +10,11 @@ import { DbService } from '../../../services/db.service'
 import { Observable, Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-tenants',
-  templateUrl: './tenants.html',
-  styleUrls: ['./tenants.scss']
+  selector: 'app-tenants-brw',
+  templateUrl: './tenants.brw.html',
+  styleUrls: ['./tenants.brw.scss']
 })
-export class TenantsComponent implements OnInit, OnDestroy {
+export class TenantsBrwComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<string>()
   tenants$: Observable<Tenant[]>
   tenantsData: Tenant[]
@@ -43,7 +43,7 @@ export class TenantsComponent implements OnInit, OnDestroy {
 
 
     this.tenantsColDef = [
-      {name: 'address.name'}
+      {name: 'Naam'}
 
       // {name: 'id', hideXs: true},
       // {name: 'str1', header: ' ', 

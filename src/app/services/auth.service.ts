@@ -105,7 +105,7 @@ export class AuthService {
 
   getDoc(path) {
     return new Promise((resolve, reject) => {
-      this.afs.doc(path).snapshotChanges().take(1).subscribe(snap => {
+      this.afs.doc(path).snapshotChanges().subscribe(snap => {
         if(snap.payload.exists){
           const id = snap.payload.id
           const data = snap.payload.data()
