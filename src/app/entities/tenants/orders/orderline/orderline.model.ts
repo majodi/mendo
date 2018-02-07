@@ -1,12 +1,12 @@
-import { EntityMeta } from './system/entity-meta.model';
+import { EntityMeta } from '../../../../models/entity-meta.model';
 
-export interface Order {
+export interface OrderLine {
     id: string;
     meta: EntityMeta;
     order: string; // order
     article: string; // article
-    maat: string;
-    kleur: string;
+    maat: string; // choice
+    kleur: string; // choice
     number: number;
     amount: number;
 }

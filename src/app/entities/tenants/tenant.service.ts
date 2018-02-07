@@ -14,7 +14,7 @@ export class TenantService {
   ) { }
 
   initTenants$() {
-    return this.db.collection<Tenant>(`/tenants`)
+    return this.db.collection<Tenant>(`tenants`)
     .snapshotChanges()
     .map(actions => {
       return actions.map(a => {

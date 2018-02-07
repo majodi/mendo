@@ -1,4 +1,4 @@
-import { EntityMeta } from './system/entity-meta.model';
+import { EntityMeta } from '../../../models/entity-meta.model';
 
 export interface Article {
     id: string;
@@ -6,7 +6,7 @@ export interface Article {
     code: string;
     description_s: string;
     description_l: string;
-    category: string; // category
+    category: string; // property choice
     image: string; // asset
     measurements: string; // property
     colors: string; // property

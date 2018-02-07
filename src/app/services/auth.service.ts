@@ -8,10 +8,10 @@ import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firesto
 
 import { Observable, Subject } from 'rxjs';
 
-import { User } from '../models/system/user.model';
-import { EntityMeta } from '../models/system/entity-meta.model';
+import { User } from '../models/user.model';
+import { EntityMeta } from '../models/entity-meta.model';
 
-set tenant id in glob!!
+/////////////// set tenant id in glob!!
 
 @Injectable()
 export class AuthService {

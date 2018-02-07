@@ -1,5 +1,5 @@
-import { EntityMeta } from './system/entity-meta.model';
-import { Address } from './system/address.model';
+import { EntityMeta } from '../../../models/entity-meta.model';
+import { Address } from '../../../models/address.model';
 
 export interface Organisation {
     id: string;

@@ -1,8 +1,10 @@
-import { EntityMeta } from './system/entity-meta.model';
-import { Address } from './system/address.model';
+import { EntityMeta } from '../../../../models/entity-meta.model';
+import { Address } from '../../../../models/address.model';
 
-export interface Organisation {
+export interface Employee {
     id: string;
     meta: EntityMeta;
     address: Address;
 }
+
+/////////////////do we need organisationid? is subtree of...

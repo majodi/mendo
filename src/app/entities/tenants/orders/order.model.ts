@@ -1,4 +1,4 @@
-import { EntityMeta } from './system/entity-meta.model';
+import { EntityMeta } from '../../../models/entity-meta.model';
 
 export interface Order {
     id: string;
