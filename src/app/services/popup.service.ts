@@ -1,6 +1,6 @@
 import { Component, Injectable } from '@angular/core';
 import {MatDialog} from '@angular/material';
-import { PopupDialog } from '../shared/popupdialog.component';
+import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
 
 @Injectable()
 export class PopupService {

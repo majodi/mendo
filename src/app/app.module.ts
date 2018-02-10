@@ -14,6 +14,9 @@ import { EntityServicesModule } from './entities/entity.services.module';
 import { ServicesModule } from './services/services.module';
 import { AdminModule } from './admin.module';
 
+import 'rxjs/add/operator/takeUntil';
+import { CustomComponentsModule } from './shared/custom-components/custom-components.module';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -28,7 +31,7 @@ import { AdminModule } from './admin.module';
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
     ServicesModule,
     EntityServicesModule,
-    AdminModule
+    AdminModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
