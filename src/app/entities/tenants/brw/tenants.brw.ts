@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-// import { AngularFirestore } from 'angularfire2/firestore';
-
-import { Tenant } from '../tenant.model'
+import { Tenant, tenantsTitle, tenantsTitleIcon } from '../tenant.model'
 import { TenantService } from '../tenant.service';
 import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
-// import { DbService } from '../../../services/db.service'
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -15,6 +12,8 @@ import { Observable, Subject } from 'rxjs';
 })
 export class TenantsBrwComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<string>()
+  title = tenantsTitle
+  titleIcon = tenantsTitleIcon
   tenants$: Observable<Tenant[]>
   tenantsData: Tenant[]
   tenantsLoading = true
@@ -22,8 +21,6 @@ export class TenantsBrwComponent implements OnInit, OnDestroy {
 
   constructor(
     private tenantSrv: TenantService,
-    // private afs: AngularFirestore,
-    // private db: DbService,
   ) {}
 
   ngOnInit() {
@@ -34,7 +31,10 @@ export class TenantsBrwComponent implements OnInit, OnDestroy {
     })
 
     this.tenantsColDef = [
-      {name: 'Naam'}
+      {name: 'address.name', header: 'Naam', sort: true},
+      {name: 'address.address', header: 'Adres', hideXs: true},
+      {name: 'address.postcode', header: 'Postcode', hideXs: true},
+      {name: 'address.city', header: 'Woonplaats', sort: true}
     ]
   }
 
@@ -50,18 +50,17 @@ export class TenantsBrwComponent implements OnInit, OnDestroy {
     // id: string;
     // meta: EntityMeta;
     // address: Address;
+
+    // name: string;
+    // description: string;
+    // address: string;
+    // postcode: string;
+    // city: string;
+    // telephone: string;
+    // web: string;
+    // email: string;
+    // contact?: string; // user
+
     // banner?: string; // asset
     // logo?: string; // asset
     // order_count: number
-
-      // {name: 'id', hideXs: true},
-      // {name: 'str1', header: ' ', 
-      // iconSelect: (rec:TestRec)=>{
-      //   if(rec.id.indexOf('33') > 0) return 'cached'
-      // }, sort: true},
-      // {name: 'num3', sort: true},
-      // {name: 'date1', 
-      // format: (rec:TestRec)=>{
-      //   return new Date(rec.date1).toTimeString()
-      // }},
-      // {name: 'bool3'}

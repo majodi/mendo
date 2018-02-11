@@ -9,3 +9,6 @@ export interface Tenant {
     logo?: string; // asset
     order_count: number
 }
+
+export const tenantsTitle = 'Tenants'
+export const tenantsTitleIcon = 'store'

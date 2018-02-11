@@ -3,6 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
+
+import { MediaMatcher } from '@angular/cdk/layout';
+
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -25,6 +29,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
@@ -33,7 +38,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     EntityServicesModule,
     AdminModule,
   ],
-  providers: [],
+  providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

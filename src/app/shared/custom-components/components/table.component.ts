@@ -12,15 +12,21 @@ import { ColumnDefenition } from '../models/column-defenition.model'
   animations: [trigger('pageAnim', [transition(':enter', [style({transform: 'translateY(-100%)'}), animate(250)])])],
   styles: [`
   .mat-table {overflow: auto;}
-  .page-header {min-height: 64px; padding: 8px 24px 0;}
+  .page-header {height: 90px; padding: 8px 24px 0;}
   .mat-cell, .mat-header-cell {display: inline-block; word-wrap: normal; margin-right: 5px;}
+  .gradient-bg {background-image: url("./assets/gradient_bg.png"); background-repeat: repeat-x;}
+  .title-icon {font-size: 40px; max-width:40px}
     `],
   template: `
   <div [@pageAnim]>
-    <mat-card>
+    <mat-card class="gradient-bg">
         <div fxLayout="column">
-        <div class="page-header">
-            <mat-form-field>
+        <div class="page-header" fxLayout="row">
+            <div fxFlex fxLayout="row" fxLayoutAlign="start start">
+                <mat-icon fxFlex class="title-icon">{{titleIcon}}</mat-icon>
+                <h1 fxFlex class="mat-display-1">{{title}}</h1>
+            </div>
+            <mat-form-field fxFlex>
                 <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
             </mat-form-field>
         </div>
@@ -60,6 +66,9 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   filterKeyUp = new Subject<string>()
   dataSource: MatTableDataSource<any>
   @ViewChild(MatSort) sort: MatSort
+
+  @Input() title: string
+  @Input() titleIcon: string
   @Input() selectMode: boolean
   @Input() backRoute: string
   @Input() isLoading = true

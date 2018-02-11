@@ -1,4 +1,6 @@
 import { ValidatorFn } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { LookupItem } from '../../custom-components/models/lookup-item.model';
 
 export interface FieldConfig {
   disabled?: boolean,
@@ -10,5 +12,6 @@ export interface FieldConfig {
   validation?: ValidatorFn[],
   value?: any,
   customValueChg?: Function,
-  customValidator?: Function
+  customValidator?: Function,
+  customLookupItems$?: Observable<LookupItem>
 }

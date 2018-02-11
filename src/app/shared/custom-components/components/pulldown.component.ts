@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
   selector: 'app-pulldown',
   template: `
   <mat-form-field style="width:100%">
-    <input name="lookup" matInput placeholder="{{lookupPlaceholder}}" [matAutocomplete]="auto" [formControl]="lookupCtrl" required>
+    <input name="lookup" matInput placeholder="{{lookupPlaceholder}}" [matAutocomplete]="auto" [formControl]="lookupCtrl" [disabled]=isDisabled>
     <mat-hint *ngIf="lookupCtrl.value && !lookupCtrl.value?.id" align="end" style="color:red">No match found</mat-hint>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayLookup">
       <mat-option *ngFor="let item of filteredLookupItems$ | async" [value]="item">
@@ -24,6 +24,7 @@ export class PulldownComponent implements OnInit, OnDestroy {
   @Input() lookupPlaceholder: string
   @Input() lookupItems$: Observable<LookupItem[]>
   @Output() itemChosen = new EventEmitter();
+  @Input() isDisabled = false;
   lookupCtrl: FormControl
   filteredLookupItems$: Observable<LookupItem[]>
 
@@ -33,7 +34,7 @@ export class PulldownComponent implements OnInit, OnDestroy {
     .startWith('')
     .debounceTime(350)
     .switchMap((input: string) => {
-      return this.lookupItems$.map(items => {             //limit nr of records for pulldown
+      return this.lookupItems$.map(items => {             //limit nr of records for pulldown??
         return items.filter((item: LookupItem) => {
           let x = '' + input, inputLower = x.toLowerCase()
           let searchLower = (item.display + item.subDisplay + item.addSearch).toLowerCase()

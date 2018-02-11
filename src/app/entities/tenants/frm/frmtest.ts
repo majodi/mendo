@@ -36,9 +36,9 @@ export class FrmTestComponent implements AfterViewInit {
       name: 'mychiplist',
       options: ['lala','lolo','Knakworstje','dada'],
       placeholder: 'Select a chip option',
-      // customValidator: (value) => {return Object.keys(value).length > 0}
-      customValidator: (value) => {console.log('val: ',Object.keys(value).length > 0 ); return Object.keys(value).length > 0}
+      customValidator: (value) => {return Object.keys(value).length > 0}
     },
+    //type pulldown met lookup observer
     {
       type: 'select',
       label: 'Favourite Food',
