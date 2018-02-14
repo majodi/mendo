@@ -1,6 +1,9 @@
 import { Component, Injectable } from '@angular/core';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material';
+
 import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
+import { FormDialogComponent } from '../shared/dynamic-form/containers/form-dialog/form-dialog.component';
+import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
 
 @Injectable()
 export class PopupService {
@@ -14,7 +17,17 @@ export class PopupService {
       });
   
       return dialogRef.afterClosed().toPromise().then(result => {
-        console.log('Popup dialog was closed with result', result)
+        return result
+      });
+    }
+
+    formDialog(action: number, fieldConfig: FieldConfig[], formRecord: {}) {
+      let dialogRef = this.dialog.open(FormDialogComponent, {
+        width: '800px',
+        data: { action: action, fieldConfig: fieldConfig, formRecord: formRecord}
+      });
+
+      return dialogRef.afterClosed().toPromise().then(result => {
         return result
       });
     }

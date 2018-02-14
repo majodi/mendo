@@ -4,17 +4,19 @@ import { AngularFirestore } from 'angularfire2/firestore';
 
 import { Tenant } from './tenant.model';
 import { GlobService } from '../../services/glob.service';
+import { DbService } from '../../services/db.service';
 
 @Injectable()
 export class TenantService {
 
   constructor(
-    private db: AngularFirestore,
+    private af: AngularFirestore,
+    private db: DbService,
     private glob: GlobService
   ) { }
 
   initTenants$() {
-    return this.db.collection<Tenant>(`tenants`)
+    return this.af.collection<Tenant>(`tenants`)
     .snapshotChanges()
     .map(actions => {
       return actions.map(a => {

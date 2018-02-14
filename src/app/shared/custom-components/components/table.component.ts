@@ -3,9 +3,9 @@ import { MatTableDataSource, MatSort } from '@angular/material';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
 import { Observable, Subject } from 'rxjs';
-// import 'rxjs/add/operator/takeUntil';
 
 import { ColumnDefenition } from '../models/column-defenition.model'
+// import { PopupService } from '../../../services/popup.service';
 
 @Component({
   selector: 'app-table',
@@ -15,26 +15,27 @@ import { ColumnDefenition } from '../models/column-defenition.model'
   .page-header {height: 90px; padding: 8px 24px 0;}
   .mat-cell, .mat-header-cell {display: inline-block; word-wrap: normal; margin-right: 5px;}
   .gradient-bg {background-image: url("./assets/gradient_bg.png"); background-repeat: repeat-x;}
-  .title-icon {font-size: 40px; max-width:40px}
+  .title-icon {font-size: 40px; max-width: 40px; width: auto;}
     `],
   template: `
   <div [@pageAnim]>
     <mat-card class="gradient-bg">
         <div fxLayout="column">
-        <div class="page-header" fxLayout="row">
-            <div fxFlex fxLayout="row" fxLayoutAlign="start start">
-                <mat-icon fxFlex class="title-icon">{{titleIcon}}</mat-icon>
+        <div class="page-header" fxLayout="row" fxLayoutAlign="space-around start">
+            <div *ngIf="!mediaLtMd" fxFlex="20" fxLayout="row" fxLayoutAlign="start start">
+                <mat-icon fxFlex="noshrink" class="title-icon">{{titleIcon}}</mat-icon>
                 <h1 fxFlex class="mat-display-1">{{title}}</h1>
             </div>
             <mat-form-field fxFlex>
                 <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
             </mat-form-field>
+            <button fxFlex="20" fxFlexAlign="center" [fxFlexOffset]="5" mat-raised-button (click)="click('insert','')">Nieuw</button>
         </div>
         <!-- table -->
         <mat-table #table [dataSource]="dataSource" matSort style="max-height:50vh;">
             <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.name">
                 <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> {{col.header}} </mat-header-cell>
-                <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(rec[col.name], rec)">
+                <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)">
                     <ng-container *ngIf="col.icon || col.iconSelect; then icon_tpl else field_tpl"></ng-container>
                         <ng-template #icon_tpl>
                             <mat-icon *ngIf="col.icon" color="primary">
@@ -47,7 +48,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
                         <ng-template #field_tpl>
                             <ng-container *ngIf="col.format; then formatted_tpl else unformatted_tpl"></ng-container>
                                 <ng-template #formatted_tpl>{{col.format(rec)}}</ng-template>
-                                <ng-template #unformatted_tpl>{{rec[col.name]}}</ng-template>
+                                <ng-template #unformatted_tpl>{{resolveObjPath(rec, col.name)}}</ng-template>
                         </ng-template>
                 </mat-cell>
             </ng-container>
@@ -77,12 +78,17 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Output() clicked = new EventEmitter();
   displayedColumns = []
   mediaIsXs: boolean
+  mediaLtMd: boolean
 
   constructor(
-    public media: ObservableMedia
+    public media: ObservableMedia,
+    // private ps: PopupService
   ) {
     this.mediaIsXs = this.media.isActive('xs')
+    this.mediaLtMd = this.media.isActive('lt-md')
+
     media.asObservable().takeUntil(this.ngUnsubscribe).subscribe((change: MediaChange) => {
+        if ( this.media.isActive('lt-md') != this.mediaLtMd) {this.mediaLtMd = this.media.isActive('lt-md')}
         if ( this.media.isActive('xs') != this.mediaIsXs) {
             this.mediaIsXs = this.media.isActive('xs')
             this.setColumns()
@@ -112,6 +118,12 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     })
     this.dataSource = new MatTableDataSource(this.data)
     this.dataSource.sort = this.sort;
+  }
+
+  resolveObjPath(obj, path) {
+    return path.split('.').reduce(function(prev, curr) {
+        return prev ? prev[curr] : null
+    }, obj || self)
   }
 
   click(fld, rec) {

@@ -1,44 +1,58 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Tenant, tenantsTitle, tenantsTitleIcon } from '../tenant.model'
+import { Observable, Subject } from 'rxjs';
+
+import { Tenant, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig, defaultEntityPath } from '../tenant.model'
 import { TenantService } from '../tenant.service';
 import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
-import { Observable, Subject } from 'rxjs';
+import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
+import { DbService } from '../../../services/db.service';
 
 @Component({
   selector: 'app-tenants-brw',
-  templateUrl: './tenants.brw.html',
-  styleUrls: ['./tenants.brw.scss']
+  template: `
+  <app-table
+    [title]="title"
+    [titleIcon]="titleIcon"
+    [isLoading]="isLoading"
+    [data]="data"
+    [columnDefs]="colDef"
+    (clicked)="clicked($event)"
+  ></app-table>  
+  `,
+  styles: [``]
 })
 export class TenantsBrwComponent implements OnInit, OnDestroy {
+  data: Tenant[]
   private ngUnsubscribe = new Subject<string>()
-  title = tenantsTitle
-  titleIcon = tenantsTitleIcon
-  tenants$: Observable<Tenant[]>
-  tenantsData: Tenant[]
-  tenantsLoading = true
-  tenantsColDef: ColumnDefenition[]
+  entityPath = defaultEntityPath
+  title = defaultTitle
+  titleIcon = defaultTitleIcon
+  isLoading = true
+  colDef: ColumnDefenition[]
+  formConfig: FieldConfig[]
 
   constructor(
     private tenantSrv: TenantService,
+    private db: DbService
   ) {}
 
   ngOnInit() {
-    this.tenants$ = this.tenantSrv.initTenants$()
-    this.tenants$.takeUntil(this.ngUnsubscribe).subscribe(tenants => {
-      this.tenantsData = tenants
-      this.tenantsLoading = false
+    this.tenantSrv.initTenants$().takeUntil(this.ngUnsubscribe).subscribe(tenants => {
+      this.data = tenants
+      this.isLoading = false
     })
-
-    this.tenantsColDef = [
-      {name: 'address.name', header: 'Naam', sort: true},
-      {name: 'address.address', header: 'Adres', hideXs: true},
-      {name: 'address.postcode', header: 'Postcode', hideXs: true},
-      {name: 'address.city', header: 'Woonplaats', sort: true}
-    ]
+    this.colDef = defaultColDef
+    this.formConfig = defaultFormConfig
   }
 
-  clickedTenant(e) {console.log(e)}
+  clicked(brwClick: {fld: string, rec: {}}) {
+    if(brwClick.fld == 'insert'){
+      this.db.insertDialog(this.formConfig, brwClick, this.entityPath).then(id => {}).catch(err => console.log(err))
+    } else {
+      this.db.changeDeleteDialog(this.formConfig, brwClick.rec, this.entityPath).catch(err => console.log(err))
+    }
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next()
@@ -46,21 +60,3 @@ export class TenantsBrwComponent implements OnInit, OnDestroy {
   }  
 
 }
-
-    // id: string;
-    // meta: EntityMeta;
-    // address: Address;
-
-    // name: string;
-    // description: string;
-    // address: string;
-    // postcode: string;
-    // city: string;
-    // telephone: string;
-    // web: string;
-    // email: string;
-    // contact?: string; // user
-
-    // banner?: string; // asset
-    // logo?: string; // asset
-    // order_count: number

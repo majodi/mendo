@@ -10,6 +10,7 @@ import { FormButtonComponent } from './components/form-button.component';
 import { FormInputComponent } from './components/form-input.component';
 import { FormSelectComponent } from './components/form-select.component';
 import { FormChiplistComponent } from './components/form-chiplist.component';
+import { FormDialogComponent } from './containers/form-dialog/form-dialog.component'
 import { CustomComponentsModule } from '../custom-components/custom-components.module';
 
 @NgModule({
@@ -22,19 +23,22 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
   declarations: [
     DynamicFieldDirective,
     DynamicFormComponent,
+    FormDialogComponent,
     FormButtonComponent,
     FormInputComponent,
     FormSelectComponent,
     FormChiplistComponent
   ],
   exports: [
-    DynamicFormComponent
+    DynamicFormComponent,
+    FormDialogComponent
   ],
   entryComponents: [
     FormButtonComponent,
     FormInputComponent,
     FormSelectComponent,
-    FormChiplistComponent
+    FormChiplistComponent,
+    FormDialogComponent
   ]
 })
 export class DynamicFormModule {}

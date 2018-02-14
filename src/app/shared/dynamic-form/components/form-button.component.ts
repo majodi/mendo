@@ -6,20 +6,26 @@ import { FieldConfig } from '../models/field-config.interface';
 
 @Component({
   selector: 'form-button',
-  // styleUrls: ['form-button.component.scss'],
   template: `
-    <div 
-      class="dynamic-field form-button"
-      [formGroup]="group">
-      <button mat-button
-        [disabled]="config.disabled"
-        type="submit">
-        {{ config.label }}
-      </button>
-    </div>
-  `
+  <div 
+    class="dynamic-field form-button"
+    [formGroup]="group">
+    <button mat-button
+      (click)="buttonClick($event)"
+      [disabled]="config.disabled"
+      type="button">
+      {{ config.label }}
+    </button>
+  </div>
+`
 })
 export class FormButtonComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+
+  buttonClick(e) {
+    if(this.config.buttonClick != undefined){
+      this.config.buttonClick(e) //call function in form context (where funct was defined)
+    }
+  }
 }

@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { FieldConfig } from '../../models/field-config.interface';
-import { debug } from 'util';
 
 @Component({
   exportAs: 'dynamicForm',
@@ -12,24 +11,36 @@ import { debug } from 'util';
     <form
       class="dynamic-form"
       [formGroup]="form"
-      (submit)="handleSubmit($event)">
+      (submit)="handleSubmit('save', $event)">
       <ng-container
         *ngFor="let field of config;"
         dynamicField
         [config]="field"
         [group]="form">
       </ng-container>
+      <div [ngSwitch]="deleteState">
+        <mat-dialog-actions *ngSwitchCase="false">
+          <button mat-button type="submit" color="primary" [disabled]="!form.valid">Bewaar</button>
+          <button mat-button type="button" (click)="handleSubmit('cancel')" color="primary">Annuleer</button>
+          <span class="spacer"></span>
+          <button mat-icon-button (click)="deleteState=true" color="primary" [disabled]="formAction==1">
+              <mat-icon aria-label="delete icon-button with a bin icon">delete</mat-icon>
+          </button>
+        </mat-dialog-actions>
+        <mat-dialog-actions *ngSwitchCase="true">
+          <button mat-button type="button" (click)="handleSubmit('delete')" color="warn">Verwijder</button>
+          <button mat-button type="button" (click)="handleSubmit('cancel')" color="primary">Annuleer</button>
+        </mat-dialog-actions>
+      </div>        
     </form>
   `
 })
 export class DynamicFormComponent implements OnChanges, OnInit {
-  @Input()
-  config: FieldConfig[] = [];
-
-  @Output()
-  submit: EventEmitter<any> = new EventEmitter<any>();
-
+  @Input() config: FieldConfig[] = [];
+  @Input() formAction: number = 0;
+  @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
+  deleteState = false
 
   get controls() { return this.config.filter(({type}) => type !== 'button'); }
   get changes() { return this.form.valueChanges; }
@@ -81,17 +92,19 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     return newCtrl
   }
 
-  handleSubmit(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.submit.emit(this.value);
+  handleSubmit(action: string, event?: Event) {
+    if(event != undefined){
+      event.preventDefault();
+      event.stopPropagation();  
+    }
+    console.log('submit: ', action, this.value)
+    this.submit.emit({response: action, value: this.value});  
   }
 
   setDisabled(name: string, disable: boolean) {
     if (this.form.controls[name]) {
       const method = disable ? 'disable': 'enable';
       this.form.controls[name][method]();
-      // return;
     }
     this.config = this.config.map((item) => {
       if (item.name === name) {
@@ -102,8 +115,10 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   setValue(name: string, value: any) {
-    this.form.controls[name].setValue(value, {emitEvent: true})
-    this.config.find((control) => control.name === name).value = value
+    if (this.form.controls[name]) {
+      this.form.controls[name].setValue(value, {emitEvent: true})
+      this.config.find((control) => control.name === name).value = value
+    }
   }
 
 }

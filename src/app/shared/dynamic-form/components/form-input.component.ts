@@ -11,7 +11,7 @@ import { FieldConfig } from '../models/field-config.interface';
     <input
       matInput
       type="text"
-      [attr.placeholder]="config.placeholder"
+      [placeholder]="config.placeholder"
       [formControlName]="config.name">
   </mat-form-field>
   `
