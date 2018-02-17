@@ -47,9 +47,6 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
           Object.keys(obj[l1]).map(l2 => this.form.setValue(l1+'.'+l2, obj[l1][l2]))
         } else {this.form.setValue(l1, obj[l1])}
       })      
-      // Object.keys(this.data.formRecord).map(formfield =>
-      //   this.form.setValue(formfield, this.data.formRecord[formfield])
-      // )
     }
   
     submit(e) {

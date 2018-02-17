@@ -10,6 +10,7 @@ import { FormButtonComponent } from './components/form-button.component';
 import { FormInputComponent } from './components/form-input.component';
 import { FormSelectComponent } from './components/form-select.component';
 import { FormChiplistComponent } from './components/form-chiplist.component';
+import { FormPulldownComponent } from './components/form-pulldown.component';
 import { FormDialogComponent } from './containers/form-dialog/form-dialog.component'
 import { CustomComponentsModule } from '../custom-components/custom-components.module';
 
@@ -27,7 +28,8 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormButtonComponent,
     FormInputComponent,
     FormSelectComponent,
-    FormChiplistComponent
+    FormChiplistComponent,
+    FormPulldownComponent
   ],
   exports: [
     DynamicFormComponent,
@@ -38,6 +40,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormInputComponent,
     FormSelectComponent,
     FormChiplistComponent,
+    FormPulldownComponent,
     FormDialogComponent
   ]
 })

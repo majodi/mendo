@@ -7,8 +7,6 @@ import { MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionM
 import { DynamicFormModule } from './dynamic-form/dynamic-form.module';
 import { CustomComponentsModule } from './custom-components/custom-components.module';
 
-import './rxjs-operators'
-
 @NgModule({
   imports: [
       CommonModule,

@@ -10,11 +10,11 @@ import { FieldConfig } from '../models/field-config.interface';
   selector: 'form-pulldown',
   template: `
     <div [formGroup]="group">
-      <app-pulldown ngDefaultControl [isDisabled]="config.disabled" [formControlName]="config.name" [lookupPlaceholder]="config.placeholder" [lookupItems$]="config.customLookupItems$" (itemChosen)="valueChanged($event)"></app-pulldown>
+      <app-pulldown ngDefaultControl [isDisabled]="config.disabled" [value]="config.value" [formControlName]="config.name" [lookupPlaceholder]="config.placeholder" [lookupItems]="config.customLookupItems" (itemChosen)="valueChanged($event)"></app-pulldown>
     </div>
   `
 })
-export class FormChiplistComponent implements Field {
+export class FormPulldownComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
 

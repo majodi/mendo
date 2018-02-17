@@ -8,7 +8,7 @@ export class GlobService {
         superUser: 25,
         user: 0
     }
-    tenantId: string
+    tenantId = 'l9XCh71vsxXg3M3nJ7aw' // temp test
 
   constructor() {}
   

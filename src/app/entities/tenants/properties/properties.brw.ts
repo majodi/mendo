@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
-import { Tenant, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig, defaultEntityPath } from '../tenant.model'
-import { TenantService } from '../tenant.service';
+import { Property, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './property.model'
+import { PropertyService } from './property.service';
 import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
 import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
 import { DbService } from '../../../services/db.service';
 
 @Component({
-  selector: 'app-tenants-brw',
+  selector: 'app-properties-brw',
   template: `
   <app-table
     [title]="title"
@@ -22,10 +22,10 @@ import { DbService } from '../../../services/db.service';
   `,
   styles: [``]
 })
-export class TenantsBrwComponent implements OnInit, OnDestroy {
-  data: Tenant[]
+export class PropertiesBrwComponent implements OnInit, OnDestroy {
+  data: Property[]
   private ngUnsubscribe = new Subject<string>()
-  entityPath = defaultEntityPath
+  entityPath: string
   title = defaultTitle
   titleIcon = defaultTitleIcon
   isLoading = true
@@ -33,17 +33,18 @@ export class TenantsBrwComponent implements OnInit, OnDestroy {
   formConfig: FieldConfig[]
 
   constructor(
-    private tenantSrv: TenantService,
+    private entitySrv: PropertyService,
     private db: DbService
   ) {}
 
   ngOnInit() {
-    this.tenantSrv.initTenants$().takeUntil(this.ngUnsubscribe).subscribe(tenants => {
-      this.data = tenants
+    this.entitySrv.initProperties$().takeUntil(this.ngUnsubscribe).subscribe(data => {
+      this.data = data
       this.isLoading = false
     })
     this.colDef = defaultColDef
     this.formConfig = defaultFormConfig
+    this.entityPath = this.entitySrv.entityPath
   }
 
   clicked(brwClick: {fld: string, rec: {}}) {

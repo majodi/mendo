@@ -3,17 +3,14 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 
 import { Tenant } from './tenant.model';
-import { GlobService } from '../../services/glob.service';
-import { DbService } from '../../services/db.service';
 
 @Injectable()
 export class TenantService {
+  entityPath: string
 
   constructor(
     private af: AngularFirestore,
-    private db: DbService,
-    private glob: GlobService
-  ) { }
+  ) { this.entityPath = `tenants` }
 
   initTenants$() {
     return this.af.collection<Tenant>(`tenants`)

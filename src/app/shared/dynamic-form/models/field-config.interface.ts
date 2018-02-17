@@ -14,5 +14,6 @@ export interface FieldConfig {
   buttonClick?: Function,
   customValueChg?: Function,
   customValidator?: Function,
-  customLookupItems$?: Observable<LookupItem>
+  customLookupItems?: LookupItem[],
+  customLookupId?: string
 }

@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { FormButtonComponent } from './form-button.component';
 import { FormInputComponent } from './form-input.component';
 import { FormSelectComponent } from './form-select.component';
+import { FormPulldownComponent } from './form-pulldown.component';
 
 import { FormChiplistComponent } from './form-chiplist.component';
 
@@ -14,7 +15,8 @@ const components: {[type: string]: Type<Field>} = {
   button: FormButtonComponent,
   input: FormInputComponent,
   select: FormSelectComponent,
-  chiplist: FormChiplistComponent
+  chiplist: FormChiplistComponent,
+  pulldown: FormPulldownComponent
 };
 
 @Directive({

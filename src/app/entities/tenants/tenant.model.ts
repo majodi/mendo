@@ -15,10 +15,10 @@ export const defaultEntityPath = 'tenants'
 export const defaultTitle = 'Tenants'
 export const defaultTitleIcon = 'store'
 export const defaultColDef = [
-    {name: 'address.name', header: 'Naam', sort: true},
-    {name: 'address.address', header: 'Adres', hideXs: true},
-    {name: 'address.postcode', header: 'Postcode', hideXs: true},
-    {name: 'address.city', header: 'Woonplaats', sort: true}
+    {name: 'address.name',      header: 'Naam',       sort: true},
+    {name: 'address.address',   header: 'Adres',      hideXs: true},
+    {name: 'address.postcode',  header: 'Postcode',   hideXs: true},
+    {name: 'address.city',      header: 'Woonplaats', sort: true}
   ]
 export const defaultFormConfig = [
     {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', validation: [Validators.required, Validators.minLength(4)]},

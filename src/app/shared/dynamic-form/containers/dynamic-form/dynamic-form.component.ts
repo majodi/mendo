@@ -50,6 +50,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
+    console.log('this config: ', this.config)
     this.form = this.createGroup();
   }
 
@@ -97,7 +98,9 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       event.preventDefault();
       event.stopPropagation();  
     }
-    console.log('submit: ', action, this.value)
+    this.config.filter(({type}) => type == 'pulldown').forEach(config => {
+      this.value[config.name] = config.value
+    })
     this.submit.emit({response: action, value: this.value});  
   }
 

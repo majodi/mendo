@@ -18,7 +18,8 @@ import { EntityServicesModule } from './entities/entity.services.module';
 import { ServicesModule } from './services/services.module';
 import { AdminModule } from './admin.module';
 
-import 'rxjs/add/operator/takeUntil';
+import './rxjs-operators';
+
 import { CustomComponentsModule } from './shared/custom-components/custom-components.module';
 
 @NgModule({
