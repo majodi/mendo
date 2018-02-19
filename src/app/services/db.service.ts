@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Rx';
 import { EntityMeta } from '../models/entity-meta.model';
 import { AuthService } from './auth.service'; ///// hoeft niet meer met gs = globalSettings service
 import { PopupService } from './popup.service';
+import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
 
 @Injectable()
 export class DbService {

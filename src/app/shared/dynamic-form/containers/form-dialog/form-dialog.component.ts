@@ -2,19 +2,21 @@ import { Component, ViewChild, AfterViewInit, ChangeDetectorRef, Inject } from '
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Validators } from '@angular/forms';
 
+import { GlobService } from '../../../../services/glob.service';
 import { FieldConfig } from '../../models/field-config.interface';
 import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form.component';
 
 @Component({
   template: `
     <mat-dialog-content>
-      <h1 fxFlex class="mat-display-1">Action {{data.action}}</h1>
+      <h1 fxFlex class="mat-display-1">{{gs.actionMessage[data.action]}}</h1>
       <dynamic-form
         [config]="data.fieldConfig"
         [formAction]="data.action"
         #form="dynamicForm"
         (submit)="submit($event)">
       </dynamic-form>
+      <br>
     </mat-dialog-content>
   `
   })
@@ -24,6 +26,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     constructor(
       public dialogRef: MatDialogRef<FormDialogComponent>,
       @Inject(MAT_DIALOG_DATA) public data: any,
+      private gs: GlobService,
       private cd: ChangeDetectorRef
     ) {}
 
@@ -42,6 +45,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
 
     setFormValues() { // flatten to match control names, only 2 levels!!
       let obj = this.data.formRecord
+      this.form.form.reset()
       Object.keys(obj).map(l1 => {
         if(typeof obj[l1] == 'object') {
           Object.keys(obj[l1]).map(l2 => this.form.setValue(l1+'.'+l2, obj[l1][l2]))

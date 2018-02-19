@@ -1,5 +1,6 @@
 import { Validators } from '@angular/forms';
 import { EntityMeta } from '../../../models/entity-meta.model';
+import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
 
 export interface Category {
     id: string;
@@ -7,7 +8,9 @@ export interface Category {
     code: string;
     description: string;
     measurements: string; // property
+    measurements_v: string; // virtual
     colors: string; // property
+    colors_v: string // virtual
 }
 
 export const defaultTitle = 'Categorieën'
@@ -17,9 +20,9 @@ export const defaultColDef = [
     {name: 'description', header: 'Omschrijving'},
   ]
 export const defaultFormConfig = [
-    {type: 'input', label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input', label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
-    {type: 'input', label: 'Maten',         name: 'measurements', placeholder: 'Maten',         value: '', validation: [Validators.required]},
-    {type: 'input', label: 'Kleuren',       name: 'colors',       placeholder: 'Kleuren',       value: '', validation: [Validators.required]},
+    {type: 'input',     label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input',     label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
+    {type: 'pulldown',  label: 'Std. Maten',    name: 'measurements', placeholder: 'Std. Maten',    value: '', validation: [Validators.required]},
+    {type: 'pulldown',  label: 'Std. Kleuren',  name: 'colors',       placeholder: 'Std. Kleuren',  value: '', validation: [Validators.required]},
   ]
 

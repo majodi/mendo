@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { EntityMeta } from "../../models/entity-meta.model";
 import { Address } from "../../models/address.model";
+import { forceCapitalize, forceUppercase } from '../../shared/dynamic-form/models/form-functions';
 
 export interface Tenant {
     id?: string;
@@ -21,11 +22,11 @@ export const defaultColDef = [
     {name: 'address.city',      header: 'Woonplaats', sort: true}
   ]
 export const defaultFormConfig = [
-    {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input', label: 'Omschrijving',  name: 'address.description',  placeholder: 'Omschrijving',  value: ''},
-    {type: 'input', label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input', label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', validation: [Validators.required, Validators.minLength(6)]},
-    {type: 'input', label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', validation: [Validators.required]},
+    {type: 'input', label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input', label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},
+    {type: 'input', label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', inputValueTransform: forceCapitalize, validation: [Validators.required]},
     {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},

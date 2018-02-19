@@ -4,6 +4,8 @@ import { Subject } from 'rxjs';
 
 import { Category, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './category.model'
 import { CategoryService } from './category.service';
+import { PropertyService } from '../properties/property.service';
+import { Property } from '../properties/property.model';
 import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
 import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
 import { DbService } from '../../../services/db.service';
@@ -34,24 +36,34 @@ export class CategoriesBrwComponent implements OnInit, OnDestroy {
 
   constructor(
     private entitySrv: CategoryService,
+    private propertySrv: PropertyService,
     private db: DbService
   ) {}
 
   ngOnInit() {
+    this.colDef = defaultColDef
+    this.formConfig = defaultFormConfig
+    this.entityPath = this.entitySrv.entityPath
     this.entitySrv.initCategories$().takeUntil(this.ngUnsubscribe).subscribe(data => {
       this.data = data
       this.isLoading = false
     })
-    this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
-    this.entityPath = this.entitySrv.entityPath
+    this.propertySrv.initProperties$().takeUntil(this.ngUnsubscribe).subscribe((properties: Property[]) => {
+      let propertiesMapping = properties.map((property: Property) => {
+        return {id: property.id, display: property.code, subDisplay: property.choices, addSearch: ''}
+      })
+      this.formConfig.find(c => {return c.name === 'measurements'})['customLookupItems'] = propertiesMapping
+      this.formConfig.find(c => {return c.name === 'colors'})['customLookupItems'] = propertiesMapping
+    })
   }
 
   clicked(brwClick: {fld: string, rec: {}}) {
+    let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
     if(brwClick.fld == 'insert'){
-      this.db.insertDialog(this.formConfig, brwClick, this.entityPath).then(id => {}).catch(err => console.log(err))
+      this.formConfig.map(fld => fld.value = '')
+      this.db.insertDialog(this.formConfig, rec, this.entityPath).then(id => {}).catch(err => console.log(err))
     } else {
-      this.db.changeDeleteDialog(this.formConfig, brwClick.rec, this.entityPath).catch(err => console.log(err))
+      this.db.changeDeleteDialog(this.formConfig, rec, this.entityPath).catch(err => console.log(err))
     }
   }
 

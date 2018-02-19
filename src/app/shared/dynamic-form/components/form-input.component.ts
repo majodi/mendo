@@ -11,6 +11,7 @@ import { FieldConfig } from '../models/field-config.interface';
     <input
       matInput
       type="text"
+      (keyup)="onKeyUp($event)"
       [placeholder]="config.placeholder"
       [formControlName]="config.name">
   </mat-form-field>
@@ -19,4 +20,10 @@ import { FieldConfig } from '../models/field-config.interface';
 export class FormInputComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+
+  onKeyUp(e) {
+    if(this.config.inputValueTransform != undefined){
+      e.target.value = this.config.inputValueTransform(e)
+    }
+  }
 }
