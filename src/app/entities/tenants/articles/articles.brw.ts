@@ -1,17 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Article, defaultTitle, defaultTitleIcon, defaultTemplate, defaultColDef, defaultFormConfig } from './article.model'
+import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
+import { Article, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig, defaultSelectionFields } from './article.model'
 import { ArticleService } from './article.service';
 import { CategoryService } from '../categories/category.service';
 import { PropertyService } from '../properties/property.service';
 import { DbService } from '../../../services/db.service';
+import { PopupService } from '../../../services/popup.service';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
 import { EntityService } from '../../../shared/custom-components/baseclasses/entity-service.interface';
 
 @Component({
   selector: 'app-articles-brw',
-  template: defaultTemplate,
+  template: defaultTableTemplate,
   styles: [``]
 })
 export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnInit, OnDestroy {
@@ -19,10 +21,11 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
   constructor(
     private entityService: ArticleService,
     private dbService: DbService,
+    private popupService: PopupService,
     private categorySrv: CategoryService,
     private propertySrv: PropertyService,
   ) {
-    super(entityService, dbService);
+    super(entityService, dbService, popupService);
   }
 
   ngOnInit() {
@@ -30,9 +33,10 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    super.setLookupItems(this.categorySrv.initCategories$(), 'category', 'category', 'code', 'description')
-    super.setLookupItems(this.propertySrv.initProperties$(), 'measurements', 'property', 'code', 'choices')
-    super.setLookupItems(this.propertySrv.initProperties$(), 'colors', 'property', 'code', 'choices')
+    this.selectionFields = defaultSelectionFields
+    super.setLookupItems(this.categorySrv.initEntity$(), 'category', 'code', 'description')
+    super.setLookupItems(this.propertySrv.initEntity$(), 'measurements', 'code', 'choices')
+    super.setLookupItems(this.propertySrv.initEntity$(), 'colors', 'code', 'choices')
     super.ngOnInit() //volgorde van belang!
   }
 

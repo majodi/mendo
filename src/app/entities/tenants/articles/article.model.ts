@@ -11,32 +11,20 @@ export interface Article {
     category: string; // category
     category_v: string; // virtual category code
     image: string; // asset
-    measurements: string; // property choice
+    measurements: string; // property
     measurements_v: string; // virtual property code
-    colors: string; // property choice
-    colors_v: string;
+    colors: string; // property
+    colors_v: string; // virtual property code
     price: number;
     unit: string;
 }
 
 export const defaultTitle = 'Artikelen'
 export const defaultTitleIcon = 'label outline'
-export const defaultTemplate = `
-<app-table
-  [title]="title"
-  [titleIcon]="titleIcon"
-  [isLoading]="isLoading"
-  [data]="data"
-  [columnDefs]="colDef"
-  (clicked)="clicked($event)"
-></app-table>  
-`
 export const defaultColDef = [
     {name: 'code',            header: 'Code', sort: true},
     {name: 'description_s',   header: 'Omschrijving kort', hideXs: true},
     {name: 'category_v',      header: 'Categorie', hideXs: true},
-    {name: 'measurements_v',  header: 'Maten', hideXs: true},
-    {name: 'colors_v',        header: 'Kleuren', hideXs: true},
     {name: 'image',           header: 'Afbeelding'},
     {name: 'price',           header: 'Prijs'},
     {name: 'unit',            header: 'Maatvoering'},
@@ -52,4 +40,8 @@ export const defaultFormConfig = [
     {type: 'input',    label: 'Prijs',             name: 'price',         placeholder: 'Prijs',             value: '', validation: [Validators.required]},
     {type: 'input',    label: 'Maatvoering',       name: 'unit',          placeholder: 'Maatvoering',       value: '', validation: [Validators.required]},
   ]
-
+export const defaultSelectionFields = [
+  {name: 'category'},
+  // {name: 'measurements'},
+  // {name: 'colors'},
+]

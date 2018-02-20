@@ -1,5 +1,4 @@
 import { ValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
 import { LookupItem } from '../../custom-components/models/lookup-item.model';
 
 interface lookupFld {

@@ -29,7 +29,10 @@ import { ColumnDefenition } from '../models/column-defenition.model'
             <mat-form-field fxFlex>
                 <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
             </mat-form-field>
-            <button fxFlex="20" fxFlexAlign="center" [fxFlexOffset]="5" mat-raised-button (click)="click('insert','')">Nieuw</button>
+            <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
+                <button mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
+                <button *ngIf="selectionButton" mat-button (click)="click('selection','')"><mat-icon>filter_list</mat-icon> Selectie</button>
+            </div>
         </div>
         <!-- table -->
         <mat-table #table [dataSource]="dataSource" matSort style="max-height:50vh;">
@@ -73,6 +76,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() selectMode: boolean
   @Input() backRoute: string
   @Input() isLoading = true
+  @Input() selectionButton = false
   @Input() data = []
   @Input() columnDefs: ColumnDefenition[] = []
   @Output() clicked = new EventEmitter();
@@ -82,7 +86,6 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     public media: ObservableMedia,
-    // private ps: PopupService
   ) {
     this.mediaIsXs = this.media.isActive('xs')
     this.mediaLtMd = this.media.isActive('lt-md')

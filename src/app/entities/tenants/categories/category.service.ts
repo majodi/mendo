@@ -3,27 +3,18 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 
 import { GlobService } from '../../../services/glob.service';
+import { EntityBaseClass } from '../../../shared/custom-components/baseclasses/entity';
 import { Category } from './category.model';
 
 @Injectable()
-export class CategoryService {
-  entityPath: string
+export class CategoryService extends EntityBaseClass {
+  entityName = 'categories'
+  basePath = `${this.glob.entityBasePath}`
+  entityPath = `${this.basePath}/${this.entityName}`
 
   constructor(
-    private af: AngularFirestore,
+    private afService: AngularFirestore,
     private glob: GlobService
-  ) { this.entityPath = `tenants/${this.glob.tenantId}/categories` }
-
-  initCategories$() {
-    return this.af.collection<Category>(this.entityPath)
-    .snapshotChanges()
-    .map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Category
-        const id = a.payload.doc.id
-        return { id, ...data }
-      })
-    })
-  }
+  ) {super(afService)}
 
 }
