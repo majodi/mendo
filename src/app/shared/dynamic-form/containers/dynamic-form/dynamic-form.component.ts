@@ -97,8 +97,13 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       event.preventDefault();
       event.stopPropagation();  
     }
-    this.config.filter(({type}) => type == 'pulldown').forEach(config => {
-      this.value[config.name] = config.value
+    this.config.forEach(config => {
+      if(config.type == 'pulldown'){
+        this.value[config.name] = config.value
+      }
+      if(config.type == 'input' && config.inputValueTransform != undefined){
+        this.value[config.name] = config.inputValueTransform(config.value)
+      }
     })
     this.submit.emit({response: action, value: this.value});  
   }

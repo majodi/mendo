@@ -7,9 +7,10 @@ import { CategoryService } from '../categories/category.service';
 import { PropertyService } from '../properties/property.service';
 import { DbService } from '../../../services/db.service';
 import { PopupService } from '../../../services/popup.service';
+import { GlobService } from '../../../services/glob.service';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
-import { EntityService } from '../../../shared/custom-components/baseclasses/entity-service.interface';
+// import { EntityService } from '../../../shared/custom-components/baseclasses/entity-service.interface';
 
 @Component({
   selector: 'app-articles-brw',
@@ -22,10 +23,11 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     private entityService: ArticleService,
     private dbService: DbService,
     private popupService: PopupService,
+    private globService: GlobService,
     private categorySrv: CategoryService,
     private propertySrv: PropertyService,
   ) {
-    super(entityService, dbService, popupService);
+    super(entityService, dbService, popupService, globService);
   }
 
   ngOnInit() {

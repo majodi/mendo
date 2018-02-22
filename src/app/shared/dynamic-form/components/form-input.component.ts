@@ -23,7 +23,9 @@ export class FormInputComponent implements Field {
 
   onKeyUp(e) {
     if(this.config.inputValueTransform != undefined){
-      e.target.value = this.config.inputValueTransform(e)
+      e.target.value = this.config.inputValueTransform(e.target.value)
+      this.config.value = e.target.value
     }
   }
+
 }

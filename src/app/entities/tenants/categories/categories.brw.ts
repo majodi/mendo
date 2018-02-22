@@ -6,8 +6,10 @@ import { CategoryService } from './category.service';
 import { PropertyService } from '../properties/property.service';
 import { DbService } from '../../../services/db.service';
 import { PopupService } from '../../../services/popup.service';
+import { GlobService } from '../../../services/glob.service';
+
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
-import { EntityService } from '../../../shared/custom-components/baseclasses/entity-service.interface';
+// import { EntityService } from '../../../shared/custom-components/baseclasses/entity-service.interface';
 
 @Component({
   selector: 'app-categories-brw',
@@ -20,9 +22,10 @@ export class CategoriesBrwComponent extends BrwBaseClass<Category[]> implements 
     private entityService: CategoryService,
     private dbService: DbService,
     private popupService: PopupService,
+    private globService: GlobService,
     private propertySrv: PropertyService,
   ) {
-    super(entityService, dbService, popupService);
+    super(entityService, dbService, popupService, globService);
   }
 
   ngOnInit() {

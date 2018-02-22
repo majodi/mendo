@@ -4,25 +4,18 @@ import { AngularFirestore } from 'angularfire2/firestore';
 
 import { Organisation } from './organisation.model';
 import { GlobService } from '../../../services/glob.service';
+import { EntityBaseClass } from '../../../shared/custom-components/baseclasses/entity';
+
 
 @Injectable()
-export class OrganisationService {
+export class OrganisationService extends EntityBaseClass {
+  entityName = 'organisations'
+  basePath = `${this.glob.entityBasePath}`
+  entityPath = `${this.basePath}/${this.entityName}`
 
   constructor(
-    private db: AngularFirestore,
+    private afService: AngularFirestore,
     private glob: GlobService
-  ) { }
-
-  initOrganisations$() {
-    return this.db.collection<Organisation>(`tenants/${this.glob.tenantId}/organisations`)
-    .snapshotChanges()
-    .map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Organisation
-        const id = a.payload.doc.id
-        return { id, ...data }
-      })
-    })
-  }
+  ) {super(afService)}
 
 }

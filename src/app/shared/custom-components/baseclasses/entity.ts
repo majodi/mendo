@@ -3,8 +3,10 @@ import { Observable } from 'rxjs';
 import * as firebase from 'firebase/firestore';
 
 import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
+import { QueryItem } from './query-item.interface';
 
 export class EntityBaseClass {
+  entityName: string  
   basePath: string
   entityPath: string
   formConfig: FieldConfig[]
@@ -13,12 +15,12 @@ export class EntityBaseClass {
     private af: AngularFirestore,
   ) {}
 
-  initEntity$(selection?: any) {
+  initEntity$(queries?: QueryItem[]) {
     let entity$ = this.af.collection(this.entityPath, ref => {
       let query : firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-      if (selection){
-        Object.keys(selection).forEach(qf => {
-          if (selection[qf]) { query = query.where(qf, '==', selection[qf]) };          
+      if (queries){
+        queries.forEach(q => {
+          if (q.value) { query = query.where(q.fld, q.operator, q.value) };          
         })
       }
       return query;

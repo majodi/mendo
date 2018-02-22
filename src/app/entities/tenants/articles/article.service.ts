@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { AngularFirestore } from 'angularfire2/firestore';
-import * as firebase from 'firebase/firestore';
+// import * as firebase from 'firebase/firestore';
 import { Observable } from 'rxjs';
 
 import { GlobService } from '../../../services/glob.service';

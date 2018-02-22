@@ -47,9 +47,11 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
       let obj = this.data.formRecord
       this.form.form.reset()
       Object.keys(obj).map(l1 => {
-        if(typeof obj[l1] == 'object') {
-          Object.keys(obj[l1]).map(l2 => this.form.setValue(l1+'.'+l2, obj[l1][l2]))
-        } else {this.form.setValue(l1, obj[l1])}
+        if(l1){
+          if(typeof obj[l1] == 'object' && obj[l1] != null) {
+            Object.keys(obj[l1]).map(l2 => this.form.setValue(l1+'.'+l2, obj[l1][l2]))
+          } else {this.form.setValue(l1, obj[l1])}  
+        }
       })      
     }
   

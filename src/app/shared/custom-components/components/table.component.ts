@@ -5,7 +5,6 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Observable, Subject } from 'rxjs';
 
 import { ColumnDefenition } from '../models/column-defenition.model'
-// import { PopupService } from '../../../services/popup.service';
 
 @Component({
   selector: 'app-table',
@@ -31,7 +30,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
             </mat-form-field>
             <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
                 <button mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
-                <button *ngIf="selectionButton" mat-button (click)="click('selection','')"><mat-icon>filter_list</mat-icon> Selectie</button>
+                <button *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon> Selectie</button>
             </div>
         </div>
         <!-- table -->
@@ -77,12 +76,14 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() backRoute: string
   @Input() isLoading = true
   @Input() selectionButton = false
+  @Input() selectionActive = false
   @Input() data = []
   @Input() columnDefs: ColumnDefenition[] = []
   @Output() clicked = new EventEmitter();
   displayedColumns = []
   mediaIsXs: boolean
   mediaLtMd: boolean
+  selectionButtonColor = ''
 
   constructor(
     public media: ObservableMedia,
@@ -109,6 +110,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges() {
       this.setColumns()
+      this.selectionButtonColor = this.selectionActive ? 'warn' : ''
   }
 
   setColumns() {
@@ -121,6 +123,15 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     })
     this.dataSource = new MatTableDataSource(this.data)
     this.dataSource.sort = this.sort;
+    this.dataSource.filterPredicate = (data, filter: string):boolean => {
+        let flatDataStr = ''
+        Object.keys(data).filter(v => !['id','meta'].includes(v)).map(l1 => {
+                if(typeof data[l1] == 'object' && data[l1] != null) {
+                    Object.keys(data[l1]).map(l2 => flatDataStr += data[l1][l2] ? data[l1][l2] : '')
+                } else {flatDataStr += data[l1] ? data[l1] : ''}  
+        })      
+        return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) != -1;
+      }
   }
 
   resolveObjPath(obj, path) {
@@ -130,12 +141,11 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   click(fld, rec) {
+    if(this.selectMode) fld='select';
     this.clicked.emit({fld: fld, rec:rec})
   }
 
   applyFilter(filterValue: string) {
-    filterValue = filterValue.trim()
-    filterValue = filterValue.toLowerCase()
     this.dataSource.filter = filterValue
   }
 

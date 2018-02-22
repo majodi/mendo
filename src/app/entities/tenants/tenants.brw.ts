@@ -5,8 +5,10 @@ import { Tenant, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfi
 import { TenantService } from './tenant.service';
 import { DbService } from '../../services/db.service';
 import { PopupService } from '../../services/popup.service';
+import { GlobService } from '../../services/glob.service';
+
 import { BrwBaseClass } from '../../shared/custom-components/baseclasses/browse';
-import { EntityService } from '../../shared/custom-components/baseclasses/entity-service.interface';
+// import { EntityService } from '../../shared/custom-components/baseclasses/entity-service.interface';
 
 @Component({
   selector: 'app-tenants-brw',
@@ -18,9 +20,10 @@ export class TenantsBrwComponent extends BrwBaseClass<Tenant[]> implements OnIni
   constructor(
     private entityService: TenantService,
     private dbService: DbService,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private globService: GlobService,
   ) {
-    super(entityService, dbService, popupService);
+    super(entityService, dbService, popupService, globService);
   }
 
   ngOnInit() {

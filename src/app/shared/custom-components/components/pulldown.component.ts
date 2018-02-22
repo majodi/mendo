@@ -14,7 +14,7 @@ import 'rxjs/add/operator/startWith';
     <input (blur)="onChoice()" matInput [matAutocomplete]="auto" [formControl]="lookupCtrl" placeholder="{{lookupPlaceholder}}" [disabled]=isDisabled>
     <mat-hint *ngIf="filteredLookupItems.length == 0" align="end" style="color:red">No match found</mat-hint>
     <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let item of filteredLookupItems" [value]="item.display" (onSelectionChange)="onChoice()">
+      <mat-option *ngFor="let item of filteredLookupItems" [value]="item.display" (onSelectionChange)="onChoice(item.display)">
         <span>{{ item.display }} (<small>{{item.subDisplay}}</small>)</span>
       </mat-option>
     </mat-autocomplete>
@@ -50,8 +50,12 @@ export class PulldownComponent implements OnInit, OnDestroy {
 
   ngOnInit() {}
 
-  onChoice() {
-    console.log('choice: ', this.lookupCtrl.value)
+  onChoice(selection?) {
+    if(selection){
+      let selected = this.lookupItems.find((item: LookupItem) => {return item.display == selection})
+      this.itemChosen.emit(selected.id)
+      return
+    }
     if(this.filteredLookupItems.length == 1){
       this.itemChosen.emit(this.filteredLookupItems[0].id)
     } else {
@@ -60,12 +64,10 @@ export class PulldownComponent implements OnInit, OnDestroy {
   }
     
   ngOnChanges() {
-    console.log('changes from outside (value/lu items): ', this.value, this.lookupItems)
     this.lookupCtrl.setValue(this.displayLookup(this.lookupItems.find((item: LookupItem) => {return item.id == this.value})))
   }
 
   displayLookup(item?: LookupItem): string | undefined {
-    console.log('displu: ',item)
     return item ? item.display : undefined
   }
 
