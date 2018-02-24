@@ -9,6 +9,7 @@ import { ChiplistComponent } from './components/chiplist.component';
 import { PopupDialog } from './components/popupdialog.component';
 import { PulldownComponent } from './components/pulldown.component';
 import { TableComponent } from './components/table.component';
+import { LookupComponent } from './components/lookup.component';
 
 @NgModule({
   imports: [
@@ -21,13 +22,15 @@ import { TableComponent } from './components/table.component';
     ChiplistComponent,
     PopupDialog,
     PulldownComponent,
-    TableComponent
+    TableComponent,
+    LookupComponent,
   ],
   exports: [
     ChiplistComponent,
     PopupDialog,
     PulldownComponent,
-    TableComponent
+    TableComponent,
+    LookupComponent,
   ],
   entryComponents: [
   ]

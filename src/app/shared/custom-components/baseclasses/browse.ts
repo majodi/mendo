@@ -1,7 +1,8 @@
-import { Input, Output, EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter, Type, Inject, Injector } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { MatDialogRef } from '@angular/material';
 
-import { LookupItem } from '../../../shared/custom-components/models/lookup-item.model';
+// import { LookupItem } from '../../../shared/custom-components/models/lookup-item.model';
 import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
 import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
 import { SelectionField } from '../../dynamic-form/models/selection-field.interface';
@@ -11,7 +12,6 @@ import { PopupService } from '../../../services/popup.service';
 import { GlobService } from '../../../services/glob.service';
 
 import { EntityService } from './entity-service.interface';
-import { CategoryService } from '../../../entities/tenants/categories/category.service';
 
 export class BrwBaseClass<T> {
   @Input() select: boolean
@@ -29,13 +29,19 @@ export class BrwBaseClass<T> {
   selectionFields: SelectionField[] = []
   selectionFieldConfig: FieldConfig[] = []
   baseQueries: QueryItem[]
+  db: DbService
+  ps: PopupService
+  gs: GlobService
 
   constructor(
+    public dialogRef: MatDialogRef<any>,
     private entitySrv: EntityService,
-    private db: DbService,
-    private ps: PopupService,
-    private gs: GlobService
-  ) {}
+    private injectorSrv: Injector,
+  ) {
+    this.db = injectorSrv.get(DbService)
+    this.ps = injectorSrv.get(PopupService)
+    this.gs = injectorSrv.get(GlobService)
+  }
 
   ngOnInit() {
     this.selectMode = this.select
@@ -58,7 +64,7 @@ export class BrwBaseClass<T> {
     })
   }
 
-  setLookupItems(items$: Observable<any>, fldName: string, displayFld: string, subDisplayFld?: string, addSearchFld?: string) {
+  setPulldownItems(items$: Observable<any>, fldName: string, displayFld: string, subDisplayFld?: string, addSearchFld?: string) {
     items$.takeUntil(this.ngUnsubscribe).subscribe((items) => {
       this.formConfig.find(c => {return c.name === fldName})['customLookupItems'] = items
       .map((item) => {
@@ -70,6 +76,12 @@ export class BrwBaseClass<T> {
         }
       })
     })    
+  }
+
+  setLookupComponent(component: Type<any>, fldName: string, displayFld: string, subDisplayFld?: string, addSearchFld?: string) {
+    let formConfig = this.formConfig.find(c => {return c.name === fldName})
+    formConfig['customLookupComponent'] = component
+    formConfig['customLookupItem'] = {id: '', display: displayFld, subDisplay: subDisplayFld, addSearch: addSearchFld}
   }
 
   resolveObjPath(obj, path) {
@@ -119,6 +131,7 @@ export class BrwBaseClass<T> {
     if(brwClick.fld == 'select'){
       this.gs.entityId[this.entitySrv.entityName] = rec['id']
       this.selected.emit(brwClick)
+      this.dialogRef.close(rec)
     }
   }
 

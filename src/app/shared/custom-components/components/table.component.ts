@@ -21,14 +21,14 @@ import { ColumnDefenition } from '../models/column-defenition.model'
     <mat-card class="gradient-bg">
         <div fxLayout="column">
         <div class="page-header" fxLayout="row" fxLayoutAlign="space-around start">
-            <div *ngIf="!mediaLtMd" fxFlex="20" fxLayout="row" fxLayoutAlign="start start">
+            <div *ngIf="!mediaLtMd" fxFlex="30" fxLayout="row" fxLayoutAlign="start start">
                 <mat-icon fxFlex="noshrink" class="title-icon">{{titleIcon}}</mat-icon>
                 <h1 fxFlex class="mat-display-1">{{title}}</h1>
             </div>
-            <mat-form-field fxFlex>
+            <mat-form-field fxFlex="40">
                 <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
             </mat-form-field>
-            <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
+            <div fxFlex="10" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
                 <button mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
                 <button *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon> Selectie</button>
             </div>
@@ -141,8 +141,11 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   click(fld, rec) {
-    if(this.selectMode) fld='select';
-    this.clicked.emit({fld: fld, rec:rec})
+    if(this.selectMode) {
+        this.clicked.emit({fld: 'select', rec:rec})
+    } else {
+        this.clicked.emit({fld: fld, rec:rec})
+    }
   }
 
   applyFilter(filterValue: string) {

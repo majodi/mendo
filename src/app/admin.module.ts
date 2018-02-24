@@ -7,6 +7,8 @@ import { PropertiesBrwComponent } from './entities/tenants/properties/properties
 import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
 import { OrganisationsBrwComponent } from './entities/tenants/organisations/organisation.brw';
 import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employee.brw';
+import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
+
 import { SharedModule } from './shared/shared.module';
 import { CustomComponentsModule } from './shared/custom-components/custom-components.module';
 import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
@@ -25,6 +27,7 @@ import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
       CategoriesBrwComponent,
       OrganisationsBrwComponent,
       EmployeesBrwComponent,
+      ImagesBrwComponent,
     ],
   exports: [
       TenantsBrwComponent,
@@ -33,6 +36,7 @@ import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
       CategoriesBrwComponent,
       OrganisationsBrwComponent,
       EmployeesBrwComponent,
+      ImagesBrwComponent,
     ],
 })
 export class AdminModule { }

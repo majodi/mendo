@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 
 import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable } from 'rxjs';
 
 import { GlobService } from '../../../services/glob.service';
 import { EntityBaseClass } from '../../../shared/custom-components/baseclasses/entity';
-import { Article } from './article.model';
-
+import { Image } from './image.model';
 
 @Injectable()
-export class ArticleService extends EntityBaseClass {
-  entityName = 'articles'
+export class ImageService extends EntityBaseClass {
+  entityName = 'images'
   basePath = `${this.glob.entityBasePath}`
   entityPath = `${this.basePath}/${this.entityName}`
 

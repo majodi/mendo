@@ -83,8 +83,10 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     const newCtrl = this.fb.control({ disabled, value }, validation);
     if(!['button', 'input', 'select'].includes(config.type)){
       config.customValueChg = (name: string, value: any) => { //for custom components
+        console.log('name/value: ', name, value)
         this.form.controls[name].setValue(value, {emitEvent: true})
         if((config.customValidator != undefined) && !config.customValidator(value)){
+          console.log('ERR name: ', value)
           this.form.controls[name].setErrors({'invalid': true}, {emitEvent: true})
         }
       }
@@ -101,10 +103,15 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       if(config.type == 'pulldown'){
         this.value[config.name] = config.value
       }
+      if(config.type == 'lookup'){
+        this.value[config.name] = config.value
+        console.log('lu config val: ',config.value)
+      }
       if(config.type == 'input' && config.inputValueTransform != undefined){
         this.value[config.name] = config.inputValueTransform(config.value)
       }
     })
+    console.log('form: ', {response: action, value: this.value})
     this.submit.emit({response: action, value: this.value});  
   }
 

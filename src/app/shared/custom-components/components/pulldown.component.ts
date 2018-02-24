@@ -21,7 +21,7 @@ import 'rxjs/add/operator/startWith';
   </mat-form-field>
   `
 })
-export class PulldownComponent implements OnInit, OnDestroy {
+export class PulldownComponent {
   private ngUnsubscribe = new Subject<string>()
   @Input() value: string
   @Input() lookupPlaceholder: string
@@ -48,8 +48,6 @@ export class PulldownComponent implements OnInit, OnDestroy {
     }).subscribe()
   }
 
-  ngOnInit() {}
-
   onChoice(selection?) {
     if(selection){
       let selected = this.lookupItems.find((item: LookupItem) => {return item.display == selection})
@@ -70,10 +68,5 @@ export class PulldownComponent implements OnInit, OnDestroy {
   displayLookup(item?: LookupItem): string | undefined {
     return item ? item.display : undefined
   }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next()
-    this.ngUnsubscribe.complete()
-  }  
 
 }

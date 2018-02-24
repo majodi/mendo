@@ -1,15 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
 
 import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
 import { Property, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './property.model'
 import { PropertyService } from './property.service';
-import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
-import { DbService } from '../../../services/db.service';
-import { PopupService } from '../../../services/popup.service';
-import { GlobService } from '../../../services/glob.service';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
-// import { EntityService } from '../../../shared/custom-components/baseclasses/entity-service.interface';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-properties-brw',
@@ -19,12 +15,11 @@ import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/brow
 export class PropertiesBrwComponent extends BrwBaseClass<Property[]> implements OnInit, OnDestroy {
 
   constructor(
+    public dialogRef: MatDialogRef<any>,
+    private injectorService: Injector,
     private entityService: PropertyService,
-    private dbService: DbService,
-    private popupService: PopupService,
-    private globService: GlobService,
   ) {
-    super(entityService, dbService, popupService, globService);
+    super(dialogRef, entityService, injectorService);
   }
 
   ngOnInit() {

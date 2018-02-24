@@ -56,7 +56,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     }
   
     submit(e) {
-      console.log('e: ', e)
+      console.log('submit')
       this.dialogRef.close(e)
     }
 

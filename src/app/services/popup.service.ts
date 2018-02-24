@@ -1,9 +1,10 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, Type } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
 import { FormDialogComponent } from '../shared/dynamic-form/containers/form-dialog/form-dialog.component';
 import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
+import { BrowseDialogComponent } from '../shared/dynamic-form/containers/browse-dialog/browse-dialog.component';
 
 @Injectable()
 export class PopupService {
@@ -31,5 +32,17 @@ export class PopupService {
         return result
       });
     }
-  
+
+    BrowseDialog(brwComponent: Type<any>) {
+      let dialogRef = this.dialog.open(brwComponent, {
+        width: '800px',
+        data: {}
+      });
+      dialogRef.componentInstance.select = true
+
+      return dialogRef.afterClosed().toPromise().then(result => {
+        return result
+      });
+    }
+    
   }

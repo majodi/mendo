@@ -1,23 +1,23 @@
-import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
-
-import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
-import { Organisation, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './organisation.model'
-import { OrganisationService } from './organisation.service';
-
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { Component, OnInit, OnDestroy, Injector, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
+import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
+import { Image, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './image.model'
+import { ImageService } from './image.service';
+
+import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+
 @Component({
-  selector: 'app-organisations-brw',
+  selector: 'app-images-brw',
   template: defaultTableTemplate,
   styles: [``]
 })
-export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> implements OnInit, OnDestroy {
+export class ImagesBrwComponent extends BrwBaseClass<Image[]> implements OnInit, OnDestroy {
 
   constructor(
     public dialogRef: MatDialogRef<any>,
     private injectorService: Injector,
-    private entityService: OrganisationService
+    private entityService: ImageService,
   ) {
     super(dialogRef, entityService, injectorService);
   }

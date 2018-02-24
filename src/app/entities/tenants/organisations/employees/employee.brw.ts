@@ -1,16 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
 
 import { defaultTableTemplate } from '../../../../shared/custom-components/models/table-template';
 import { Employee, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig, defaultSelectionFields } from './employee.model'
 import { EmployeeService } from './employee.service';
 import { OrganisationService } from '../organisation.service';
-import { DbService } from '../../../../services/db.service';
-import { PopupService } from '../../../../services/popup.service';
-import { GlobService } from '../../../../services/glob.service';
-
 
 import { BrwBaseClass } from '../../../../shared/custom-components/baseclasses/browse';
-// import { EntityService } from '../../../../shared/custom-components/baseclasses/entity-service.interface';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-employees-brw',
@@ -20,13 +16,12 @@ import { BrwBaseClass } from '../../../../shared/custom-components/baseclasses/b
 export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements OnInit, OnDestroy {
 
   constructor(
+    public dialogRef: MatDialogRef<any>,
+    private injectorService: Injector,
     private entityService: EmployeeService,
-    private dbService: DbService,
-    private popupService: PopupService,
-    private globService: GlobService,
     private organisationSrv: OrganisationService,
   ) {
-    super(entityService, dbService, popupService, globService);
+    super(dialogRef, entityService, injectorService);
   }
 
   ngOnInit() {
@@ -35,7 +30,7 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields
-    super.setLookupItems(this.organisationSrv.initEntity$(), 'organisation', 'address.name', 'address.city')
+    super.setPulldownItems(this.organisationSrv.initEntity$(), 'organisation', 'address.name', 'address.city')
     super.ngOnInit() //volgorde van belang!
   }
 

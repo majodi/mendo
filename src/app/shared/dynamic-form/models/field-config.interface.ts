@@ -1,7 +1,9 @@
+import { Type } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { LookupItem } from '../../custom-components/models/lookup-item.model';
+import { ComponentType } from '@angular/core/src/render3';
 
-interface lookupFld {
+export interface lookupFld {
   path: string,
   tbl: string,
   fld: string
@@ -21,6 +23,8 @@ export interface FieldConfig {
   customValueChg?: Function,
   customValidator?: Function,
   customLookupItems?: LookupItem[],
-  customLookupId?: string, //kanweg
+  customLookupUniqueId?: Function, //kan toch weg, db dependancy direct in lookup component...
   customLookupFld?: lookupFld
+  customLookupComponent?: Type<any>
+  customLookupItem?: LookupItem
 }

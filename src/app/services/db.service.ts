@@ -1,12 +1,13 @@
 import { Injectable, ElementRef } from '@angular/core';
 
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Rx';
 
 import { EntityMeta } from '../models/entity-meta.model';
 import { AuthService } from './auth.service'; ///// hoeft niet meer met gs = globalSettings service
 import { PopupService } from './popup.service';
 import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
+import { DocumentData } from '@firebase/firestore-types';
 
 @Injectable()
 export class DbService {
@@ -87,6 +88,28 @@ export class DbService {
         if(data.payload.exists) {resolve(data.payload.data())} else {reject('no such document!')}
       })
     })
+  }
+
+  getUniqueValueId(collection: string, field: string, value: string) {
+    if(value){
+      if(field == 'id'){
+        return this.db.doc(collection+'/'+value).snapshotChanges().map(rec => {
+          return {id: value, ...rec.payload.data()}
+        })
+      } else {
+        const lsPart = value.slice(0,value.length-1)
+        const msPartASCII = value.charCodeAt(value.length-1)
+        const startAt = lsPart+String.fromCharCode(msPartASCII-1)
+        const endAt = lsPart+String.fromCharCode(msPartASCII+1)
+        return this.db.collection(collection, ref => ref
+        .limit(2)
+        .orderBy(field)
+        .startAt(startAt).endAt(endAt))
+        .snapshotChanges().map(recs => {
+          if(recs.length == 1) return {id: recs[0].payload.doc.id, ...recs[0].payload.doc.data()}; else return null;
+        })    
+      }  
+    } else return Observable.of(null)
   }
   
 }

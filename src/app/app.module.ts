@@ -1,9 +1,9 @@
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
+import { MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
 
 import { MediaMatcher } from '@angular/cdk/layout';
 
@@ -30,7 +30,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
+    MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
@@ -42,4 +42,4 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
   providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

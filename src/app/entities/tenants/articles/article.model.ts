@@ -40,8 +40,7 @@ export const defaultFormConfig = [
     {type: 'input',    label: 'Prijs',             name: 'price',         placeholder: 'Prijs',             value: '', validation: [Validators.required]},
     {type: 'input',    label: 'Maatvoering',       name: 'unit',          placeholder: 'Maatvoering',       value: '', validation: [Validators.required]},
   ]
+// for selection button
 export const defaultSelectionFields = [
   {name: 'category'},
-  // {name: 'measurements'},
-  // {name: 'colors'},
 ]

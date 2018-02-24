@@ -12,7 +12,6 @@ export interface Tenant {
     order_count?: number
 }
 
-// export const defaultEntityPath = 'tenants'
 export const defaultTitle = 'Tenants'
 export const defaultTitleIcon = 'store'
 export const defaultColDef = [

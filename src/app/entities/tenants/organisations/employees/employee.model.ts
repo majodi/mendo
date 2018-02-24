@@ -31,6 +31,7 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Contact',       name: 'address.contact',      placeholder: 'Contact',       value: '', validation: [Validators.required]},
     {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''}
   ]
+//for selection button
 export const defaultSelectionFields = [
   {name: 'organisation'},
 ]

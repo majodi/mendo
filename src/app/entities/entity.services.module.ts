@@ -7,9 +7,17 @@ import { PropertyService } from './tenants/properties/property.service';
 import { CategoryService } from './tenants/categories/category.service';
 import { OrganisationService } from './tenants/organisations/organisation.service';
 import { EmployeeService } from './tenants/organisations/employees/employee.service';
+import { ImageService } from './tenants/images/image.service';
 
 @NgModule({
   imports: [],
-  providers: [TenantService, ArticleService, PropertyService, CategoryService, OrganisationService, EmployeeService],
+  providers: [
+    TenantService,
+    ArticleService,PropertyService,
+    CategoryService,
+    OrganisationService,
+    EmployeeService,
+    ImageService
+  ],
 })
 export class EntityServicesModule { }

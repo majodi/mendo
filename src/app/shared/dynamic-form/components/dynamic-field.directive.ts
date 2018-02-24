@@ -5,6 +5,7 @@ import { FormButtonComponent } from './form-button.component';
 import { FormInputComponent } from './form-input.component';
 import { FormSelectComponent } from './form-select.component';
 import { FormPulldownComponent } from './form-pulldown.component';
+import { FormLookupComponent } from './form-lookup.component';
 
 import { FormChiplistComponent } from './form-chiplist.component';
 
@@ -16,7 +17,8 @@ const components: {[type: string]: Type<Field>} = {
   input: FormInputComponent,
   select: FormSelectComponent,
   chiplist: FormChiplistComponent,
-  pulldown: FormPulldownComponent
+  pulldown: FormPulldownComponent,
+  lookup: FormLookupComponent
 };
 
 @Directive({

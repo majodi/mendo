@@ -11,7 +11,9 @@ import { FormInputComponent } from './components/form-input.component';
 import { FormSelectComponent } from './components/form-select.component';
 import { FormChiplistComponent } from './components/form-chiplist.component';
 import { FormPulldownComponent } from './components/form-pulldown.component';
+import { FormLookupComponent } from './components/form-lookup.component';
 import { FormDialogComponent } from './containers/form-dialog/form-dialog.component'
+// import { BrowseDialogComponent } from './containers/browse-dialog/browse-dialog.component';
 import { CustomComponentsModule } from '../custom-components/custom-components.module';
 
 @NgModule({
@@ -19,21 +21,24 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     CommonModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule,
-    CustomComponentsModule
+    CustomComponentsModule,
   ],
   declarations: [
     DynamicFieldDirective,
     DynamicFormComponent,
     FormDialogComponent,
+    // BrowseDialogComponent,
     FormButtonComponent,
     FormInputComponent,
     FormSelectComponent,
     FormChiplistComponent,
-    FormPulldownComponent
+    FormPulldownComponent,
+    FormLookupComponent,
   ],
   exports: [
     DynamicFormComponent,
-    FormDialogComponent
+    FormDialogComponent,
+    // BrowseDialogComponent,
   ],
   entryComponents: [
     FormButtonComponent,
@@ -41,7 +46,9 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormSelectComponent,
     FormChiplistComponent,
     FormPulldownComponent,
-    FormDialogComponent
+    FormLookupComponent,
+    FormDialogComponent,
+    // BrowseDialogComponent,
   ]
 })
 export class DynamicFormModule {}

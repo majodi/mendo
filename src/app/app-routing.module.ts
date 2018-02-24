@@ -6,6 +6,7 @@ import { PropertiesBrwComponent } from './entities/tenants/properties/properties
 import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
 import { OrganisationsBrwComponent } from './entities/tenants/organisations/organisation.brw';
 import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employee.brw';
+import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
 
 const routes: Routes = [
   { path: 'tenants', component: TenantsBrwComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'articles', component: ArticlesBrwComponent },
   { path: 'organisations', component: OrganisationsBrwComponent },
   { path: 'employees', component: EmployeesBrwComponent },
+  { path: 'images', component: ImagesBrwComponent },
 ];
 
 @NgModule({

@@ -1,14 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
 
 import { defaultTableTemplate } from '../../shared/custom-components/models/table-template';
 import { Tenant, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './tenant.model'
 import { TenantService } from './tenant.service';
-import { DbService } from '../../services/db.service';
-import { PopupService } from '../../services/popup.service';
-import { GlobService } from '../../services/glob.service';
 
 import { BrwBaseClass } from '../../shared/custom-components/baseclasses/browse';
-// import { EntityService } from '../../shared/custom-components/baseclasses/entity-service.interface';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-tenants-brw',
@@ -18,12 +15,11 @@ import { BrwBaseClass } from '../../shared/custom-components/baseclasses/browse'
 export class TenantsBrwComponent extends BrwBaseClass<Tenant[]> implements OnInit, OnDestroy {
 
   constructor(
+    public dialogRef: MatDialogRef<any>,
+    private injectorService: Injector,
     private entityService: TenantService,
-    private dbService: DbService,
-    private popupService: PopupService,
-    private globService: GlobService,
   ) {
-    super(entityService, dbService, popupService, globService);
+    super(dialogRef, entityService, injectorService);
   }
 
   ngOnInit() {
