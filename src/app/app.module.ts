@@ -10,6 +10,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -34,6 +35,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
+    AngularFireStorageModule,
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
     ServicesModule,
     EntityServicesModule,

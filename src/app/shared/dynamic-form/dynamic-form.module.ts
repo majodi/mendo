@@ -13,7 +13,7 @@ import { FormChiplistComponent } from './components/form-chiplist.component';
 import { FormPulldownComponent } from './components/form-pulldown.component';
 import { FormLookupComponent } from './components/form-lookup.component';
 import { FormDialogComponent } from './containers/form-dialog/form-dialog.component'
-// import { BrowseDialogComponent } from './containers/browse-dialog/browse-dialog.component';
+import { FormFilepickComponent } from './components/form-filepick.component';
 import { CustomComponentsModule } from '../custom-components/custom-components.module';
 
 @NgModule({
@@ -27,18 +27,17 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     DynamicFieldDirective,
     DynamicFormComponent,
     FormDialogComponent,
-    // BrowseDialogComponent,
     FormButtonComponent,
     FormInputComponent,
     FormSelectComponent,
     FormChiplistComponent,
     FormPulldownComponent,
     FormLookupComponent,
+    FormFilepickComponent,
   ],
   exports: [
     DynamicFormComponent,
     FormDialogComponent,
-    // BrowseDialogComponent,
   ],
   entryComponents: [
     FormButtonComponent,
@@ -48,7 +47,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormPulldownComponent,
     FormLookupComponent,
     FormDialogComponent,
-    // BrowseDialogComponent,
+    FormFilepickComponent,
   ]
 })
 export class DynamicFormModule {}

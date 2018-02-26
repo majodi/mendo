@@ -10,6 +10,7 @@ import { PopupDialog } from './components/popupdialog.component';
 import { PulldownComponent } from './components/pulldown.component';
 import { TableComponent } from './components/table.component';
 import { LookupComponent } from './components/lookup.component';
+import { FilepickComponent } from './components/filepick.component';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { LookupComponent } from './components/lookup.component';
     PulldownComponent,
     TableComponent,
     LookupComponent,
+    FilepickComponent,
   ],
   exports: [
     ChiplistComponent,
@@ -31,6 +33,7 @@ import { LookupComponent } from './components/lookup.component';
     PulldownComponent,
     TableComponent,
     LookupComponent,
+    FilepickComponent,
   ],
   entryComponents: [
   ]

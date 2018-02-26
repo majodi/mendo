@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
+import { UploadService } from '../../../../services/upload.service';
+
 import { FieldConfig } from '../../models/field-config.interface';
 
 @Component({
@@ -18,9 +20,10 @@ import { FieldConfig } from '../../models/field-config.interface';
         [config]="field"
         [group]="form">
       </ng-container>
+      <mat-progress-bar *ngIf="us.progress > 0" mode="determinate" [value]="us.progress"></mat-progress-bar>
       <div [ngSwitch]="deleteState">
         <mat-dialog-actions *ngSwitchCase="false">
-          <button mat-button type="submit" color="primary" [disabled]="!form.valid">Bewaar</button>
+          <button mat-button type="submit" color="primary" [disabled]="!form.valid || waitOnUpload">Bewaar</button>
           <button mat-button type="button" (click)="handleSubmit('cancel')" color="primary">Annuleer</button>
           <span class="spacer"></span>
           <button mat-icon-button (click)="deleteState=true" color="primary" [disabled]="formAction==1">
@@ -41,13 +44,14 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
   deleteState = false
+  waitOnUpload = false
 
   get controls() { return this.config.filter(({type}) => type !== 'button'); }
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private us: UploadService) {}
 
   ngOnInit() {
     this.form = this.createGroup();
@@ -83,7 +87,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     const newCtrl = this.fb.control({ disabled, value }, validation);
     if(!['button', 'input', 'select'].includes(config.type)){
       config.customValueChg = (name: string, value: any) => { //for custom components
-        console.log('name/value: ', name, value)
         this.form.controls[name].setValue(value, {emitEvent: true})
         if((config.customValidator != undefined) && !config.customValidator(value)){
           console.log('ERR name: ', value)
@@ -105,14 +108,24 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       }
       if(config.type == 'lookup'){
         this.value[config.name] = config.value
-        console.log('lu config val: ',config.value)
+      }
+      if(config.type == 'filepick' && this.formAction == 1){ //only on insert!!
+        this.waitOnUpload = true
+        this.us.pushUpload(config.customFile).subscribe(url => {
+          this.waitOnUpload = false
+          this.us.progress = 0
+          this.value[config.name] = url
+          this.submit.emit({response: action, value: this.value})
+        })
       }
       if(config.type == 'input' && config.inputValueTransform != undefined){
         this.value[config.name] = config.inputValueTransform(config.value)
       }
     })
-    console.log('form: ', {response: action, value: this.value})
-    this.submit.emit({response: action, value: this.value});  
+    if(!this.waitOnUpload){
+      console.log('form: ', {response: action, value: this.value})
+      this.submit.emit({response: action, value: this.value});    
+    }
   }
 
   setDisabled(name: string, disable: boolean) {

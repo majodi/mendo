@@ -27,4 +27,5 @@ export interface FieldConfig {
   customLookupFld?: lookupFld
   customLookupComponent?: Type<any>
   customLookupItem?: LookupItem
+  customFile?: File
 }
