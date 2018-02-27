@@ -6,6 +6,7 @@ export interface ColumnDefenition {
     filter?: boolean;
     icon?: string;
     iconSelect?: Function;
+    imageSelect?: Function;
     flex?: string;
     format?: Function;
 }

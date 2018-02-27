@@ -8,6 +8,7 @@ import { CategoryService } from './tenants/categories/category.service';
 import { OrganisationService } from './tenants/organisations/organisation.service';
 import { EmployeeService } from './tenants/organisations/employees/employee.service';
 import { ImageService } from './tenants/images/image.service';
+import { SettingService } from './tenants/settings/setting.service';
 
 @NgModule({
   imports: [],
@@ -17,7 +18,8 @@ import { ImageService } from './tenants/images/image.service';
     CategoryService,
     OrganisationService,
     EmployeeService,
-    ImageService
+    ImageService,
+    SettingService
   ],
 })
 export class EntityServicesModule { }

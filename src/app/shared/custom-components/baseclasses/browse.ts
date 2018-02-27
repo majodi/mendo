@@ -101,8 +101,15 @@ export class BrwBaseClass<T> {
 
   clicked(brwClick: {fld: string, rec: {}}) {
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
-    if(!['insert','selection','select'].includes(brwClick.fld)){
-      this.db.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath).catch(err => console.log(err))
+    // if(!['insert','selection','select'].includes(brwClick.fld)){
+    if(!['insert','selection'].includes(brwClick.fld)){
+      if(this.selectMode){
+        this.gs.entityId[this.entitySrv.entityName] = rec['id']
+        this.selected.emit(brwClick)
+        this.dialogRef.close(rec)
+      } else {
+        this.db.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath).catch(err => console.log(err))
+      }
       return
     }    
     if(brwClick.fld == 'insert'){
@@ -111,6 +118,7 @@ export class BrwBaseClass<T> {
       return
     }
     if(brwClick.fld == 'selection'){
+      this.selectionFieldConfig.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
       this.ps.formDialog(0, this.selectionFieldConfig, rec).then((frmResult: {response: string, value: {}}) => {
         if(frmResult && (frmResult.response == 'save')){
           let addQs: QueryItem[] = []
@@ -128,11 +136,11 @@ export class BrwBaseClass<T> {
       })
       return
     }
-    if(brwClick.fld == 'select'){
-      this.gs.entityId[this.entitySrv.entityName] = rec['id']
-      this.selected.emit(brwClick)
-      this.dialogRef.close(rec)
-    }
+    // if(brwClick.fld == 'select'){
+    //   this.gs.entityId[this.entitySrv.entityName] = rec['id']
+    //   this.selected.emit(brwClick)
+    //   this.dialogRef.close(rec)
+    // }
   }
 
   ngOnDestroy() {

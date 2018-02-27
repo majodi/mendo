@@ -20,7 +20,7 @@ export class EntityBaseClass {
       let query : firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
       if (queries){
         queries.forEach(q => {
-          if (q.value) { query = query.where(q.fld, q.operator, q.value) };          
+          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
         })
       }
       return query;

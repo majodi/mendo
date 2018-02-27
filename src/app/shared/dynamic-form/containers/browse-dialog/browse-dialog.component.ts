@@ -24,7 +24,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     ) {}
 
     closeMe() {
-      this.dialogRef.close('ladida')
+      this.dialogRef.close()
     }
 
     ngAfterViewInit() {

@@ -6,8 +6,11 @@ import { Observable } from 'rxjs/Rx';
 import { EntityMeta } from '../models/entity-meta.model';
 import { AuthService } from './auth.service'; ///// hoeft niet meer met gs = globalSettings service
 import { PopupService } from './popup.service';
+import { UploadService } from './upload.service';
+import { GlobService } from './glob.service';
 import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
 import { DocumentData } from '@firebase/firestore-types';
+import { Setting } from '../entities/tenants/settings/setting.model';
 
 @Injectable()
 export class DbService {
@@ -15,7 +18,9 @@ export class DbService {
   constructor(
     private db: AngularFirestore,
     private as: AuthService,
-    private ps: PopupService
+    private ps: PopupService,
+    private us: UploadService,
+    private gs: GlobService,
   ) { }
 
   getMeta(): EntityMeta {
@@ -30,6 +35,7 @@ export class DbService {
   }
 
   insertDialog(config, rec, path) {
+    config.forEach(config => this.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
     return this.ps.formDialog(1, config, rec).then((frmResult: {response: string, value: {}}) => {
       if(frmResult && (frmResult.response == 'save')){
         return this.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))
@@ -38,12 +44,14 @@ export class DbService {
   }
 
   changeDeleteDialog(config, rec, path) {
+    config.forEach(config => this.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
     return this.ps.formDialog(2, config, rec).then((frmResult: {response: string, value: {}}) => {
       if(frmResult && (frmResult.response == 'save')){
         return this.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
       }
       if(frmResult && (frmResult.response == 'delete')){
-        return this.deleteDoc(`tenants/${rec['id']}`)//.catch(err => console.log(err))
+        this.us.deleteUpload(rec['name'])
+        return this.deleteDoc(`${path}/${rec['id']}`)//.catch(err => console.log(err))
       }
     })
   }
@@ -63,6 +71,15 @@ export class DbService {
       }
     })
     return nestedRec
+  }
+
+  getSetting(code: string | string[]): Observable<string> {
+    if(code && (typeof code == 'string') && (code.indexOf('SETTINGS:') != -1)){
+      code = code.split(':')[1]
+      if(code){
+        return this.getUniqueValueId(this.gs.entityBasePath+'/settings', 'code', code).map((rec: Setting) => rec.setting)
+      } else return Observable.of(null)
+    } else return Observable.of(null)
   }
 
   addDoc(data, collection: string) {

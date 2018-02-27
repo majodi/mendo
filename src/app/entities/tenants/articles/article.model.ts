@@ -34,7 +34,7 @@ export const defaultFormConfig = [
     {type: 'input',    label: 'Omschrijving kort', name: 'description_s', placeholder: 'Omschrijving kort', value: '', validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input',    label: 'Omschrijving lang', name: 'description_l', placeholder: 'Omschrijving lang', value: ''},
     {type: 'pulldown', label: 'Categorie',         name: 'category',      placeholder: 'Categorie',         value: '', customLookupFld: {path: 'categories', tbl: 'category', fld: 'code'}},
-    {type: 'input',    label: 'Afbeelding',        name: 'image',         placeholder: 'Afbeelding',        value: ''},
+    {type: 'lookup',   label: 'Afbeelding',        name: 'image',         placeholder: 'Afbeelding',        value: '', customLookupFld: {path: 'images', tbl: 'image', fld: 'code'}},
     {type: 'pulldown', label: 'Maten',             name: 'measurements',  placeholder: 'Maten',             value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}},
     {type: 'pulldown', label: 'Kleuren',           name: 'colors',        placeholder: 'Kleuren',           value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}},
     {type: 'input',    label: 'Prijs',             name: 'price',         placeholder: 'Prijs',             value: '', validation: [Validators.required]},

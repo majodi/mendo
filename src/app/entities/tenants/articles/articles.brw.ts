@@ -5,6 +5,7 @@ import { Article, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConf
 import { ArticleService } from './article.service';
 import { CategoryService } from '../categories/category.service';
 import { PropertyService } from '../properties/property.service';
+import { ImagesBrwComponent } from '../images/images.brw';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
@@ -32,6 +33,7 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields
+    super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')
     super.setPulldownItems(this.categorySrv.initEntity$(), 'category', 'code', 'description')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'measurements', 'code', 'choices')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'colors', 'code', 'choices')

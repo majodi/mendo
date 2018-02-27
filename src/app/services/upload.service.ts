@@ -17,15 +17,17 @@ export class UploadService {
     }
 
     deleteUpload(url) {
-      this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)).delete()
-      this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)+'_64_thumb.png').delete()
+      this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)).delete().catch(e => console.log('delete error: ', e))
+      this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)+'_64_thumb.png').delete().catch(e => console.log('delete error: ', e))
     }
 
     getThumbUrl(url) {
-      this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)+'_64_thumb.png').getDownloadURL()
+      //let op: observable!!
+      return this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)+'_64_thumb.png').getDownloadURL()
     }
     
-    getFilePath(url, root) {
+    getFilePath(url, root?) {
+      if(root == undefined) {root = `${this.gs.entityBasePath}/`}
       let fullPath = decodeURIComponent(url).split('?')[0]
       let pathFromRoot = fullPath.slice(fullPath.indexOf(root))
       return pathFromRoot

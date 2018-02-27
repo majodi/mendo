@@ -35,7 +35,7 @@ export class PopupService {
 
     BrowseDialog(brwComponent: Type<any>) {
       let dialogRef = this.dialog.open(brwComponent, {
-        width: '800px',
+        width: '1000px',
         data: {}
       });
       dialogRef.componentInstance.select = true

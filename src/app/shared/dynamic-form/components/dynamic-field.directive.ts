@@ -33,6 +33,9 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
   @Input()
   group: FormGroup;
 
+  @Input()
+  formAction: number;
+
   component: ComponentRef<Field>;
 
   constructor(
@@ -55,7 +58,9 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
         Supported types: ${supportedTypes}`
       );
     }
-    const component = this.resolver.resolveComponentFactory<Field>(components[this.config.type]);
+    // let ctrlType: string = !(this.formAction == 0 && this.config.type == 'chiplist') ? this.config.type : 'select'
+    let ctrlType: string = this.config.type
+    const component = this.resolver.resolveComponentFactory<Field>(components[ctrlType]);
     this.component = this.container.createComponent(component);
     this.component.instance.config = this.config;
     this.component.instance.group = this.group;

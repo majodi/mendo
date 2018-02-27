@@ -18,8 +18,10 @@ import { FieldConfig } from '../../models/field-config.interface';
         *ngFor="let field of config;"
         dynamicField
         [config]="field"
-        [group]="form">
+        [group]="form"
+        [formAction]="formAction">
       </ng-container>
+      <mat-hint *ngIf="info" align="end" style="color:red">{{info}}</mat-hint>
       <mat-progress-bar *ngIf="us.progress > 0" mode="determinate" [value]="us.progress"></mat-progress-bar>
       <div [ngSwitch]="deleteState">
         <mat-dialog-actions *ngSwitchCase="false">
@@ -45,6 +47,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   form: FormGroup;
   deleteState = false
   waitOnUpload = false
+  info = ''
 
   get controls() { return this.config.filter(({type}) => type !== 'button'); }
   get changes() { return this.form.valueChanges; }
@@ -54,6 +57,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   constructor(private fb: FormBuilder, private us: UploadService) {}
 
   ngOnInit() {
+    this.info = ''
     this.form = this.createGroup();
   }
 
@@ -87,6 +91,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     const newCtrl = this.fb.control({ disabled, value }, validation);
     if(!['button', 'input', 'select'].includes(config.type)){
       config.customValueChg = (name: string, value: any) => { //for custom components
+        this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
         this.form.controls[name].setValue(value, {emitEvent: true})
         if((config.customValidator != undefined) && !config.customValidator(value)){
           console.log('ERR name: ', value)
@@ -103,10 +108,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       event.stopPropagation();  
     }
     this.config.forEach(config => {
-      if(config.type == 'pulldown'){
-        this.value[config.name] = config.value
-      }
-      if(config.type == 'lookup'){
+      if(['chiplist', 'lookup', 'pulldown'].includes(config.type)){
         this.value[config.name] = config.value
       }
       if(config.type == 'filepick' && this.formAction == 1){ //only on insert!!
@@ -123,7 +125,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       }
     })
     if(!this.waitOnUpload){
-      console.log('form: ', {response: action, value: this.value})
       this.submit.emit({response: action, value: this.value});    
     }
   }

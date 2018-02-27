@@ -1,23 +1,23 @@
-import { Component, OnInit, OnDestroy, Injector, Inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
 
 import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
-import { Image, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig, defaultSelectionFields } from './image.model'
-import { ImageService } from './image.service';
+import { Setting, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './setting.model'
+import { SettingService } from './setting.service';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
-  selector: 'app-images-brw',
+  selector: 'app-settings-brw',
   template: defaultTableTemplate,
   styles: [``]
 })
-export class ImagesBrwComponent extends BrwBaseClass<Image[]> implements OnInit, OnDestroy {
+export class SettingsBrwComponent extends BrwBaseClass<Setting[]> implements OnInit, OnDestroy {
 
   constructor(
     public dialogRef: MatDialogRef<any>,
     private injectorService: Injector,
-    private entityService: ImageService,
+    private entityService: SettingService,
   ) {
     super(dialogRef, entityService, injectorService);
   }
@@ -27,7 +27,6 @@ export class ImagesBrwComponent extends BrwBaseClass<Image[]> implements OnInit,
     this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    this.selectionFields = defaultSelectionFields
     super.ngOnInit() //volgorde van belang!
   }
 
