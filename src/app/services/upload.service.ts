@@ -26,6 +26,11 @@ export class UploadService {
       return this.afStorage.storage.ref().child(this.getFilePath(url, `${this.gs.entityBasePath}/`)+'_64_thumb.png').getDownloadURL()
     }
     
+    getThumb(url) {
+      let filepath = this.getFilePath(url)
+      return this.gs.storageBasePath + filepath + '_64_thumb.png'
+    }
+  
     getFilePath(url, root?) {
       if(root == undefined) {root = `${this.gs.entityBasePath}/`}
       let fullPath = decodeURIComponent(url).split('?')[0]

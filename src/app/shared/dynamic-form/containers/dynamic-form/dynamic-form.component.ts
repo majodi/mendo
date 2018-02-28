@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { UploadService } from '../../../../services/upload.service';
+import { GlobService } from '../../../../services/glob.service';
+import { DbService } from '../../../../services/db.service';
 
 import { FieldConfig } from '../../models/field-config.interface';
 
@@ -49,12 +51,18 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   waitOnUpload = false
   info = ''
 
-  get controls() { return this.config.filter(({type}) => type !== 'button'); }
+  // get controls() { return this.config.filter(({type}) => type !== 'button'); }
+  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay'].includes(type)); }
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
 
-  constructor(private fb: FormBuilder, private us: UploadService) {}
+  constructor(
+    private fb: FormBuilder,
+    private us: UploadService,
+    private gs: GlobService,
+    private db: DbService,
+  ) {}
 
   ngOnInit() {
     this.info = ''
@@ -92,8 +100,16 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     if(!['button', 'input', 'select'].includes(config.type)){
       config.customValueChg = (name: string, value: any) => { //for custom components
         this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
-        this.form.controls[name].setValue(value, {emitEvent: true})
-        if((config.customValidator != undefined) && !config.customValidator(value)){
+        this.form.controls[name].setValue(config.type == 'lookup' ? value['id'] : value, {emitEvent: true})
+        if(config.customUpdateWithLookup){
+          if(this.form.controls[config.customUpdateWithLookup.fld]){ // display fields are excluded
+            this.form.controls[config.customUpdateWithLookup.fld].setValue(value[config.customUpdateWithLookup.lookupFld])
+          }
+          let configToUpdate = this.config.find((control) => control.name === config.customUpdateWithLookup.fld)
+          configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(value[config.customUpdateWithLookup.lookupFld]) : value[config.customUpdateWithLookup.lookupFld]
+          console.log('other field value: ', configToUpdate.value)
+        }
+        if((config.customValidator != undefined) && !config.customValidator(config.type == 'lookup' ? value['id'] : value)){
           console.log('ERR name: ', value)
           this.form.controls[name].setErrors({'invalid': true}, {emitEvent: true})
         }
@@ -145,7 +161,19 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   setValue(name: string, value: any) {
     if (this.form.controls[name]) {
       this.form.controls[name].setValue(value, {emitEvent: true})
-      this.config.find((control) => control.name === name).value = value
+    }
+    let thisFldConfig = this.config.find((control) => control.name === name)
+    if(thisFldConfig){
+      thisFldConfig.value = value
+      if(thisFldConfig.customUpdateWithLookup){
+        // "WithLookup" implies we get an id here and need the rec
+        this.db.getUniqueValueId(`${this.gs.entityBasePath}/${thisFldConfig.customLookupFld.path}`, 'id', value).subscribe(rec => {
+          if(rec){
+            let configToUpdate = this.config.find((control) => control.name === thisFldConfig.customUpdateWithLookup.fld)
+            configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(rec[thisFldConfig.customUpdateWithLookup.lookupFld]) : rec[thisFldConfig.customUpdateWithLookup.lookupFld]
+          }
+        })
+      }
     }
   }
 

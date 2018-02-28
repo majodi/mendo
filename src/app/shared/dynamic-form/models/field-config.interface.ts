@@ -9,6 +9,11 @@ export interface lookupFld {
   fld: string
 }
 
+export interface updateWithLookup {
+  fld: string,
+  lookupFld
+}
+
 export interface FieldConfig {
   disabled?: boolean,
   label?: string,
@@ -28,4 +33,5 @@ export interface FieldConfig {
   customLookupComponent?: Type<any>
   customLookupItem?: LookupItem
   customFile?: File
+  customUpdateWithLookup?: updateWithLookup
 }

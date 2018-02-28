@@ -66,7 +66,7 @@ export class LookupComponent {
           if(rec){
             displayValue = rec[this.lookupItemDef.display] + ' - ' + rec[this.lookupItemDef.subDisplay]
             this.setControlValue(rec.id, rec[this.lookupItemDef.display], rec[this.lookupItemDef.subDisplay])
-            this.itemChosen.emit(rec.id)  
+            this.itemChosen.emit(rec)
           }
         })
       } else {
@@ -104,7 +104,7 @@ export class LookupComponent {
     this.ps.BrowseDialog(this.lookupComponent).then(rec => {
       if(rec){
         this.setControlValue(rec['id'], rec[this.lookupItemDef.display], rec[this.lookupItemDef.subDisplay])
-        this.itemChosen.emit(rec.id)
+        this.itemChosen.emit(rec)
       }
     })
   }

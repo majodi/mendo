@@ -11,6 +11,7 @@ import { FieldConfig } from '../models/field-config.interface';
   <app-lookup
     ngDefaultControl
     [lookupComponent]="config.customLookupComponent"
+    [lookupPlaceholder]="config.placeholder"
     [collectionPath]="config.customLookupFld.path"
     [collectionFld]="config.customLookupFld.fld"
     [lookupItemDef]="config.customLookupItem"
@@ -26,9 +27,9 @@ export class FormLookupComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
 
-  valueChanged(value) {
-    this.config.customValueChg(this.config.name, value)
-    this.config.value = value
+  valueChanged(rec) {
+    this.config.customValueChg(this.config.name, rec)
+    this.config.value = rec.id
   }
 
 }

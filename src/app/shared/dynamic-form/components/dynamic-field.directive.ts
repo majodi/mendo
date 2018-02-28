@@ -7,6 +7,7 @@ import { FormSelectComponent } from './form-select.component';
 import { FormPulldownComponent } from './form-pulldown.component';
 import { FormLookupComponent } from './form-lookup.component';
 import { FormFilepickComponent } from './form-filepick.component';
+import { FormImagedisplayComponent } from './form-imagedisplay.component';
 
 import { FormChiplistComponent } from './form-chiplist.component';
 
@@ -21,6 +22,7 @@ const components: {[type: string]: Type<Field>} = {
   pulldown: FormPulldownComponent,
   lookup: FormLookupComponent,
   filepick: FormFilepickComponent,
+  imagedisplay: FormImagedisplayComponent,
 };
 
 @Directive({

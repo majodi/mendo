@@ -42,7 +42,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
               <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)">
                   <ng-container *ngIf="col.imageSelect; then image_tpl else noImage_tpl"></ng-container>
                       <ng-template #image_tpl>
-                          <img src="{{getThumb(col.imageSelect(rec))}}" onerror="this.onerror=null;this.src='assets/image.svg'" width="64">
+                          <img src="{{us.getThumb(col.imageSelect(rec))}}" onerror="this.onerror=null;this.src='assets/image.svg'" width="64">
                       </ng-template>
                       <ng-template #noImage_tpl>
                           <ng-container *ngIf="col.icon || col.iconSelect; then icon_tpl else field_tpl"></ng-container>
@@ -149,18 +149,15 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     }, obj || self)
   }
 
-  getThumb(url) {
-    //   debugger
-    let filepath = this.us.getFilePath(url)
-    return 'https://storage.cloud.google.com/mendo-app.appspot.com/' + filepath + '_64_thumb.png'
-  }
+//   getThumb(url) {
+//       return this.us.getThumb(url)
+//     // //   debugger
+//     // let filepath = this.us.getFilePath(url)
+//     // return 'https://storage.cloud.google.com/mendo-app.appspot.com/' + filepath + '_64_thumb.png'
+//   }
   
   click(fld, rec) {
-    // if(this.selectMode) {
-    //     this.clicked.emit({fld: 'select', rec:rec})
-    // } else {
-        this.clicked.emit({fld: fld, rec:rec})
-    // }
+    this.clicked.emit({fld: fld, rec:rec})
   }
 
   applyFilter(filterValue: string) {
