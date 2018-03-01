@@ -7,10 +7,11 @@ export interface Category {
     meta: EntityMeta;
     code: string;
     description: string;
+    image: string; // image
     measurements: string; // property
-    measurements_v: string; // virtual
+    // measurements_v: string; // virtual
     colors: string; // property
-    colors_v: string // virtual
+    // colors_v: string // virtual
 }
 
 export const defaultTitle = 'Categorieën'
@@ -20,9 +21,11 @@ export const defaultColDef = [
     {name: 'description', header: 'Omschrijving'},
   ]
 export const defaultFormConfig = [
-    {type: 'input',     label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input',     label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
-    {type: 'pulldown',  label: 'Std. Maten',    name: 'measurements', placeholder: 'Std. Maten',    value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}, validation: [Validators.required]},
-    {type: 'pulldown',  label: 'Std. Kleuren',  name: 'colors',       placeholder: 'Std. Kleuren',  value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}, validation: [Validators.required]},
+    {type: 'input',       label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input',       label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
+    {type: 'lookup',      label: 'Afbeelding',    name: 'image',        placeholder: 'Afbeelding',    value: '', customLookupFld: {path: 'images', tbl: 'image', fld: 'code'}, customUpdateWithLookup: {fld: 'imagedisplay', lookupFld: 'name'}},
+    {type: 'imagedisplay',label: 'Afbeelding',    name: 'imagedisplay', placeholder: 'Afbeelding',    value: ''},
+    {type: 'pulldown',    label: 'Std. Maten',    name: 'measurements', placeholder: 'Std. Maten',    value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}, validation: [Validators.required]},
+    {type: 'pulldown',    label: 'Std. Kleuren',  name: 'colors',       placeholder: 'Std. Kleuren',  value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}, validation: [Validators.required]},
   ]
 

@@ -14,7 +14,7 @@ export interface Image {
 export const defaultTitle = 'Afbeeldingen'
 export const defaultTitleIcon = 'image'
 export const defaultColDef = [
-    {name: 'name',        header: 'Img', sort: true, imageSelect: (rec) => rec.name},
+    {name: 'name',        header: 'Img', imageSelect: (rec) => rec.name},
     {name: 'code',        header: 'Code', sort: true},
     {name: 'description', header: 'Omschrijving'},
   ]

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule } from '@angular/material';
+import { MatGridListModule, MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule } from '@angular/material';
 
 import { ChiplistComponent } from './components/chiplist.component';
 import { PopupDialog } from './components/popupdialog.component';
 import { PulldownComponent } from './components/pulldown.component';
 import { TableComponent } from './components/table.component';
+import { GridComponent } from './components/grid.component';
 import { LookupComponent } from './components/lookup.component';
 import { FilepickComponent } from './components/filepick.component';
 
@@ -17,13 +18,14 @@ import { FilepickComponent } from './components/filepick.component';
     CommonModule,
     FormsModule, ReactiveFormsModule,
     FlexLayoutModule,
-    MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule,
+    MatGridListModule, MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule,
   ],
   declarations: [
     ChiplistComponent,
     PopupDialog,
     PulldownComponent,
     TableComponent,
+    GridComponent,
     LookupComponent,
     FilepickComponent,
   ],
@@ -32,6 +34,7 @@ import { FilepickComponent } from './components/filepick.component';
     PopupDialog,
     PulldownComponent,
     TableComponent,
+    GridComponent,
     LookupComponent,
     FilepickComponent,
   ],

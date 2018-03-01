@@ -18,6 +18,7 @@ import { AppComponent } from './app.component';
 import { EntityServicesModule } from './entities/entity.services.module';
 import { ServicesModule } from './services/services.module';
 import { AdminModule } from './admin.module';
+import { UserModule } from './user.module';
 
 import './rxjs-operators';
 
@@ -40,6 +41,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     ServicesModule,
     EntityServicesModule,
     AdminModule,
+    UserModule,
   ],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]

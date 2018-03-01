@@ -9,12 +9,9 @@ export interface Article {
     description_s: string;
     description_l: string;
     category: string; // category
-    // category_v: string; // virtual category code
-    image: string; // asset
+    image: string; // image
     measurements: string; // property
-    // measurements_v: string; // virtual property code
     colors: string; // property
-    // colors_v: string; // virtual property code
     price: number;
     unit: string;
 }

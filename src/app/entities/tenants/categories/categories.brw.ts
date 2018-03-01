@@ -6,6 +6,7 @@ import { Category, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormCon
 import { CategoryService } from './category.service';
 import { PropertyService } from '../properties/property.service';
 import { PropertiesBrwComponent } from '../properties/properties.brw';
+import { ImagesBrwComponent } from '../images/images.brw';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
 
@@ -30,7 +31,7 @@ export class CategoriesBrwComponent extends BrwBaseClass<Category[]> implements 
     this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    // super.setLookupComponent(PropertiesBrwComponent, 'measurements', 'code', 'choices')
+    super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'measurements', 'code', 'choices')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'colors', 'code', 'choices')
     super.ngOnInit() //volgorde van belang!

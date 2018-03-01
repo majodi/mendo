@@ -9,7 +9,10 @@ import { EmployeesBrwComponent } from './entities/tenants/organisations/employee
 import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 
+import { StoreComponent } from './entities/tenants/store/store';
+
 const routes: Routes = [
+  { path: 'store', component: StoreComponent },
   { path: 'tenants', component: TenantsBrwComponent },
   { path: 'categories', component: CategoriesBrwComponent },
   { path: 'properties', component: PropertiesBrwComponent },
