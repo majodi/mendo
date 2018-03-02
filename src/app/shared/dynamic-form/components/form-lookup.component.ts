@@ -18,6 +18,7 @@ import { FieldConfig } from '../models/field-config.interface';
     [isDisabled]="config.disabled"
     [formControlName]="config.name"
     [value]="config.value"
+    [inputTransform]="config.inputValueTransform"
     (itemChosen)="valueChanged($event)"
   ></app-lookup>
 </div>
@@ -31,5 +32,5 @@ export class FormLookupComponent implements Field {
     this.config.customValueChg(this.config.name, rec)
     this.config.value = rec.id
   }
-
+  
 }

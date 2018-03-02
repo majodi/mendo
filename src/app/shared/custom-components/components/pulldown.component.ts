@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { LookupItem } from '../models/lookup-item.model';
@@ -6,12 +6,13 @@ import { LookupItem } from '../models/lookup-item.model';
 import { Observable, Subject } from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/startWith';
+import { MatAutocompleteTrigger } from '@angular/material';
 
 @Component({
   selector: 'app-pulldown',
   template: `
   <mat-form-field style="width:100%">
-    <input (blur)="onChoice()" matInput [matAutocomplete]="auto" [formControl]="lookupCtrl" placeholder="{{lookupPlaceholder}}" [disabled]=isDisabled>
+    <input (blur)="onChoice()" (keyup.arrowdown)="openPanel()" matInput [matAutocomplete]="auto" [formControl]="lookupCtrl" placeholder="{{lookupPlaceholder}}" [disabled]=isDisabled>
     <mat-hint *ngIf="filteredLookupItems.length == 0" align="end" style="color:red">No match found</mat-hint>
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option *ngFor="let item of filteredLookupItems" [value]="item.display" (onSelectionChange)="onChoice(item.display)">
@@ -42,7 +43,7 @@ export class PulldownComponent {
           let x = '' + input, inputLower = x.toLowerCase()
           let searchLower = (item.display + item.subDisplay + item.addSearch).toLowerCase()
           return (searchLower.indexOf(inputLower) != -1)
-        })
+        })  
       }
       return Observable.of(input)
     }).subscribe()
@@ -60,13 +61,19 @@ export class PulldownComponent {
       this.itemChosen.emit('')      
     }
   }
-    
+
   ngOnChanges() {
     this.lookupCtrl.setValue(this.displayLookup(this.lookupItems.find((item: LookupItem) => {return item.id == this.value})))
   }
 
   displayLookup(item?: LookupItem): string | undefined {
     return item ? item.display : undefined
+  }
+
+  openPanel() {
+    if(!this.lookupCtrl.value){
+      this.filteredLookupItems = this.lookupItems
+    }
   }
 
 }

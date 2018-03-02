@@ -14,8 +14,8 @@ import { LookupItem } from '../models/lookup-item.model';
     <input
       matInput
       type="text"
-      [formControl]="lookupInputCtrl"
       (keyup)="onKeyUp($event)"
+      [formControl]="lookupInputCtrl"
       [placeholder]="lookupPlaceholder"
       [disabled]=isDisabled
     >
@@ -37,6 +37,7 @@ import { LookupItem } from '../models/lookup-item.model';
 })
 export class LookupComponent {
   @Input() value: string
+  @Input() inputTransform: Function
   @Input() lookupPlaceholder: string
   @Input() isDisabled = false;
   @Input() collectionPath: string;
@@ -97,7 +98,9 @@ export class LookupComponent {
   }
 
   onKeyUp(e) {
-    // let val = e.target.value
+    if(this.inputTransform != undefined){
+      this.lookupInputCtrl.setValue(this.inputTransform(e.target.value))
+    }
   }
 
   lookupButtonClick() {

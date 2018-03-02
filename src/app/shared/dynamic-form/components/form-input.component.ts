@@ -8,12 +8,24 @@ import { FieldConfig } from '../models/field-config.interface';
   selector: 'form-input',
   template: `
   <mat-form-field style="width:100%" [formGroup]="group">
+  <ng-container *ngIf="!config.inputLines; then input_tpl else textarea_tpl"></ng-container>
+  <ng-template #input_tpl>
     <input
       matInput
       type="text"
       (keyup)="onKeyUp($event)"
       [placeholder]="config.placeholder"
       [formControlName]="config.name">
+  </ng-template>
+  <ng-template #textarea_tpl>
+    <textarea
+      matInput
+      type="text"
+      [rows]="config.inputLines"
+      (keyup)="onKeyUp($event)"
+      [placeholder]="config.placeholder"
+      [formControlName]="config.name"></textarea>
+  </ng-template>
   </mat-form-field>
   `
 })
