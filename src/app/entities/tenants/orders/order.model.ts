@@ -8,4 +8,5 @@ export interface Order {
     date: Date;
     total: number;
     line_count: number;
+    status: string; // new, closed, processed, delivered, cancelled
 }

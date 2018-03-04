@@ -5,8 +5,8 @@ export interface OrderLine {
     meta: EntityMeta;
     order: string; // order
     article: string; // article
-    maat: string; // choice
-    kleur: string; // choice
+    size: string; // choice
+    color: string; // choice
     number: number;
     amount: number;
 }
