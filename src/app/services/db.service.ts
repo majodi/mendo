@@ -1,6 +1,7 @@
 import { Injectable, ElementRef } from '@angular/core';
 
 import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
+import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Rx';
 
 import { EntityMeta } from '../models/entity-meta.model';
@@ -44,6 +45,7 @@ export class DbService {
 
   addDoc(data, collection: string) {
     data.meta = this.getMeta()
+    console.log('data: ', data)
     return this.db.collection(collection).add(data)
   }
 
@@ -67,6 +69,17 @@ export class DbService {
     })
   }
 
+  getIncrementedCounter(counterName: string) {
+    let new_count = 0
+    const counterRef = firebase.firestore().doc(`${this.gs.entityBasePath}/settings/${counterName}`)
+    return firebase.firestore().runTransaction(t => {
+      return t.get(counterRef).then(doc => {
+          if(doc.exists){new_count = doc.data().count + 1}
+          t.set(counterRef, { count: new_count });
+      })
+    }).then(v => {return new_count})
+  }
+
   getUniqueValueId(collection: string, field: string, value: string) {
     if(value){
       if(field == 'id'){
@@ -88,5 +101,5 @@ export class DbService {
       }  
     } else return Observable.of(null)
   }
-  
+
 }

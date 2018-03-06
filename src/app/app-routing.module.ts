@@ -5,8 +5,9 @@ import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
 import { PropertiesBrwComponent } from './entities/tenants/properties/properties.brw';
 import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
 import { OrganisationsBrwComponent } from './entities/tenants/organisations/organisation.brw';
-import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employee.brw';
+import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
 import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
+import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 
 import { StoreComponent } from './entities/tenants/store/store';
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'organisations', component: OrganisationsBrwComponent },
   { path: 'employees', component: EmployeesBrwComponent },
   { path: 'images', component: ImagesBrwComponent },
+  { path: 'orders', component: OrdersBrwComponent },
   { path: 'settings', component: SettingsBrwComponent },
 ];
 

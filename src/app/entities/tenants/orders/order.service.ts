@@ -1,32 +1,22 @@
 import { Injectable } from '@angular/core';
 
 import { AngularFirestore } from 'angularfire2/firestore';
+import { Observable } from 'rxjs';
 
-import { Order } from './order.model';
 import { GlobService } from '../../../services/glob.service';
+import { EntityBaseClass } from '../../../shared/custom-components/baseclasses/entity';
+import { Order } from './order.model';
+
 
 @Injectable()
-export class OrderService {
+export class OrderService extends EntityBaseClass {
+  entityName = 'orders'
+  basePath = `${this.glob.entityBasePath}`
+  entityPath = `${this.basePath}/${this.entityName}`
 
   constructor(
-    private db: AngularFirestore,
+    private afService: AngularFirestore,
     private glob: GlobService
-  ) { }
-
-  initOrders$() {
-    return this.db.collection<Order>(`tenants/${this.glob.tenantId}/orders`)
-    .snapshotChanges()
-    .map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Order
-        const id = a.payload.doc.id
-        return { id, ...data }
-      })
-    })
-  }
-
-  nextOrderNumber() {
-      /////////////////todo!! met observer in sync houden ivm caching
-  }
+  ) {super(afService)}
 
 }

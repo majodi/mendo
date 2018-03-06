@@ -65,8 +65,8 @@ export class LookupComponent {
       if(this.lastFoundFld != x){
         this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.collectionPath}`, this.collectionFld, x).subscribe(rec => {
           if(rec){
-            displayValue = rec[this.lookupItemDef.display] + ' - ' + rec[this.lookupItemDef.subDisplay]
-            this.setControlValue(rec.id, rec[this.lookupItemDef.display], rec[this.lookupItemDef.subDisplay])
+            displayValue = this.objectValue(rec, this.lookupItemDef.display) + ' - ' + this.objectValue(rec, this.lookupItemDef.subDisplay)
+            this.setControlValue(rec.id, this.objectValue(rec, this.lookupItemDef.display), this.objectValue(rec, this.lookupItemDef.subDisplay))
             this.itemChosen.emit(rec)
           }
         })
@@ -84,7 +84,7 @@ export class LookupComponent {
     } else {
       this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.collectionPath}`, 'id', this.value).subscribe(rec => {
         if(rec){
-          this.setControlValue(this.value, rec[this.lookupItemDef.display], rec[this.lookupItemDef.subDisplay])
+          this.setControlValue(this.value, this.objectValue(rec, this.lookupItemDef.display), this.objectValue(rec, this.lookupItemDef.subDisplay))
         }
       })
     }
@@ -106,10 +106,18 @@ export class LookupComponent {
   lookupButtonClick() {
     this.ps.BrowseDialog(this.lookupComponent).then(rec => {
       if(rec){
-        this.setControlValue(rec['id'], rec[this.lookupItemDef.display], rec[this.lookupItemDef.subDisplay])
+        this.setControlValue(rec['id'], this.objectValue(rec, this.lookupItemDef.display), this.objectValue(rec, this.lookupItemDef.subDisplay))
         this.itemChosen.emit(rec)
       }
     })
+  }
+
+  objectValue(o, key) {
+    //also only two levels!!
+    let keys = key.split('.')
+    if(keys.length == 2) {
+      return o[keys[0]][keys[1]]
+    } else return o[key]
   }
 
 }

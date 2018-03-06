@@ -28,11 +28,11 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'input', label: 'Contact',       name: 'address.contact',      placeholder: 'Contact',       value: '', validation: [Validators.required]},
     {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''}
   ]
 //for selection button
 export const defaultSelectionFields = [
   {name: 'organisation'},
 ]
-  
+
+//     {type: 'input', label: 'Contact',       name: 'address.contact',      placeholder: 'Contact',       value: '', validation: [Validators.required]},

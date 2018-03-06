@@ -49,6 +49,7 @@ export class BrwBaseClass<T> {
   ngOnInit() {
     this.selectMode = this.select
     this.entitySrv.formConfig = this.formConfig
+    this.entitySrv.colDef = this.colDef
     this.initDataSource()
     this.setSelectionItems()
   }
@@ -117,7 +118,8 @@ export class BrwBaseClass<T> {
     }    
     if(brwClick.fld == 'insert'){
       this.formConfig.map(fld => fld.value = '')
-      this.insertDialog(this.formConfig, rec, this.entitySrv.entityPath).then(id => {}).catch(err => console.log(err))
+      this.isLoading = true
+      this.insertDialog(this.formConfig, rec, this.entitySrv.entityPath).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }
     if(brwClick.fld == 'selection'){
@@ -145,7 +147,14 @@ export class BrwBaseClass<T> {
     config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
     return this.ps.formDialog(1, config, rec).then((frmResult: {response: string, value: {}}) => {
       if(frmResult && (frmResult.response == 'save')){
-        return this.db.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))
+        let myPromise = new Promise<{}>(()=>{})
+        if(this['embed_beforeSave']){
+          myPromise = this['embed_beforeSave'](1, frmResult.value)
+        }
+        myPromise.then(() => {
+          console.log('frmresult: ', frmResult)
+          return this.db.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))  
+        })
       }
     })
   }
@@ -154,7 +163,13 @@ export class BrwBaseClass<T> {
     config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
     return this.ps.formDialog(2, config, rec).then((frmResult: {response: string, value: {}}) => {
       if(frmResult && (frmResult.response == 'save')){
-        return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
+        let myPromise = new Promise<{}>(()=>{})
+        if(this['embed_beforeSave']){
+          myPromise = this['embed_beforeSave'](2, frmResult.value)
+        }
+        myPromise.then(() => {
+          return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
+        })
       }
       if(frmResult && (frmResult.response == 'delete')){
         this.us.deleteUpload(rec['name'])

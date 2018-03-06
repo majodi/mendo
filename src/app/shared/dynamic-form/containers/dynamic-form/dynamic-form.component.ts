@@ -17,7 +17,7 @@ import { FieldConfig } from '../../models/field-config.interface';
       [formGroup]="form"
       (submit)="handleSubmit('save', $event)">
       <ng-container
-        *ngFor="let field of config;"
+        *ngFor="let field of toPopulate;"
         dynamicField
         [config]="field"
         [group]="form"
@@ -47,12 +47,13 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   @Input() formAction: number = 0;
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
+  toPopulate: FieldConfig[] = [];
   deleteState = false
   waitOnUpload = false
   info = ''
 
   // get controls() { return this.config.filter(({type}) => type !== 'button'); }
-  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay'].includes(type)); }
+  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)); }
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
@@ -66,10 +67,18 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     this.info = ''
+    if(this.formAction != 0){
+      this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
+    } else {this.toPopulate = this.config}
+    console.log('topopulate: ', this.toPopulate)
     this.form = this.createGroup();
   }
 
   ngOnChanges() {
+    if(this.formAction != 0){
+      this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
+    } else {this.toPopulate = this.config}
+    console.log('topopulate (chg): ', this.toPopulate)
     if (this.form) {
       const controls = Object.keys(this.form.controls);
       const configControls = this.controls.map((item) => item.name);
@@ -103,11 +112,12 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         this.form.controls[name].setValue(config.type == 'lookup' ? value['id'] : value, {emitEvent: true})
         if(config.customUpdateWithLookup){
           if(this.form.controls[config.customUpdateWithLookup.fld]){ // display fields are excluded
-            this.form.controls[config.customUpdateWithLookup.fld].setValue(value[config.customUpdateWithLookup.lookupFld])
+            this.form.controls[config.customUpdateWithLookup.fld].setValue(this.objectValue(value, config.customUpdateWithLookup.lookupFld))
           }
           let configToUpdate = this.config.find((control) => control.name === config.customUpdateWithLookup.fld)
-          configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(value[config.customUpdateWithLookup.lookupFld]) : value[config.customUpdateWithLookup.lookupFld]
-          console.log('other field value: ', configToUpdate.value)
+          if(configToUpdate){
+            configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(this.objectValue(value, config.customUpdateWithLookup.lookupFld)) : this.objectValue(value, config.customUpdateWithLookup.lookupFld)
+          }
         }
         if((config.customValidator != undefined) && !config.customValidator(config.type == 'lookup' ? value['id'] : value)){
           console.log('ERR name: ', value)
@@ -177,4 +187,12 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     }
   }
 
+  objectValue(o, key) {
+    //also only two levels!!
+    let keys = key.split('.')
+    if(keys.length == 2) {
+      return o[keys[0]][keys[1]]
+    } else return o[key]
+  }
+  
 }

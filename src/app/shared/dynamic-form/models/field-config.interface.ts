@@ -23,6 +23,8 @@ export interface FieldConfig {
   type: string,
   validation?: ValidatorFn[],
   value?: any,
+  doNotPopulate?: boolean,
+  initWithCounter?: string,
   buttonClick?: Function,
   inputValueTransform?: Function,
   inputLines?: number,

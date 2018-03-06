@@ -8,7 +8,7 @@ import { EntityBaseClass } from '../../../../shared/custom-components/baseclasse
 
 @Injectable()
 export class EmployeeService extends EntityBaseClass {
-  entityName = 'employee'
+  entityName = 'employees'
   basePath = `${this.glob.entityBasePath}`
   entityPath = `${this.basePath}/${this.entityName}`
 

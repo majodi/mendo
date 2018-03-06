@@ -4,12 +4,14 @@ import * as firebase from 'firebase/firestore';
 
 import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
 import { QueryItem } from './query-item.interface';
+import { ColumnDefenition } from '../models/column-defenition.model';
 
 export class EntityBaseClass {
   entityName: string  
   basePath: string
   entityPath: string
   formConfig: FieldConfig[]
+  colDef: ColumnDefenition[]
 
   constructor(
     private af: AngularFirestore,
@@ -34,7 +36,8 @@ export class EntityBaseClass {
       })
     })
     if(this.formConfig){
-      return this.formConfig.filter(c => c.customLookupFld != undefined).reduce((acc, val) => {
+      const virtualFields = this.colDef.map((item) => item.name);
+      return this.formConfig.filter(c => (c.customLookupFld != undefined) && (virtualFields.includes(c.name+'_v'))).reduce((acc, val) => {
         return acc.switchMap(actions => {
           let lookupDocObservables = actions.map((action) => {
             if(action[val.name]){
@@ -45,13 +48,21 @@ export class EntityBaseClass {
           })
           return lookupDocObservables.length === 0 ? Observable.of(actions) : Observable.combineLatest(...lookupDocObservables, (...lookupDocs) => {
             actions.forEach((action, index) => {
-              action[val.name+'_v'] = lookupDocs[index] != null ? lookupDocs[index][val.customLookupFld.fld] : ''
+              action[val.name+'_v'] = lookupDocs[index] != null ? this.objectValue(lookupDocs[index], val.customLookupFld.fld) : ''
             })
             return actions
           })      
         })
       }, entity$)  
     } else return entity$
+  }
+
+  objectValue(o, key) {
+    //also only two levels!!
+    let keys = key.split('.')
+    if(keys.length == 2) {
+      return o[keys[0]][keys[1]]
+    } else return o[key]
   }
 
 }
