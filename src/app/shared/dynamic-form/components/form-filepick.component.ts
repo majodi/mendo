@@ -17,6 +17,7 @@ import { FieldConfig } from '../models/field-config.interface';
 export class FormFilepickComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+  onValueChg: Function;
 
   filePicked(file) {
     this.config.customFile = file

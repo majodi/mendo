@@ -13,6 +13,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
       <dynamic-form
         [config]="data.fieldConfig"
         [formAction]="data.action"
+        [onValueChg]="data.onValueChg"
         #form="dynamicForm"
         (submit)="submit($event)">
       </dynamic-form>
@@ -33,7 +34,8 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     ngAfterViewInit() {
       let previousValid = this.form.valid;
       this.form.changes.subscribe(() => {
-        if(this.data.onValueChg != undefined){this.data.onValueChg(this.data)}
+        // console.log('hier doen?: ', this.form.value, this.form.config)
+        // if(this.data.onValueChg != undefined){this.data.onValueChg()}
         if (this.form.valid !== previousValid) {
           previousValid = this.form.valid;
           this.form.setDisabled('submit', !previousValid);

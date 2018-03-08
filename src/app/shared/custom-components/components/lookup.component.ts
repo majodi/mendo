@@ -44,6 +44,7 @@ export class LookupComponent {
   @Input() collectionFld: string;
   @Input() lookupComponent: Type<any>
   @Input() lookupItemDef: LookupItem
+  @Input() numeric: boolean
   @Output() itemChosen = new EventEmitter(); //emit on selected in table or on unique
   lookupInputCtrl: FormControl
   display = ''
@@ -63,7 +64,7 @@ export class LookupComponent {
     .switchMap((input: string) => {
       let x = '' + input, displayValue = ''
       if(this.lastFoundFld != x){
-        this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.collectionPath}`, this.collectionFld, x).subscribe(rec => {
+        this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.collectionPath}`, this.collectionFld, x, this.numeric ? true : undefined).subscribe(rec => {
           if(rec){
             displayValue = this.objectValue(rec, this.lookupItemDef.display) + ' - ' + this.objectValue(rec, this.lookupItemDef.subDisplay)
             this.setControlValue(rec.id, this.objectValue(rec, this.lookupItemDef.display), this.objectValue(rec, this.lookupItemDef.subDisplay))

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { TenantsBrwComponent } from './entities/tenants/tenants.brw';
 import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
@@ -20,6 +21,7 @@ import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
   imports: [
       CommonModule,
       SharedModule,
+      FlexLayoutModule,
       CustomComponentsModule,
       DynamicFormModule,
     ],

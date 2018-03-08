@@ -144,58 +144,6 @@ export class BrwBaseClass<T> {
       return
     }
   }
-
-  // insertDialog(config, rec, path) {
-  //   config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
-  //   return this.ps.formDialog(1, config, rec).then((frmResult: {response: string, value: {}}) => {
-  //     if(frmResult && (frmResult.response == 'save')){
-  //       let myPromise = new Promise<{}>(()=>{})
-  //       if(this['embed_beforeSave']){
-  //         myPromise = this['embed_beforeSave'](1, frmResult.value)
-  //       }
-  //       myPromise.then(() => {
-  //         console.log('frmresult: ', frmResult)
-  //         return this.db.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))  
-  //       })
-  //     }
-  //   })
-  // }
-
-  // changeDeleteDialog(config, rec, path) {
-  //   config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
-  //   return this.ps.formDialog(2, config, rec).then((frmResult: {response: string, value: {}}) => {
-  //     if(frmResult && (frmResult.response == 'save')){
-  //       let myPromise = new Promise<{}>(()=>{})
-  //       if(this['embed_beforeSave']){
-  //         myPromise = this['embed_beforeSave'](2, frmResult.value)
-  //       }
-  //       myPromise.then(() => {
-  //         return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
-  //       })
-  //     }
-  //     if(frmResult && (frmResult.response == 'delete')){
-  //       this.us.deleteUpload(rec['name'])
-  //       return this.db.deleteDoc(`${path}/${rec['id']}`)//.catch(err => console.log(err))
-  //     }
-  //   })
-  // }
-
-  // fixSubProperties(flatRec: {}) {
-  //   // set flat result back to proper DB record, only two levels!
-  //   let nestedRec = {}
-  //   Object.keys(flatRec).map((key)=>{
-  //     let dot = key.indexOf('.')
-  //     if(dot != -1){
-  //       let prefix = key.slice(0, dot)
-  //       let postfix = key.slice(dot+1)
-  //       nestedRec[prefix] = nestedRec[prefix] == undefined ? {} : nestedRec[prefix]
-  //       nestedRec[prefix][postfix] = flatRec[key]
-  //     } else {
-  //       nestedRec[key] = flatRec[key]
-  //     }
-  //   })
-  //   return nestedRec
-  // }
   
   ngOnDestroy() {
     this.ngUnsubscribe.next()

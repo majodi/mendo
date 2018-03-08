@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
   selector: 'form-stringdisplay',
   template: `
   <div>
-    <p class="mat-title">{{config.value}}</p>
+    <p class="mat-title">{{config.label}}: {{config.value}}</p>
     <br><br>
   </div>
   `
@@ -17,4 +17,5 @@ import { Observable } from 'rxjs';
 export class FormStringdisplayComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+  onValueChg: Function;
 }

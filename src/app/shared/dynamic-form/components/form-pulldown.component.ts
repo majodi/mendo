@@ -17,6 +17,7 @@ import { FieldConfig } from '../models/field-config.interface';
 export class FormPulldownComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+  onValueChg: Function;
 
   valueChanged(value) {
     this.config.customValueChg(this.config.name, value)

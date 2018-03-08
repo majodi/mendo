@@ -29,7 +29,7 @@ export const defaultFormConfig = [
         customLookupItem: {id: '', display: 'code', subDisplay: 'description_s', addSearch: 'description_l'},
         customUpdateWithLookup: {fld: 'price_unit', lookupFld: 'price'}
     },
-    {type: 'stringdisplay', label: 'Prijs',     name: 'price_unit', placeholder: 'Prijs per eenheid',  value: ''},
-    {type: 'input',         label: 'Aantal',    name: 'number',     placeholder: 'Aantal',  value: ''},
-    {type: 'stringdisplay', label: 'Bedrag',    name: 'amount',     placeholder: 'Bedrag',  value: ''},
+    {type: 'stringdisplay', label: 'Prijs',     name: 'price_unit', placeholder: 'Prijs per eenheid',  value: '0'},
+    {type: 'input',         label: 'Aantal',    name: 'number',     placeholder: 'Aantal',  value: '0'},
+    {type: 'stringdisplay', label: 'Bedrag',    name: 'amount',     placeholder: 'Bedrag',  value: '0'},
 ]

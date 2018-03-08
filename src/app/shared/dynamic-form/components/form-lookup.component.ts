@@ -27,6 +27,7 @@ import { FieldConfig } from '../models/field-config.interface';
 export class FormLookupComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+  onValueChg: Function;
 
   valueChanged(rec) {
     this.config.customValueChg(this.config.name, rec)

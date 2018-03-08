@@ -40,6 +40,9 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
   @Input()
   formAction: number;
 
+  @Input()
+  onValueChg: Function;
+
   component: ComponentRef<Field>;
 
   constructor(
@@ -51,6 +54,7 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
     if (this.component) {
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;
+      this.component.instance.onValueChg = this.onValueChg;
     }
   }
 
@@ -68,5 +72,6 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
     this.component = this.container.createComponent(component);
     this.component.instance.config = this.config;
     this.component.instance.group = this.group;
+    this.component.instance.onValueChg = this.onValueChg;
   }
 }

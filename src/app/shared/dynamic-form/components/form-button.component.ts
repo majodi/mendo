@@ -22,6 +22,7 @@ import { FieldConfig } from '../models/field-config.interface';
 export class FormButtonComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+  onValueChg: Function;
 
   buttonClick(e) {
     if(this.config.buttonClick != undefined){

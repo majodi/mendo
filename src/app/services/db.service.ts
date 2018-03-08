@@ -80,17 +80,23 @@ export class DbService {
     }).then(v => {return new_count})
   }
 
-  getUniqueValueId(collection: string, field: string, value: string) {
+  getUniqueValueId(collection: string, field: string, value: string, asNumber?: boolean) {
     if(value){
       if(field == 'id'){
         return this.db.doc(collection+'/'+value).snapshotChanges().map(rec => {
           return {id: value, ...rec.payload.data()}
         })
       } else {
-        const lsPart = value.slice(0,value.length-1)
-        const msPartASCII = value.charCodeAt(value.length-1)
-        const startAt = lsPart+String.fromCharCode(msPartASCII-1)
-        const endAt = lsPart+String.fromCharCode(msPartASCII+1)
+        let startAt, endAt
+        if(asNumber != undefined && asNumber == true){
+          startAt = Number(value)
+          endAt = Number(value)
+        } else {
+          const lsPart = value.slice(0,value.length-1)
+          const msPartASCII = value.charCodeAt(value.length-1)
+          startAt = lsPart+String.fromCharCode(msPartASCII-1)
+          endAt = lsPart+String.fromCharCode(msPartASCII+1)  
+        }
         return this.db.collection(collection, ref => ref
         .limit(2)
         .orderBy(field)

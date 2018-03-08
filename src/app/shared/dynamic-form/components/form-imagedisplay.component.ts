@@ -16,4 +16,5 @@ import { FieldConfig } from '../models/field-config.interface';
 export class FormImagedisplayComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
+  onValueChg: Function;
 }

@@ -21,7 +21,8 @@ import { FieldConfig } from '../../models/field-config.interface';
         dynamicField
         [config]="field"
         [group]="form"
-        [formAction]="formAction">
+        [formAction]="formAction"
+        [onValueChg]="onValueChg">
       </ng-container>
       <mat-hint *ngIf="info" align="end" style="color:red">{{info}}</mat-hint>
       <mat-progress-bar *ngIf="us.progress > 0" mode="determinate" [value]="us.progress"></mat-progress-bar>
@@ -45,6 +46,7 @@ import { FieldConfig } from '../../models/field-config.interface';
 export class DynamicFormComponent implements OnChanges, OnInit {
   @Input() config: FieldConfig[] = [];
   @Input() formAction: number = 0;
+  @Input() onValueChg: Function;
   @Output() submit: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
   toPopulate: FieldConfig[] = [];
@@ -52,7 +54,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   waitOnUpload = false
   info = ''
 
-  // get controls() { return this.config.filter(({type}) => type !== 'button'); }
   get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)); }
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
@@ -107,16 +108,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     if(!['button', 'input', 'select'].includes(config.type)){
       config.customValueChg = (name: string, value: any) => { //for custom components
         this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
-        this.form.controls[name].setValue(config.type == 'lookup' ? value['id'] : value, {emitEvent: true})
-        if(config.customUpdateWithLookup){
-          if(this.form.controls[config.customUpdateWithLookup.fld]){ // display fields are excluded
-            this.form.controls[config.customUpdateWithLookup.fld].setValue(this.objectValue(value, config.customUpdateWithLookup.lookupFld))
-          }
-          let configToUpdate = this.config.find((control) => control.name === config.customUpdateWithLookup.fld)
-          if(configToUpdate){
-            configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(this.objectValue(value, config.customUpdateWithLookup.lookupFld)) : this.objectValue(value, config.customUpdateWithLookup.lookupFld)
-          }
-        }
+        this.setFormValue(name, config.type == 'lookup' ? value['id'] : value)
         if((config.customValidator != undefined) && !config.customValidator(config.type == 'lookup' ? value['id'] : value)){
           console.log('ERR name: ', value)
           this.form.controls[name].setErrors({'invalid': true}, {emitEvent: true})
@@ -166,21 +158,30 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     });
   }
 
-  setValue(name: string, value: any) {
-    if (this.form.controls[name]) {
+  setValue(name: string, value: any) { //used by caller
+    this.setFormValue(name, value)
+  }
+
+  setFormValue(name, value) {
+    if(this.form.controls[name]){
       this.form.controls[name].setValue(value, {emitEvent: true})
     }
-    let thisFldConfig = this.config.find((control) => control.name === name)
-    if(thisFldConfig){
-      thisFldConfig.value = value
-      if(thisFldConfig.customUpdateWithLookup){
-        // "WithLookup" implies we get an id here and need the rec
-        this.db.getUniqueValueId(`${this.gs.entityBasePath}/${thisFldConfig.customLookupFld.path}`, 'id', value).subscribe(rec => {
-          if(rec){
-            let configToUpdate = this.config.find((control) => control.name === thisFldConfig.customUpdateWithLookup.fld)
-            configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(rec[thisFldConfig.customUpdateWithLookup.lookupFld]) : rec[thisFldConfig.customUpdateWithLookup.lookupFld]
-          }
-        })
+    let configIndex = this.config.findIndex(c => c.name == name)
+    if(configIndex != -1){
+      this.config[configIndex].value = value
+      if(this.config[configIndex].customUpdateWithLookup){
+        let configToUpdate = this.config.find((control) => control.name === this.config[configIndex].customUpdateWithLookup.fld)
+        if(this.config[configIndex].type == 'lookup'){
+          this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
+            if(rec){
+              configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(rec[this.config[configIndex].customUpdateWithLookup.lookupFld]) : rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
+              this.onValueChg(this.config)
+            }
+          })          
+        } else {
+          configToUpdate.value = value
+          this.onValueChg(this.config)
+        }
       }
     }
   }
