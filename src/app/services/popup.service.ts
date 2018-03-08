@@ -1,4 +1,4 @@
-import { Component, Injectable, Type } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
@@ -22,10 +22,10 @@ export class PopupService {
       });
     }
 
-    formDialog(action: number, fieldConfig: FieldConfig[], formRecord: {}) {
+    formDialog(action: number, fieldConfig: FieldConfig[], formRecord: {}, onValueChg?: Function) {
       let dialogRef = this.dialog.open(FormDialogComponent, {
         width: '800px',
-        data: { action: action, fieldConfig: fieldConfig, formRecord: formRecord}
+        data: { action: action, fieldConfig: fieldConfig, formRecord: formRecord, onValueChg: onValueChg}
       });
 
       return dialogRef.afterClosed().toPromise().then(result => {

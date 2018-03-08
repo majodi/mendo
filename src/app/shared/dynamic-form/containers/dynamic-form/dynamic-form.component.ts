@@ -70,7 +70,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     if(this.formAction != 0){
       this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
     } else {this.toPopulate = this.config}
-    console.log('topopulate: ', this.toPopulate)
     this.form = this.createGroup();
   }
 
@@ -78,7 +77,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     if(this.formAction != 0){
       this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
     } else {this.toPopulate = this.config}
-    console.log('topopulate (chg): ', this.toPopulate)
     if (this.form) {
       const controls = Object.keys(this.form.controls);
       const configControls = this.controls.map((item) => item.name);
@@ -134,7 +132,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       event.stopPropagation();  
     }
     this.config.forEach(config => {
-      if(['chiplist', 'lookup', 'pulldown'].includes(config.type)){
+      if(['chiplist', 'lookup', 'pulldown', 'stringdisplay'].includes(config.type)){
         this.value[config.name] = config.value
       }
       if(config.type == 'filepick' && this.formAction == 1){ //only on insert!!

@@ -10,6 +10,7 @@ import { OrganisationsBrwComponent } from '../organisations/organisation.brw';
 
 import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 
 @Component({
   selector: 'app-orders-brw',
@@ -17,6 +18,20 @@ import { MatDialogRef } from '@angular/material';
   styles: [``]
 })
 export class OrdersBrwComponent extends BrwBaseClass<Order[]> implements OnInit, OnDestroy {
+  embeds: Embed[] = [
+    {type: 'beforeSave', code: (action, o) => {
+      if(action == 1 || action == 2){
+        return this.db.getDoc(`${this.gs.entityBasePath}/employees/${o['employee']}`).then(employee => {
+          o['organisation'] = employee['organisation']
+          if(action == 1){
+            return this.db.getIncrementedCounter('orderNumber').then(number => {
+              o['number'] = number
+            })  
+          } 
+        })
+      } else return new Promise<{}>(()=>{})  
+    }}
+  ]
 
   constructor(
     public dialogRef: MatDialogRef<any>,
@@ -36,19 +51,6 @@ export class OrdersBrwComponent extends BrwBaseClass<Order[]> implements OnInit,
     super.setLookupComponent(EmployeesBrwComponent, 'employee', 'address.name', 'address.city')
     super.setLookupComponent(OrganisationsBrwComponent, 'organisation', 'address.name', 'address.city')
     super.ngOnInit() //volgorde van belang!
-  }
-
-  embed_beforeSave(action, o) {
-    if(action == 1 || action == 2){
-      return this.db.getDoc(`${this.gs.entityBasePath}/employees/${o['employee']}`).then(employee => {
-        o['organisation'] = employee['organisation']
-        if(action == 1){
-          return this.db.getIncrementedCounter('orderNumber').then(number => {
-            o['number'] = number
-          })  
-        } 
-      })
-    } else return new Promise<{}>(()=>{})
   }
 
 }

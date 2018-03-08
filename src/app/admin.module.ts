@@ -9,6 +9,7 @@ import { OrganisationsBrwComponent } from './entities/tenants/organisations/orga
 import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
 import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
 import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
+import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 
 import { SharedModule } from './shared/shared.module';
@@ -31,6 +32,7 @@ import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
       EmployeesBrwComponent,
       ImagesBrwComponent,
       OrdersBrwComponent,
+      OrderLinesBrwComponent,
       SettingsBrwComponent,
     ],
   exports: [
@@ -42,6 +44,7 @@ import { DynamicFormModule } from './shared/dynamic-form/dynamic-form.module';
       EmployeesBrwComponent,
       ImagesBrwComponent,
       OrdersBrwComponent,
+      OrderLinesBrwComponent,
       SettingsBrwComponent,
     ],
 })

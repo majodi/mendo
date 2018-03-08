@@ -33,6 +33,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     ngAfterViewInit() {
       let previousValid = this.form.valid;
       this.form.changes.subscribe(() => {
+        if(this.data.onValueChg != undefined){this.data.onValueChg(this.data)}
         if (this.form.valid !== previousValid) {
           previousValid = this.form.valid;
           this.form.setDisabled('submit', !previousValid);

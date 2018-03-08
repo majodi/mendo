@@ -6,8 +6,6 @@ import { ArticleService } from '../articles/article.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { QueryItem } from '../../../shared/custom-components/baseclasses/query-item.interface';
 
-import { DbService } from '../../../services/db.service';
-
 @Component({
   selector: 'app-store',
   template: `
@@ -27,7 +25,6 @@ import { DbService } from '../../../services/db.service';
     [data]="articleData"
   ></app-grid>
   </div>
-  <button (click)="getIncCntr()">get inc cntr</button>
   `,
   styles: [``]
 })
@@ -40,8 +37,8 @@ export class StoreComponent implements OnInit, OnDestroy {
   constructor(
     private CategorySrv: CategoryService,
     private ArticleSrv: ArticleService,
-    private db: DbService,
   ) {
+    this.CategorySrv.colDef = []
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(categories => {
       this.categoryData = categories.map(category => {
@@ -52,6 +49,7 @@ export class StoreComponent implements OnInit, OnDestroy {
         }  
       })
     })
+    this.ArticleSrv.colDef = []
     this.ArticleSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.articleSelect.switchMap(id => {
       if(id){
@@ -74,10 +72,6 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {}
-
-  getIncCntr() {
-    this.db.getIncrementedCounter('orderNumber').then(v => console.log('v: ', v)).catch(e => console.log('e: ', e))
-  }
 
   onClickCategory(e) {
     this.articleSelect.next(e.id)

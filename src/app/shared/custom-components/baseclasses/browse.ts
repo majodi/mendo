@@ -11,6 +11,7 @@ import { DbService } from '../../../services/db.service';
 import { PopupService } from '../../../services/popup.service';
 import { GlobService } from '../../../services/glob.service';
 import { UploadService } from '../../../services/upload.service';
+import { CrudService } from '../../../services/crud.service';
 
 import { EntityService } from './entity-service.interface';
 
@@ -34,6 +35,7 @@ export class BrwBaseClass<T> {
   ps: PopupService
   gs: GlobService
   us: UploadService
+  cs: CrudService
 
   constructor(
     public dialogRef: MatDialogRef<any>,
@@ -44,6 +46,7 @@ export class BrwBaseClass<T> {
     this.ps = injectorSrv.get(PopupService)
     this.gs = injectorSrv.get(GlobService)
     this.us = injectorSrv.get(UploadService)
+    this.cs = injectorSrv.get(CrudService)
   }
 
   ngOnInit() {
@@ -105,21 +108,20 @@ export class BrwBaseClass<T> {
 
   clicked(brwClick: {fld: string, rec: {}}) {
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
-    // if(!['insert','selection','select'].includes(brwClick.fld)){
     if(!['insert','selection'].includes(brwClick.fld)){
       if(this.selectMode){
         this.gs.entityId[this.entitySrv.entityName] = rec['id']
         this.selected.emit(brwClick)
         this.dialogRef.close(rec)
       } else {
-        this.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath).catch(err => console.log(err))
+        this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
       }
       return
     }    
     if(brwClick.fld == 'insert'){
       this.formConfig.map(fld => fld.value = '')
       this.isLoading = true
-      this.insertDialog(this.formConfig, rec, this.entitySrv.entityPath).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
+      this.cs.insertDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }
     if(brwClick.fld == 'selection'){
@@ -143,57 +145,57 @@ export class BrwBaseClass<T> {
     }
   }
 
-  insertDialog(config, rec, path) {
-    config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
-    return this.ps.formDialog(1, config, rec).then((frmResult: {response: string, value: {}}) => {
-      if(frmResult && (frmResult.response == 'save')){
-        let myPromise = new Promise<{}>(()=>{})
-        if(this['embed_beforeSave']){
-          myPromise = this['embed_beforeSave'](1, frmResult.value)
-        }
-        myPromise.then(() => {
-          console.log('frmresult: ', frmResult)
-          return this.db.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))  
-        })
-      }
-    })
-  }
+  // insertDialog(config, rec, path) {
+  //   config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
+  //   return this.ps.formDialog(1, config, rec).then((frmResult: {response: string, value: {}}) => {
+  //     if(frmResult && (frmResult.response == 'save')){
+  //       let myPromise = new Promise<{}>(()=>{})
+  //       if(this['embed_beforeSave']){
+  //         myPromise = this['embed_beforeSave'](1, frmResult.value)
+  //       }
+  //       myPromise.then(() => {
+  //         console.log('frmresult: ', frmResult)
+  //         return this.db.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))  
+  //       })
+  //     }
+  //   })
+  // }
 
-  changeDeleteDialog(config, rec, path) {
-    config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
-    return this.ps.formDialog(2, config, rec).then((frmResult: {response: string, value: {}}) => {
-      if(frmResult && (frmResult.response == 'save')){
-        let myPromise = new Promise<{}>(()=>{})
-        if(this['embed_beforeSave']){
-          myPromise = this['embed_beforeSave'](2, frmResult.value)
-        }
-        myPromise.then(() => {
-          return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
-        })
-      }
-      if(frmResult && (frmResult.response == 'delete')){
-        this.us.deleteUpload(rec['name'])
-        return this.db.deleteDoc(`${path}/${rec['id']}`)//.catch(err => console.log(err))
-      }
-    })
-  }
+  // changeDeleteDialog(config, rec, path) {
+  //   config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
+  //   return this.ps.formDialog(2, config, rec).then((frmResult: {response: string, value: {}}) => {
+  //     if(frmResult && (frmResult.response == 'save')){
+  //       let myPromise = new Promise<{}>(()=>{})
+  //       if(this['embed_beforeSave']){
+  //         myPromise = this['embed_beforeSave'](2, frmResult.value)
+  //       }
+  //       myPromise.then(() => {
+  //         return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
+  //       })
+  //     }
+  //     if(frmResult && (frmResult.response == 'delete')){
+  //       this.us.deleteUpload(rec['name'])
+  //       return this.db.deleteDoc(`${path}/${rec['id']}`)//.catch(err => console.log(err))
+  //     }
+  //   })
+  // }
 
-  fixSubProperties(flatRec: {}) {
-    // set flat result back to proper DB record, only two levels!
-    let nestedRec = {}
-    Object.keys(flatRec).map((key)=>{
-      let dot = key.indexOf('.')
-      if(dot != -1){
-        let prefix = key.slice(0, dot)
-        let postfix = key.slice(dot+1)
-        nestedRec[prefix] = nestedRec[prefix] == undefined ? {} : nestedRec[prefix]
-        nestedRec[prefix][postfix] = flatRec[key]
-      } else {
-        nestedRec[key] = flatRec[key]
-      }
-    })
-    return nestedRec
-  }
+  // fixSubProperties(flatRec: {}) {
+  //   // set flat result back to proper DB record, only two levels!
+  //   let nestedRec = {}
+  //   Object.keys(flatRec).map((key)=>{
+  //     let dot = key.indexOf('.')
+  //     if(dot != -1){
+  //       let prefix = key.slice(0, dot)
+  //       let postfix = key.slice(dot+1)
+  //       nestedRec[prefix] = nestedRec[prefix] == undefined ? {} : nestedRec[prefix]
+  //       nestedRec[prefix][postfix] = flatRec[key]
+  //     } else {
+  //       nestedRec[key] = flatRec[key]
+  //     }
+  //   })
+  //   return nestedRec
+  // }
   
   ngOnDestroy() {
     this.ngUnsubscribe.next()
