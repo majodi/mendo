@@ -175,12 +175,12 @@ export class DynamicFormComponent implements OnChanges, OnInit {
           this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
             if(rec){
               configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(rec[this.config[configIndex].customUpdateWithLookup.lookupFld]) : rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
-              this.onValueChg(this.config)
+              if(this.onValueChg != undefined) this.onValueChg();
             }
           })          
         } else {
           configToUpdate.value = value
-          this.onValueChg(this.config)
+          if(this.onValueChg != undefined) this.onValueChg();
         }
       }
     }

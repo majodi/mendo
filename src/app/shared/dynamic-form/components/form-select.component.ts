@@ -24,7 +24,7 @@ export class FormSelectComponent implements Field {
 
   onBlur(e) { //select not included in customValueChg, so after blur
     this.config.value = e.target.value
-    this.onValueChg()
+    if(this.onValueChg != undefined) this.onValueChg();
   }
 
 }

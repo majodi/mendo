@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, trigger, transition, style, animate, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, trigger, transition, style, animate, ViewChild, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
@@ -30,12 +30,14 @@ import { ColumnDefenition } from '../models/column-defenition.model'
           <mat-form-field fxFlex="40">
               <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
           </mat-form-field>
+          <button mat-button fxFlexAlign="center" (click)="print()"><mat-icon>print</mat-icon></button>
           <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
-              <button class="lg-button" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
+              <button class="lg-button" *ngIf="insertButton" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
               <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon> Selectie</button>
           </div>
       </div>
       <!-- table -->
+      <div #printarea>
       <mat-table #table [dataSource]="dataSource" matSort style="max-height:50vh;">
           <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.name">
               <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> {{col.header}} </mat-header-cell>
@@ -65,6 +67,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
+      </div>
       <mat-spinner *ngIf="isLoading" style="margin:15vw" fxFlexAlign="center"></mat-spinner>
       </div>
   </mat-card>
@@ -77,16 +80,19 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   filterKeyUp = new Subject<string>()
   dataSource: MatTableDataSource<any>
   @ViewChild(MatSort) sort: MatSort
+  @ViewChild('printarea') private printAreaRef: ElementRef
 
   @Input() title: string
   @Input() titleIcon: string
   @Input() selectMode: boolean
   @Input() backRoute: string
   @Input() isLoading = true
+  @Input() insertButton = true
   @Input() selectionButton = false
   @Input() selectionActive = false
   @Input() data = []
   @Input() columnDefs: ColumnDefenition[] = []
+  @Input() parentPrintHeaderRef: ElementRef
   @Output() clicked = new EventEmitter();
   displayedColumns = []
   mediaIsXs: boolean
@@ -162,6 +168,44 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue
+  }
+
+  print() {
+    let printContents, popupWin;
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Mendo: ${this.title}</title>
+          <style type="text/css">
+          body{
+            font-family:Roboto,"Helvetica Neue",sans-serif;
+          }
+          .mat-sort-header-button{
+            width: 240px;
+            font-size: 24px;
+            padding-left: 0px;
+            margin-right: 1em;
+            margin-bottom: 1em;
+            text-align: left;
+          }
+          .mat-cell{
+            width: 250px;
+            word-break: break-all;
+            line-height: 1em;
+            margin-bottom: 1em;
+            margin-right: 1em;
+          }
+          .mat-icon-button{
+            display:none
+          }
+          </style>
+        </head>
+        <body onload="window.print();window.close()">${this.parentPrintHeaderRef != undefined ? this.parentPrintHeaderRef.nativeElement.innerHTML : ''}${this.printAreaRef.nativeElement.innerHTML}</body>
+      </html>`
+    );
+    popupWin.document.close();
   }
 
   ngOnDestroy() {

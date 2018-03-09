@@ -48,7 +48,7 @@ export class EntityBaseClass {
           })
           return lookupDocObservables.length === 0 ? Observable.of(actions) : Observable.combineLatest(...lookupDocObservables, (...lookupDocs) => {
             actions.forEach((action, index) => {
-              action[val.name+'_v'] = lookupDocs[index] != null ? this.objectValue(lookupDocs[index], val.customLookupFld.fld) : ''
+              action[val.name+'_v'] = lookupDocs[index] != null ? this.objectValue(lookupDocs[index], val.customLookupFld.overruleVirtual != undefined ? val.customLookupFld.overruleVirtual : val.customLookupFld.fld) : ''
             })
             return actions
           })      

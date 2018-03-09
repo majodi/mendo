@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 
 import { OrderLine, defaultColDef, defaultFormConfig, defaultTitle, defaultTitleIcon } from './orderline.model';
 import { OrderLineService } from './orderline.service';
@@ -33,10 +33,10 @@ import { GlobService } from '../../../services/glob.service';
           [numeric]="true"
           (itemChosen)="orderChoosen($event)"
         ></app-lookup>
+      </div>
+      <div #printheader fxFlex fxFlexAlign="end" class="boxed">
         <p class="mat-title">{{employeeRec?.address.name}}</p>
         <p class="mat-title">{{organisationRec?.address.name}}</p>
-      </div>
-      <div fxFlex fxFlexAlign="end" class="boxed">
         <p class="mat-title">Totaal: {{total}}</p>
       </div>
     </div>
@@ -46,6 +46,8 @@ import { GlobService } from '../../../services/glob.service';
       [columnDefs]=columnDef
       [data]=orderLineData
       [isLoading]=isLoading
+      [insertButton]="selectedOrder"
+      [parentPrintHeaderRef]="printHeaderRef"
       (clicked)="clicked($event)"
     ></app-table>
   </div>
@@ -68,6 +70,12 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
       if(price_unit && number){
         this.formConfig[this.formConfig.findIndex(c => c.name == 'amount')].value = (Number(price_unit) * Number(number)).toString()
       }
+    }},
+    {type: 'beforeSave', code: (action, o) => {
+      if(action == 1){
+        o['order'] = this.selectedOrder
+        return Promise.resolve()
+      } else return Promise.resolve()  
     }}
   ]
   orderLookup = {
@@ -79,6 +87,8 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   }
   employeeRec: Employee
   organisationRec: Organisation
+  selectedOrder: string
+  @ViewChild('printheader') private printHeaderRef: ElementRef
 
   constructor(
     private orderLineSrv: OrderLineService,
@@ -105,15 +115,14 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   orderChoosen(e) {
-    console.log('order choosen: ', e)
     this.db.getDoc(`${this.gs.entityBasePath}/employees/${e['employee']}`).then(rec => {
-      console.log('emp: ', rec)
       this.employeeRec = rec as Employee
     })
     this.db.getDoc(`${this.gs.entityBasePath}/organisations/${e['organisation']}`).then(rec => {
-      console.log('org: ', rec)
       this.organisationRec = rec as Organisation
     })
+    this.selectedOrder = e['id']
+    this.orderSelect.next(e['id'])
   }
 
   clicked(brwClick: {fld: string, rec: {}}) {
@@ -136,38 +145,3 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   }
 
 }
-
-
-// <div style="width:100%">
-// <br><br>
-// <div fxLayout="row" fxLayoutAlign="space-around start" >
-//   <div fxFlex style="border: 3px solid #3f51b5; border-radius: 5px; width:25%; padding: 10px">
-//     <br>
-//     <app-lookup
-//       ngDefaultControl
-//       [lookupComponent]="orderLookup.customLookupComponent"
-//       [lookupPlaceholder]="orderLookup.placeholder"
-//       [collectionPath]="orderLookup.customLookupFld.path"
-//       [collectionFld]="orderLookup.customLookupFld.fld"
-//       [lookupItemDef]="orderLookup.customLookupItem"
-//       [value]="orderLookup.value"
-//       [numeric]="true"
-//       (itemChosen)="orderChoosen($event)"
-//     ></app-lookup>
-//     <p class="mat-title">{{employeeRec?.address.name}}</p>
-//     <p class="mat-title">{{organisationRec?.address.name}}</p>
-//   </div>
-//   <div fxFlex style="border: 3px solid #3f51b5; border-radius: 5px; width:25%; padding: 10px">
-//     <br>
-//     <p class="mat-title">Totaal: {{total}}</p>
-//   </div>
-// </div>
-// <app-table
-//   [title]=title
-//   [titleIcon]=titleIcon
-//   [columnDefs]=columnDef
-//   [data]=orderLineData
-//   [isLoading]=isLoading
-//   (clicked)="clicked($event)"
-// ></app-table>
-// </div>

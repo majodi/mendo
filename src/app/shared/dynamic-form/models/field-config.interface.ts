@@ -6,7 +6,8 @@ import { ComponentType } from '@angular/core/src/render3';
 export interface lookupFld {
   path: string,
   tbl: string,
-  fld: string
+  fld: string,
+  overruleVirtual?: string  //normally fld will be used to set table/brw virtual, here an other field can be used (like an image...)
 }
 
 export interface updateWithLookup {
