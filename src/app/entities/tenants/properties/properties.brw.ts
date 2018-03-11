@@ -4,7 +4,7 @@ import { defaultTableTemplate } from '../../../shared/custom-components/models/t
 import { Property, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './property.model'
 import { PropertyService } from './property.service';
 
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 
 @Component({

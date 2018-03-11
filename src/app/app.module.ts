@@ -2,6 +2,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 import { MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
 
@@ -31,7 +32,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    HttpClientModule,
     MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
@@ -42,6 +43,7 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     EntityServicesModule,
     AdminModule,
     UserModule,
+    AppRoutingModule, // onderaan houden
   ],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]

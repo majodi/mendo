@@ -64,6 +64,7 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
 
   loadData() {
     this.tiles = this.data
+    // console.log('tiles: ', this.tiles)
   }
 
   onClick(e) {

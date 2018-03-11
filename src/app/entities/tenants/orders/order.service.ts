@@ -4,7 +4,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 
 import { GlobService } from '../../../services/glob.service';
-import { EntityBaseClass } from '../../../shared/custom-components/baseclasses/entity';
+import { EntityBaseClass } from '../../../baseclasses/entity';
 import { Order } from './order.model';
 
 

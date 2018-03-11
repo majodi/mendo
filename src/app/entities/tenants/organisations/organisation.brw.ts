@@ -4,7 +4,7 @@ import { defaultTableTemplate } from '../../../shared/custom-components/models/t
 import { Organisation, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './organisation.model'
 import { OrganisationService } from './organisation.service';
 
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 
 @Component({

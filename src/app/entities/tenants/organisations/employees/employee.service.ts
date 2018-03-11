@@ -4,7 +4,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 
 import { Employee } from './employee.model';
 import { GlobService } from '../../../../services/glob.service';
-import { EntityBaseClass } from '../../../../shared/custom-components/baseclasses/entity';
+import { EntityBaseClass } from '../../../../baseclasses/entity';
 
 @Injectable()
 export class EmployeeService extends EntityBaseClass {

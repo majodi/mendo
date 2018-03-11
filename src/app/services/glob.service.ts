@@ -12,7 +12,7 @@ export class GlobService {
     entityBasePath = `tenants/${this.tenantId}`
     storageBasePath = 'https://storage.cloud.google.com/mendo-app.appspot.com/'
     entityId = {}
-    actionMessage = {0:'Selectie', 1:'Toevoegen', 2:'Wijzigen', 3:'Verwijderen'}
+    actionMessage = {0:'Selectie', 1:'Toevoegen', 2:'Wijzigen', 3:'Verwijderen', 10:'Formulier'}
 
   constructor() {}
   

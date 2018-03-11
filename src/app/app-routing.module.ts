@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { HomePageComponent } from './homepage';
 import { TenantsBrwComponent } from './entities/tenants/tenants.brw';
+import { StoreComponent } from './entities/tenants/store/store';
 import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
 import { PropertiesBrwComponent } from './entities/tenants/properties/properties.brw';
 import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
@@ -11,11 +13,10 @@ import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 
-import { StoreComponent } from './entities/tenants/store/store';
-
 const routes: Routes = [
-  { path: 'store', component: StoreComponent },
+  { path: 'homepage', component: HomePageComponent },
   { path: 'tenants', component: TenantsBrwComponent },
+  { path: 'store', component: StoreComponent },
   { path: 'categories', component: CategoriesBrwComponent },
   { path: 'properties', component: PropertiesBrwComponent },
   { path: 'articles', component: ArticlesBrwComponent },
@@ -26,6 +27,8 @@ const routes: Routes = [
   { path: 'orders', component: OrdersBrwComponent },
   { path: 'orderlines', component: OrderLinesBrwComponent },
   { path: 'settings', component: SettingsBrwComponent },
+  { path: '', redirectTo: '/homepage', pathMatch: 'full' }, // onderaan houden
+  { path: '**', redirectTo: '/homepage' },                  // onderaan houden, kans geven een route te vinden in child routes
 ];
 
 @NgModule({

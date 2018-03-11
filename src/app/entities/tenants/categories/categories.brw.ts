@@ -8,7 +8,7 @@ import { PropertyService } from '../properties/property.service';
 import { PropertiesBrwComponent } from '../properties/properties.brw';
 import { ImagesBrwComponent } from '../images/images.brw';
 
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../baseclasses/browse';
 
 @Component({
   selector: 'app-categories-brw',

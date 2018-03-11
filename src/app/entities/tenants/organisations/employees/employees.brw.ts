@@ -5,7 +5,7 @@ import { Employee, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormCon
 import { EmployeeService } from './employee.service';
 import { OrganisationService } from '../organisation.service';
 
-import { BrwBaseClass } from '../../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 
 @Component({

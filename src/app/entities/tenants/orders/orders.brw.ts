@@ -8,7 +8,7 @@ import { EmployeeService } from '../organisations/employees/employee.service';
 import { EmployeesBrwComponent } from '../organisations/employees/employees.brw';
 import { OrganisationsBrwComponent } from '../organisations/organisation.brw';
 
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 

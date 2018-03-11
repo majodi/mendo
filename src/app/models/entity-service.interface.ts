@@ -1,5 +1,5 @@
-import { FieldConfig } from '../../dynamic-form/models/field-config.interface';
-import { ColumnDefenition } from '../models/column-defenition.model';
+import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
+import { ColumnDefenition } from '../shared/custom-components/models/column-defenition.model';
 
 export interface EntityService {
     entityName: string;

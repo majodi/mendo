@@ -17,6 +17,10 @@ export class AppComponent {
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
+  ngOnInit() {
+    
+  }
+
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }

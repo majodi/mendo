@@ -31,7 +31,7 @@ import { FieldConfig } from '../../models/field-config.interface';
           <button mat-button type="submit" color="primary" [disabled]="!form.valid || waitOnUpload">Bewaar</button>
           <button mat-button type="button" (click)="handleSubmit('cancel')" color="primary">Annuleer</button>
           <span class="spacer"></span>
-          <button mat-icon-button (click)="deleteState=true" color="primary" [disabled]="formAction==1">
+          <button mat-icon-button (click)="deleteState=true" color="primary" [disabled]="formAction==1 || formAction==10">
               <mat-icon aria-label="delete icon-button with a bin icon">delete</mat-icon>
           </button>
         </mat-dialog-actions>

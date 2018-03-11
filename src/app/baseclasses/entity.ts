@@ -2,9 +2,9 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/firestore';
 
-import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
-import { QueryItem } from './query-item.interface';
-import { ColumnDefenition } from '../models/column-defenition.model';
+import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
+import { QueryItem } from '../models/query-item.interface';
+import { ColumnDefenition } from '../shared/custom-components/models/column-defenition.model';
 
 export class EntityBaseClass {
   entityName: string  

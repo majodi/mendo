@@ -5,7 +5,7 @@ import { OrderLineService } from './orderline.service';
 import { CrudService } from '../../../services/crud.service';
 import { DbService } from '../../../services/db.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { QueryItem } from '../../../shared/custom-components/baseclasses/query-item.interface';
+import { QueryItem } from '../../../models/query-item.interface';
 import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
 import { OrdersBrwComponent } from '../orders/orders.brw';

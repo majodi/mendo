@@ -3,17 +3,17 @@ import { Observable, Subject } from 'rxjs';
 import { MatDialogRef } from '@angular/material';
 
 // import { LookupItem } from '../../../shared/custom-components/models/lookup-item.model';
-import { ColumnDefenition } from '../../../shared/custom-components/models/column-defenition.model'
-import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
-import { SelectionField } from '../../dynamic-form/models/selection-field.interface';
-import { QueryItem } from './query-item.interface';
-import { DbService } from '../../../services/db.service';
-import { PopupService } from '../../../services/popup.service';
-import { GlobService } from '../../../services/glob.service';
-import { UploadService } from '../../../services/upload.service';
-import { CrudService } from '../../../services/crud.service';
+import { ColumnDefenition } from '../shared/custom-components/models/column-defenition.model'
+import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
+import { SelectionField } from '../shared/dynamic-form/models/selection-field.interface';
+import { QueryItem } from '../models/query-item.interface';
+import { DbService } from '../services/db.service';
+import { PopupService } from '../services/popup.service';
+import { GlobService } from '../services/glob.service';
+import { UploadService } from '../services/upload.service';
+import { CrudService } from '../services/crud.service';
 
-import { EntityService } from './entity-service.interface';
+import { EntityService } from '../models/entity-service.interface';
 
 export class BrwBaseClass<T> {
   @Input() select: boolean

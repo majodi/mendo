@@ -4,7 +4,7 @@ import { Tile } from '../../../shared/custom-components/models/tile.model';
 import { CategoryService } from '../categories/category.service';
 import { ArticleService } from '../articles/article.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { QueryItem } from '../../../shared/custom-components/baseclasses/query-item.interface';
+import { QueryItem } from '../../../models/query-item.interface';
 
 @Component({
   selector: 'app-store',
@@ -38,7 +38,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     private CategorySrv: CategoryService,
     private ArticleSrv: ArticleService,
   ) {
-    this.CategorySrv.colDef = []
+    this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(categories => {
       this.categoryData = categories.map(category => {
@@ -49,7 +49,7 @@ export class StoreComponent implements OnInit, OnDestroy {
         }  
       })
     })
-    this.ArticleSrv.colDef = []
+    this.ArticleSrv.colDef = [{name: 'image_v'}]
     this.ArticleSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.articleSelect.switchMap(id => {
       if(id){

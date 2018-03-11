@@ -5,7 +5,7 @@ import { defaultTableTemplate } from '../../../shared/custom-components/models/t
 import { Image, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig, defaultSelectionFields } from './image.model'
 import { ImageService } from './image.service';
 
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../baseclasses/browse';
 
 @Component({
   selector: 'app-images-brw',

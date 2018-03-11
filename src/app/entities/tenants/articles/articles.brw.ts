@@ -7,7 +7,7 @@ import { CategoryService } from '../categories/category.service';
 import { PropertyService } from '../properties/property.service';
 import { ImagesBrwComponent } from '../images/images.brw';
 
-import { BrwBaseClass } from '../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 
 @Component({

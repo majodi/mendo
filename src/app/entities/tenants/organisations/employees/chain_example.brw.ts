@@ -4,7 +4,7 @@ import { defaultTableTemplate } from '../../../../shared/custom-components/model
 import { Employee, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './employee.model'
 import { EmployeeService } from './employee.service';
 
-import { BrwBaseClass } from '../../../../shared/custom-components/baseclasses/browse';
+import { BrwBaseClass } from '../../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
