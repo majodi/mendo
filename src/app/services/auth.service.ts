@@ -92,17 +92,6 @@ export class AuthService {
     this.afAuth.auth.signOut()
   }
   
-  getMeta(user): EntityMeta {
-    let now = new Date()
-    let meta = {
-      creator:  user.uid,
-      created:  user.metadata.creationTime || now.toISOString(),
-      modifier: user.uid,
-      modified: now.toISOString()
-    }
-    return meta    
-  }
-
   getDoc(path) {
     return new Promise((resolve, reject) => {
       this.afs.doc(path).snapshotChanges().subscribe(snap => {
@@ -119,28 +108,27 @@ export class AuthService {
   }
   
   updateUserData(user) {
+    let now = new Date()
     let userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     return this.getDoc(`users/${user.uid}`).then((existingUser: User) => {
-      let data: User = {
-        uid: user.uid,
-        meta: this.getMeta(user),
+      let data = {
+        meta: {modifier: user.uid, modified: now},
         email: user.email || '',
-        photoURL: user.photoURL || './assets/noavatar.png',
-        verified: user.emailVerified || false,
+        photoURL: user.photoURL || './assets/noavatar.svg',
+        verified: user.emailVerified != undefined ? user.emailVerified : false,
         displayName: user.displayName || 'Anonymous',
-        isAnonymous: user.isAnonymous || false,
-        level: existingUser.level || 0
+        isAnonymous: user.isAnonymous != undefined ? user.isAnonymous : true,
       }
       return userRef.set(data, { merge: true })
     }).catch(err => {
-      let data: User = {
+      let data = {
         uid: user.uid,
-        meta: this.getMeta(user),
+        meta: {creator: user.uid, created: now, modifier: user.uid, modified: now},
         email: user.email || '',
-        photoURL: user.photoURL || './assets/noavatar.png',
-        verified: user.emailVerified || false,
+        photoURL: user.photoURL || './assets/noavatar.svg',
+        verified: user.emailVerified != undefined ? user.emailVerified : false,
         displayName: user.displayName || 'Anonymous',
-        isAnonymous: user.isAnonymous || false,
+        isAnonymous: user.isAnonymous != undefined ? user.isAnonymous : true,
         level: 0
       }
       return userRef.set(data, { merge: true })

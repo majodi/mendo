@@ -1,10 +1,10 @@
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
+import { MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
 
 import { MediaMatcher } from '@angular/cdk/layout';
 
@@ -18,12 +18,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EntityServicesModule } from './entities/entity.services.module';
 import { ServicesModule } from './services/services.module';
-import { AdminModule } from './admin.module';
-import { UserModule } from './user.module';
+import { AppSuperModule } from './modules/app_super.module';
+import { AppTenantModule } from './modules/app_tenant.module';
+import { AppUserModule } from './modules/app_user.module';
+import { StoreTenantModule } from './modules/store/store_tenant.module';
+import { StoreUserModule } from './modules/store/store_user.module';
 
 import './rxjs-operators';
-
-import { CustomComponentsModule } from './shared/custom-components/custom-components.module';
 
 @NgModule({
   declarations: [
@@ -31,9 +32,9 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     HttpClientModule,
-    MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
+    BrowserAnimationsModule,
+    MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule,
@@ -41,8 +42,11 @@ import { CustomComponentsModule } from './shared/custom-components/custom-compon
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
     ServicesModule,
     EntityServicesModule,
-    AdminModule,
-    UserModule,
+    AppSuperModule,
+    AppTenantModule,
+    AppUserModule,
+    StoreTenantModule,
+    StoreUserModule,
     AppRoutingModule, // onderaan houden
   ],
   providers: [MediaMatcher],

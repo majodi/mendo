@@ -41,6 +41,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
   ],
   exports: [
     DynamicFormComponent,
+    CustomComponentsModule,
     FormDialogComponent,
   ],
   entryComponents: [

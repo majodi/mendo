@@ -12,6 +12,7 @@ import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
 import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
+import { LoginComponent } from './shared/authentication/login.component';
 
 const routes: Routes = [
   { path: 'homepage', component: HomePageComponent },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'orders', component: OrdersBrwComponent },
   { path: 'orderlines', component: OrderLinesBrwComponent },
   { path: 'settings', component: SettingsBrwComponent },
+  { path: 'login', component: LoginComponent },
   { path: '', redirectTo: '/homepage', pathMatch: 'full' }, // onderaan houden
   { path: '**', redirectTo: '/homepage' },                  // onderaan houden, kans geven een route te vinden in child routes
 ];
