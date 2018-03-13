@@ -60,7 +60,7 @@ export class AuthService {
     console.log('ANONYMOUS SIGN-IN')
     return this.afAuth.auth.signInAnonymously()
     .then(credential => {
-      return this.updateUserData({uid: credential.uid, email: '', photoURL: './assets/noavatar.png', isAnonymous: true})
+      return this.updateUserData({uid: credential.uid, email: '', photoURL: './assets/noavatar.svg', isAnonymous: true})
     })
   }
 
@@ -109,15 +109,18 @@ export class AuthService {
   
   updateUserData(user) {
     let now = new Date()
+    let noAvatar = user.isAnonymous ? './assets/noavatar.svg' : './assets/blancavatar.svg'
+    let noName = user.isAnonymous ? 'Annoniem' : 'Alleen Email bekend'
     let userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     return this.getDoc(`users/${user.uid}`).then((existingUser: User) => {
       let data = {
         meta: {modifier: user.uid, modified: now},
         email: user.email || '',
-        photoURL: user.photoURL || './assets/noavatar.svg',
+        photoURL: user.photoURL || noAvatar,
         verified: user.emailVerified != undefined ? user.emailVerified : false,
-        displayName: user.displayName || 'Anonymous',
+        displayName: user.displayName || noName,
         isAnonymous: user.isAnonymous != undefined ? user.isAnonymous : true,
+        providerLogin: user.providerData[0] != undefined && user.providerData[0]['providerId'] != 'password' ? true : false,
       }
       return userRef.set(data, { merge: true })
     }).catch(err => {
@@ -125,10 +128,11 @@ export class AuthService {
         uid: user.uid,
         meta: {creator: user.uid, created: now, modifier: user.uid, modified: now},
         email: user.email || '',
-        photoURL: user.photoURL || './assets/noavatar.svg',
+        photoURL: user.photoURL || noAvatar,
         verified: user.emailVerified != undefined ? user.emailVerified : false,
-        displayName: user.displayName || 'Anonymous',
+        displayName: user.displayName || noName,
         isAnonymous: user.isAnonymous != undefined ? user.isAnonymous : true,
+        providerLogin: user.providerData[0] != undefined && user.providerData[0]['providerId'] != 'password' ? true : false,
         level: 0
       }
       return userRef.set(data, { merge: true })

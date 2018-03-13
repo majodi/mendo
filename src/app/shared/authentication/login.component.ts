@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   button {display: block; margin: 10px;}
   img {display: block; margin: 0px auto 10px;}
   .spacer {-webkit-box-flex: 1; -ms-flex: 1 1 auto; flex: 1 1 auto;}
-`],
+  `],
   template: 
   `
   <div [@pageAnim] fxLayout="row" fxLayoutAlign="center center" style="margin-top:100px">
@@ -34,7 +34,7 @@ import { AuthService } from '../../services/auth.service';
           <span>Aanmelden Met Email</span>
         </div>
       </button>
-      <a mat-button routerLink="/signup">Nog geen account? <strong>Aanmaken.</strong></a>
+      <a mat-button routerLink="/sign-up">Nog geen account? <strong>Registreren.</strong></a>
     </div>
   </mat-card>
 </div>
@@ -52,7 +52,10 @@ export class LoginComponent implements OnInit {
 
   loginGoogle() {
     this.as.googleLogin()
-    .then(v => console.log('login successful'))
+    .then(v => {
+      console.log('login successful')
+      this.router.navigate(['/homepage'])
+    })
     .catch(e => this.error = e)
   }
 

@@ -10,6 +10,7 @@ export interface User {
     phoneNumber?: string;
     providerId?: string;
     isAnonymous?: boolean;
+    providerLogin?: boolean;
     level: number;
     fcmTokens?: { [token: string]: true };
     tenant?: string; // tenant

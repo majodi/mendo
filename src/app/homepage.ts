@@ -8,7 +8,8 @@ import { PopupService } from './services/popup.service';
   styles: [``],
   template: `
   <div style="width:100%">
-    <button mat-button (click)="click()">Button</button>
+    <br><br><br><br><br>
+    <h1 style="text-align:center">Homepage</h1>    
   </div>
   `,
 })
@@ -35,28 +36,3 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
 }
-
-// export interface FieldConfig {
-//   disabled?: boolean,
-//   label?: string,
-//   name: string,
-//   options?: string | string[],
-//   placeholder?: string,
-//   type: string,
-//   validation?: ValidatorFn[],
-//   value?: any,
-//   doNotPopulate?: boolean,
-//   initWithCounter?: string,
-//   buttonClick?: Function,
-//   inputValueTransform?: Function,
-//   inputLines?: number,
-//   customValueChg?: Function,
-//   customValidator?: Function,
-//   customLookupItems?: LookupItem[],
-//   customLookupUniqueId?: Function, //kan toch weg, db dependancy direct in lookup component...
-//   customLookupFld?: lookupFld
-//   customLookupComponent?: Type<any>
-//   customLookupItem?: LookupItem
-//   customFile?: File
-//   customUpdateWithLookup?: updateWithLookup
-// }

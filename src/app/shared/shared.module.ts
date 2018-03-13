@@ -6,7 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule } from '@angular/material';
 
 import { DynamicFormModule } from './dynamic-form/dynamic-form.module';
-import { LoginComponent } from './authentication/login.component';
+import { LoginModule } from './authentication/login.module';
 
 @NgModule({
   imports: [
@@ -16,16 +16,15 @@ import { LoginComponent } from './authentication/login.component';
       FlexLayoutModule,
       MatProgressSpinnerModule, MatRadioModule, MatChipsModule, MatExpansionModule, MatAutocompleteModule, MatSelectModule, MatOptionModule, MatSortModule, MatProgressBarModule, MatTableModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatButtonModule, MatCardModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCheckboxModule,
       DynamicFormModule,
+      LoginModule,
     ],
   declarations: [
-    LoginComponent,
   ],
   entryComponents: [
-
   ],
   exports: [
     DynamicFormModule,
-    LoginComponent,
+    LoginModule,
   ],
 })
 export class SharedModule { }

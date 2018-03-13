@@ -13,6 +13,9 @@ import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 import { LoginComponent } from './shared/authentication/login.component';
+import { LoginEmailComponent } from './shared/authentication/login-email.component';
+import { SignUpComponent } from './shared/authentication/sign-up.component';
+import { ProfileComponent } from './shared/authentication/profile.component';
 
 const routes: Routes = [
   { path: 'homepage', component: HomePageComponent },
@@ -29,6 +32,9 @@ const routes: Routes = [
   { path: 'orderlines', component: OrderLinesBrwComponent },
   { path: 'settings', component: SettingsBrwComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'login-email', component: LoginEmailComponent },
+  { path: 'sign-up', component: SignUpComponent },
+  { path: 'profile', component: ProfileComponent },
   { path: '', redirectTo: '/homepage', pathMatch: 'full' }, // onderaan houden
   { path: '**', redirectTo: '/homepage' },                  // onderaan houden, kans geven een route te vinden in child routes
 ];
