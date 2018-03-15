@@ -44,7 +44,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
               <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)">
                   <ng-container *ngIf="col.imageSelect; then image_tpl else noImage_tpl"></ng-container>
                       <ng-template #image_tpl>
-                          <img src="{{us.getThumb(col.imageSelect(rec))}}" onerror="this.onerror=null;this.src='assets/image.svg'" width="64">
+                          <img src="{{getSetThumb(col, rec)}}" onerror="this.onerror=null;this.src='assets/image.svg'" width="64">
                       </ng-template>
                       <ng-template #noImage_tpl>
                           <ng-container *ngIf="col.icon || col.iconSelect; then icon_tpl else field_tpl"></ng-container>
@@ -153,6 +153,11 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     return path.split('.').reduce(function(prev, curr) {
         return prev ? prev[curr] : null
     }, obj || self)
+  }
+
+  getSetThumb(colDef, rec) {
+      this.us.setThumb(rec[colDef.imageIdField])
+      return colDef.imageSelect(rec)
   }
 
 //   getThumb(url) {

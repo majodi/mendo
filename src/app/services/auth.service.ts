@@ -28,7 +28,7 @@ export class AuthService {
     this.host = document.domain
     this.user$ = this.afAuth.authState
     .switchMap(fb_user => {
-      console.log('authstate change ', fb_user)
+      console.log('authstate change ', fb_user, this.host)
       if (fb_user) {
           return this.updateUserData(fb_user).then(x => {
             return this.getDoc(`users/${fb_user.uid}`).then((user: User) => {

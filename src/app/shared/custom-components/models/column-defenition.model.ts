@@ -7,6 +7,7 @@ export interface ColumnDefenition {
     icon?: string;
     iconSelect?: Function;
     imageSelect?: Function;
+    imageIdField?: string;
     flex?: string;
     format?: Function;
 }

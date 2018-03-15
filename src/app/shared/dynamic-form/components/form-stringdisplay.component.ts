@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'form-stringdisplay',
   template: `
-  <div>
+  <div *ngIf="!config.hidden">
     <p class="mat-title">{{config.label}}: {{config.value}}</p>
     <br><br>
   </div>

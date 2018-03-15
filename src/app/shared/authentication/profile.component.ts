@@ -63,7 +63,7 @@ export class ProfileComponent implements OnInit {
   resetSent = false
 
   constructor(
-    private _as: AuthService,
+    public _as: AuthService,
     private router: Router    
   ) {}
 

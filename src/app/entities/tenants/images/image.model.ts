@@ -7,14 +7,17 @@ export interface Image {
     meta: EntityMeta;
     code: string;
     description: string;
-    name: string;
+    name: string; // url original upload
+    thumbName: string; // url thumb
+    fileName: string; // pure filename
+    thumbUpdated: boolean;
     tagList: {};
 }
 
 export const defaultTitle = 'Afbeeldingen'
 export const defaultTitleIcon = 'image'
 export const defaultColDef = [
-    {name: 'name',        header: 'Img', imageSelect: (rec) => rec.name},
+    {name: 'name',        header: 'Img', imageSelect: (rec) => rec.thumbName, imageIdField: 'id'},
     {name: 'code',        header: 'Code', sort: true},
     {name: 'description', header: 'Omschrijving'},
   ]
@@ -27,4 +30,3 @@ export const defaultFormConfig = [
   export const defaultSelectionFields = [
     {name: 'tagList'},
   ]
-  

@@ -17,7 +17,7 @@ export class AppComponent {
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    private _as: AuthService,
+    public _as: AuthService,
     private sanitizer: DomSanitizer,
     private iconReg: MatIconRegistry
   ) {

@@ -6,6 +6,7 @@ import { Image, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig
 import { ImageService } from './image.service';
 
 import { BrwBaseClass } from '../../../baseclasses/browse';
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 
 @Component({
   selector: 'app-images-brw',
@@ -13,6 +14,14 @@ import { BrwBaseClass } from '../../../baseclasses/browse';
   styles: [``]
 })
 export class ImagesBrwComponent extends BrwBaseClass<Image[]> implements OnInit, OnDestroy {
+  embeds: Embed[] = [
+    {type: 'beforeSave', code: (action, image) => {
+      if(action == 1){
+        image['thumbName'] = image['name']
+      }
+      return Promise.resolve()
+    }}
+  ]
 
   constructor(
     public dialogRef: MatDialogRef<any>,

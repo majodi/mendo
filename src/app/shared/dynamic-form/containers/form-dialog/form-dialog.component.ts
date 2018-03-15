@@ -27,7 +27,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     constructor(
       public dialogRef: MatDialogRef<FormDialogComponent>,
       @Inject(MAT_DIALOG_DATA) public data: any,
-      private gs: GlobService,
+      public gs: GlobService,
       private cd: ChangeDetectorRef
     ) {}
 

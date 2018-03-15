@@ -29,7 +29,7 @@ export class OrdersBrwComponent extends BrwBaseClass<Order[]> implements OnInit,
             })  
           } 
         })
-      } else return new Promise<{}>(()=>{})  
+      } else return Promise.resolve()
     }}
   ]
 

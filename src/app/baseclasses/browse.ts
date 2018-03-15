@@ -120,7 +120,7 @@ export class BrwBaseClass<T> {
     }    
     if(brwClick.fld == 'insert'){
       this.formConfig.map(fld => fld.value = '')
-      this.isLoading = true
+      // this.isLoading = true
       this.cs.insertDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }

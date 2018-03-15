@@ -61,7 +61,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private us: UploadService,
+    public  us: UploadService,
     private gs: GlobService,
     private db: DbService,
   ) {}
@@ -132,6 +132,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         this.us.pushUpload(config.customFile).subscribe(url => {
           this.waitOnUpload = false
           this.us.progress = 0
+          this.value['fileName'] = config.customFile.name
           this.value[config.name] = url
           this.submit.emit({response: action, value: this.value})
         })
@@ -174,7 +175,8 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         if(this.config[configIndex].type == 'lookup'){
           this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
             if(rec){
-              configToUpdate.value = configToUpdate.type == 'imagedisplay' ? this.us.getThumb(rec[this.config[configIndex].customUpdateWithLookup.lookupFld]) : rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
+              // configToUpdate.value = configToUpdate.type == 'imagedisplay' ? rec[this.config[configIndex].customUpdateWithLookup.lookupFld] : rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
+              configToUpdate.value = rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
               if(this.onValueChg != undefined) this.onValueChg();
             }
           })          

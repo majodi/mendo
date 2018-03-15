@@ -12,11 +12,12 @@ export interface lookupFld {
 
 export interface updateWithLookup {
   fld: string,
-  lookupFld
+  lookupFld: string
 }
 
 export interface FieldConfig {
   disabled?: boolean,
+  hidden?: boolean,
   label?: string,
   name: string,
   options?: string | string[],
@@ -33,9 +34,9 @@ export interface FieldConfig {
   customValidator?: Function,
   customLookupItems?: LookupItem[],
   customLookupUniqueId?: Function, //kan toch weg, db dependancy direct in lookup component...
-  customLookupFld?: lookupFld
-  customLookupComponent?: Type<any>
-  customLookupItem?: LookupItem
-  customFile?: File
+  customLookupFld?: lookupFld,
+  customLookupComponent?: Type<any>,
+  customLookupItem?: LookupItem,
+  customFile?: File,
   customUpdateWithLookup?: updateWithLookup
 }

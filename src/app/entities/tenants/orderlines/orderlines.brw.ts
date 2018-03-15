@@ -88,7 +88,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   employeeRec: Employee
   organisationRec: Organisation
   selectedOrder: string
-  @ViewChild('printheader') private printHeaderRef: ElementRef
+  @ViewChild('printheader') public printHeaderRef: ElementRef
 
   constructor(
     private orderLineSrv: OrderLineService,
