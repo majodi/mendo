@@ -11,6 +11,7 @@ import { EmployeesBrwComponent } from './entities/tenants/organisations/employee
 import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
 import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
+import { BulletinsBrwComponent } from './entities/tenants/bulletins/bulletins.brw';
 import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 import { LoginComponent } from './shared/authentication/login.component';
 import { LoginEmailComponent } from './shared/authentication/login-email.component';
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'images', component: ImagesBrwComponent },
   { path: 'orders', component: OrdersBrwComponent },
   { path: 'orderlines', component: OrderLinesBrwComponent },
+  { path: 'bulletins', component: BulletinsBrwComponent },
   { path: 'settings', component: SettingsBrwComponent },
   { path: 'login', component: LoginComponent },
   { path: 'login-email', component: LoginEmailComponent },

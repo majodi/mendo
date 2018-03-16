@@ -26,6 +26,7 @@ export class OrdersBrwComponent extends BrwBaseClass<Order[]> implements OnInit,
           if(action == 1){
             return this.db.getIncrementedCounter('orderNumber').then(number => {
               o['number'] = number
+              o['date'] = new Date()
             })  
           } 
         })

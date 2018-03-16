@@ -10,6 +10,7 @@ App
     Organisation
     User
         HomePageComponent,            // App    - User
+        BulletinsBrwComponent,        // App    - User
 
 Store
     Super

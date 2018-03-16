@@ -105,7 +105,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
     const newCtrl = this.fb.control({ disabled, value }, validation);
-    if(!['button', 'input', 'select'].includes(config.type)){
+    if(!['button', 'input', 'select', 'checkbox'].includes(config.type)){
       config.customValueChg = (name: string, value: any) => { //for custom components
         this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
         this.setFormValue(name, config.type == 'lookup' ? value['id'] : value)

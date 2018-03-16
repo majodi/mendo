@@ -16,6 +16,7 @@ import { FormDialogComponent } from './containers/form-dialog/form-dialog.compon
 import { FormFilepickComponent } from './components/form-filepick.component';
 import { FormImagedisplayComponent } from './components/form-imagedisplay.component';
 import { FormStringdisplayComponent } from './components/form-stringdisplay.component';
+import { FormCheckboxComponent } from './components/form-checkbox.component';
 import { CustomComponentsModule } from '../custom-components/custom-components.module';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormFilepickComponent,
     FormImagedisplayComponent,
     FormStringdisplayComponent,
+    FormCheckboxComponent,
   ],
   exports: [
     DynamicFormComponent,
@@ -55,6 +57,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormFilepickComponent,
     FormImagedisplayComponent,
     FormStringdisplayComponent,
+    FormCheckboxComponent,
   ]
 })
 export class DynamicFormModule {}

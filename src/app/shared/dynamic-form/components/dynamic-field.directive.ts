@@ -9,6 +9,7 @@ import { FormLookupComponent } from './form-lookup.component';
 import { FormFilepickComponent } from './form-filepick.component';
 import { FormImagedisplayComponent } from './form-imagedisplay.component';
 import { FormStringdisplayComponent } from './form-stringdisplay.component';
+import { FormCheckboxComponent } from './form-checkbox.component';
 
 import { FormChiplistComponent } from './form-chiplist.component';
 
@@ -25,6 +26,7 @@ const components: {[type: string]: Type<Field>} = {
   filepick: FormFilepickComponent,
   imagedisplay: FormImagedisplayComponent,
   stringdisplay: FormStringdisplayComponent,
+  checkbox: FormCheckboxComponent,
 };
 
 @Directive({

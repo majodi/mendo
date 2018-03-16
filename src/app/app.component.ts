@@ -1,7 +1,8 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
-import { MatIconRegistry } from '@angular/material';
+import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { MatIconRegistry, MatSidenav } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -11,6 +12,7 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'Mendo'
+  @ViewChild('snav') sidenav: MatSidenav;
   mobileQuery: MediaQueryList
   private _mobileQueryListener: () => void
   
@@ -19,7 +21,8 @@ export class AppComponent {
     media: MediaMatcher,
     public _as: AuthService,
     private sanitizer: DomSanitizer,
-    private iconReg: MatIconRegistry
+    private iconReg: MatIconRegistry,
+    private router: Router
   ) {
     iconReg.addSvgIcon('google', sanitizer.bypassSecurityTrustResourceUrl('/assets/google.svg'))
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -27,7 +30,13 @@ export class AppComponent {
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.router.events.subscribe(() => {
+      if (this.mobileQuery.matches) {
+        this.sidenav.close()
+      }
+    })    
+  }
 
   signOut() {this._as.signOut()}
 

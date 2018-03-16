@@ -10,6 +10,7 @@ import { EmployeeService } from './tenants/organisations/employees/employee.serv
 import { ImageService } from './tenants/images/image.service';
 import { OrderService } from './tenants/orders/order.service';
 import { OrderLineService } from './tenants/orderlines/orderline.service';
+import { BulletinService } from './tenants/bulletins/bulletin.service';
 import { SettingService } from './tenants/settings/setting.service';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { SettingService } from './tenants/settings/setting.service';
     ImageService,
     OrderService,
     OrderLineService,
+    BulletinService,
     SettingService
   ],
 })
