@@ -33,8 +33,8 @@ template: `
           <p class="mat-body-2" style="line-height:18px; margin:0; white-space:pre-wrap;">{{tile.description}}</p>
           <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} Punten</p>
         </div>
-        <div *ngIf="buttonText" fxFlex="20" fxFlexAlign="start">
-          <button mat-button color="primary"><mat-icon>{{buttonIcon}}</mat-icon>{{buttonText}}</button>
+        <div *ngIf="buttonText || tile.buttonText" fxFlex="20" fxFlexAlign="start">
+          <button mat-button color="primary" (click)="onButtonClick(tile, $event)"><mat-icon>{{buttonIcon}}</mat-icon>{{tile.buttonText ? tile.buttonText : buttonText}}</button>
           <br/><br/>
         </div>
       </div>
@@ -55,6 +55,7 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() maxItemWidth: string
   @Input() data: Tile[]
   @Output() clicked = new EventEmitter();
+  @Output() buttonClicked = new EventEmitter();
   tiles: Tile[]
 
   constructor() {}
@@ -86,6 +87,15 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   onClick(e) {
     this.clicked.emit(e)
   }
+
+  onButtonClick(e, event?) {
+    this.buttonClicked.emit(e)
+    if(event != undefined){
+      event.preventDefault();
+      event.stopPropagation();  
+    }
+  }
+
   setColumns() {}
 
   ngOnDestroy() {

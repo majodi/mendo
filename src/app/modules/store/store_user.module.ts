@@ -2,27 +2,26 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 
 import { SharedModule } from '../../shared/shared.module';
-import { ArticlesBrwComponent } from '../../entities/tenants/articles/articles.brw';
-import { OrdersBrwComponent } from '../../entities/tenants/orders/orders.brw';
-import { OrderLinesBrwComponent } from '../../entities/tenants/orderlines/orderlines.brw';
 import { StoreComponent } from '../../entities/tenants/store/store';
+import { ArticleService } from '../../entities/tenants/articles/article.service';
+import { CategoryService } from '../../entities/tenants/categories/category.service';
+import { StoreUserRoutingModule } from './store_user.routing.module';
 
 @NgModule({
   imports: [
       CommonModule,
       SharedModule,
+      StoreUserRoutingModule,
     ],
   declarations: [
-      ArticlesBrwComponent,
-      OrdersBrwComponent,
-      OrderLinesBrwComponent,
       StoreComponent,
     ],
   exports: [
-      ArticlesBrwComponent,
-      OrdersBrwComponent,
-      OrderLinesBrwComponent,
       StoreComponent,
     ],
+    providers: [
+      ArticleService,
+      CategoryService,
+    ]    
 })
 export class StoreUserModule { }

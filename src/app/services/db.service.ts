@@ -40,7 +40,7 @@ export class DbService {
     if(code && (typeof code == 'string') && (code.indexOf('SETTINGS:') != -1)){
       code = code.split(':')[1]
       if(code){
-        return this.getUniqueValueId(this.gs.entityBasePath+'/settings', 'code', code).map((rec: Setting) => rec.setting)
+        return this.getUniqueValueId(this.gs.entityBasePath+'/settings', 'code', code).map((rec: Setting) => rec != undefined ? rec.setting : '')
       } else return Observable.of(null)
     } else return Observable.of(null)
   }

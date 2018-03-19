@@ -23,6 +23,8 @@ import { QueryItem } from '../../../models/query-item.interface';
     [buttonIcon]="'shopping_cart'"
     [buttonText]="'Bestel'"
     [data]="articleData"
+    (clicked)="onClickArticle('tile', $event)"
+    (buttonClicked)="onClickArticle('button', $event)"
   ></app-grid>
   </div>
   `,
@@ -75,6 +77,10 @@ export class StoreComponent implements OnInit, OnDestroy {
 
   onClickCategory(e) {
     this.articleSelect.next(e.id)
+  }
+
+  onClickArticle(clickedOn, e) {
+    console.log('naar artikelinfo of bestelformulier', clickedOn)
   }
 
   ngOnDestroy() {

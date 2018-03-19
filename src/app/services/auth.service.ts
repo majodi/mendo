@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core'
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import * as firebase from 'firebase/app';
 
@@ -10,30 +11,57 @@ import { Observable, Subject } from 'rxjs';
 
 import { User } from '../models/user.model';
 import { EntityMeta } from '../models/entity-meta.model';
+import { fullNavList } from '../modules/navlist';
 
-/////////////// set tenant id in glob!!
+import { GlobService } from './glob.service';
 
 @Injectable()
 export class AuthService {
   user$: Observable<User>
   user: User = new Object() as any
+  userLevel = 0
+  isLoggedIn = false //anonymous or as real user
+  redirectUrl = ''
+  tenantQP = null
+  tenantName = 'Mendo'
+  tenantModules = ['app']
   authReady$ = new Subject()
   host = ''
+  navList = []
 
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private router: Router
+    private router: Router,
+    private activeRoute: ActivatedRoute,
+    private gs: GlobService,
+    private http: HttpClient
   ) {
     this.host = document.domain
+    this.http.get('assets/tenant.json').subscribe(tenants => {
+      const hostTenant = tenants['hosts'].find(o => (o.host == this.host) && !o.multi_tenant)
+      const tenantId = this.tenantQP != null ? this.tenantQP : hostTenant != undefined ? hostTenant['tenantId'] : tenants['defaultId']
+      let registeredTenant = tenants['tenants'].find(o => o.id == tenantId)
+      if(registeredTenant != undefined && registeredTenant.id != undefined){
+        this.gs.tenantId = registeredTenant.id
+        this.gs.entityBasePath = 'tenants/'+registeredTenant.id
+        this.gs.tenantName = registeredTenant.name
+        this.tenantName = registeredTenant.name
+        this.tenantModules = this.tenantModules.concat(registeredTenant.modules)
+      }
+    }) // als geen tenant json dan terugvallen op default in Glob (mendo tenant)
     this.user$ = this.afAuth.authState
     .switchMap(fb_user => {
-      console.log('authstate change ', fb_user, this.host)
+      console.log('authstate change ', fb_user, this.gs.tenantId)
       if (fb_user) {
           return this.updateUserData(fb_user).then(x => {
             return this.getDoc(`users/${fb_user.uid}`).then((user: User) => {
               this.user = user;
+              this.userLevel = user.level != undefined ? user.level : 0
+              this.isLoggedIn = true
+              this.setNavList()
               this.authReady$.next();
+              console.log('auth ready for: ', this.gs.tenantId, this.userLevel)
               return user
             })
           }).catch(err => {console.log('Auth error get/set userdata: ', err); return null})  
@@ -43,6 +71,8 @@ export class AuthService {
     })
     this.user$.subscribe()
   }
+
+  setNavList() {this.navList = fullNavList.filter(item => (this.tenantModules.includes(item.module) && this.userLevel >= item.level))}
 
   sendVerification() {
     return this.afAuth.auth.currentUser.sendEmailVerification().then(() => console.log('verification mail sent'))

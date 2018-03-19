@@ -3,5 +3,7 @@ export interface Tile {
     title: string;
     image?: string;
     description?: string;
+    buttonText?: string;
+    buttonLink?: string;
     price?: number;
 }

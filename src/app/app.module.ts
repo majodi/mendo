@@ -16,10 +16,9 @@ import { AngularFireStorageModule } from 'angularfire2/storage';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { EntityServicesModule } from './entities/entity.services.module';
 import { ServicesModule } from './services/services.module';
 import { AppSuperModule } from './modules/app_super.module';
-import { AppTenantModule } from './modules/app_tenant.module';
+// import { AppTenantModule } from './modules/app_tenant.module';
 import { AppUserModule } from './modules/app_user.module';
 import { StoreTenantModule } from './modules/store/store_tenant.module';
 import { StoreUserModule } from './modules/store/store_user.module';
@@ -41,12 +40,11 @@ import './rxjs-operators';
     AngularFireStorageModule,
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
     ServicesModule,
-    EntityServicesModule,
-    AppSuperModule,
-    AppTenantModule,
     AppUserModule,
-    StoreTenantModule,
-    StoreUserModule,
+    // AppTenantModule,
+    // AppSuperModule,
+    // StoreUserModule,
+    // StoreTenantModule,
     AppRoutingModule, // onderaan houden
   ],
   providers: [MediaMatcher],

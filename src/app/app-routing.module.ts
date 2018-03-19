@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
+import { AuthGuard } from './auth-guard.service';
+
 import { HomePageComponent } from './homepage';
 import { TenantsBrwComponent } from './entities/tenants/tenants.brw';
 import { StoreComponent } from './entities/tenants/store/store';
@@ -19,29 +22,33 @@ import { SignUpComponent } from './shared/authentication/sign-up.component';
 import { ProfileComponent } from './shared/authentication/profile.component';
 
 const routes: Routes = [
-  { path: 'homepage', component: HomePageComponent },
-  { path: 'tenants', component: TenantsBrwComponent },
-  { path: 'store', component: StoreComponent },
-  { path: 'categories', component: CategoriesBrwComponent },
-  { path: 'properties', component: PropertiesBrwComponent },
-  { path: 'articles', component: ArticlesBrwComponent },
-  { path: 'articles', component: ArticlesBrwComponent },
-  { path: 'organisations', component: OrganisationsBrwComponent },
-  { path: 'employees', component: EmployeesBrwComponent },
-  { path: 'images', component: ImagesBrwComponent },
-  { path: 'orders', component: OrdersBrwComponent },
-  { path: 'orderlines', component: OrderLinesBrwComponent },
-  { path: 'bulletins', component: BulletinsBrwComponent },
-  { path: 'settings', component: SettingsBrwComponent },
+  { path: 'app-tenant', loadChildren: 'app/modules/app_tenant.module#AppTenantModule', canLoad: [AuthGuard] },
+  { path: 'app-super', loadChildren: 'app/modules/app_super.module#AppSuperModule', canLoad: [AuthGuard] },
+  { path: 'store-user', loadChildren: 'app/modules/store/store_user.module#StoreUserModule', canLoad: [AuthGuard] },
+  { path: 'store-tenant', loadChildren: 'app/modules/store/store_tenant.module#StoreTenantModule', canLoad: [AuthGuard] },
+  // { path: 'homepage', component: HomePageComponent },
+  // { path: 'tenants', component: TenantsBrwComponent },
+  // { path: 'store', component: StoreComponent },
+  // { path: 'categories', component: CategoriesBrwComponent },
+  // { path: 'properties', component: PropertiesBrwComponent },
+  // { path: 'articles', component: ArticlesBrwComponent },
+  // { path: 'organisations', component: OrganisationsBrwComponent },
+  // { path: 'employees', component: EmployeesBrwComponent },
+  // { path: 'images', component: ImagesBrwComponent },
+  // { path: 'orders', component: OrdersBrwComponent },
+  // { path: 'orderlines', component: OrderLinesBrwComponent },
+  // { path: 'bulletins', component: BulletinsBrwComponent },
+  // { path: 'settings', component: SettingsBrwComponent },
   { path: 'login', component: LoginComponent },
   { path: 'login-email', component: LoginEmailComponent },
   { path: 'sign-up', component: SignUpComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: '', redirectTo: '/homepage', pathMatch: 'full' }, // onderaan houden
-  { path: '**', redirectTo: '/homepage' },                  // onderaan houden, kans geven een route te vinden in child routes
+  { path: '', redirectTo: 'homepage', pathMatch: 'full' }, // onderaan houden
+  { path: '**', redirectTo: 'homepage' },                  // onderaan houden, kans geven een route te vinden in child routes
 ];
 
 @NgModule({
+  // imports: [RouterModule.forRoot(routes, { enableTracing: true })],  // <-- debugging purposes only !!!!!!!!!!!!!!
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })

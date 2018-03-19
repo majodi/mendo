@@ -2,13 +2,10 @@ import { Injectable } from '@angular/core'
 
 @Injectable()
 export class GlobService {
-    userLevel = {
-        admin: 100,
-        tenant: 50,
-        superUser: 25,
-        user: 0
-    }
-    tenantId = 'l9XCh71vsxXg3M3nJ7aw' // temp test
+    userLevel = [{level:0, userLevel:'user'}, {level:100, userLevel:'super'}, {level:50, userLevel:'tenant'}, {level:25, userLevel:'organisation'}]
+    // this.userLevel = this.gs.userLevel.reduce((prev, curr) => user.level >= curr.level ? curr.level > prev.level ? curr : prev : prev, {level:0, userLevel:'user'}).userLevel
+    tenantId = 'l9XCh71vsxXg3M3nJ7aw' // default Mendo
+    tenantName = 'Mendo'
     entityBasePath = `tenants/${this.tenantId}`
     storageBasePath = 'https://storage.cloud.google.com/mendo-app.appspot.com/'
     entityId = {}

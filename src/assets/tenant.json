@@ -1,0 +1,34 @@
+{
+    "short_name": "Tennant config",
+    "name": "Mendo Tenant Config",
+    "defaultId": "l9XCh71vsxXg3M3nJ7aw",
+    "tenants": [
+        {
+            "id": "l9XCh71vsxXg3M3nJ7aw",
+            "name": "Mendo",
+            "modules": ["store"]
+        },
+        {
+            "id": "bgBGdJTa1xXBDlrYqwNG",
+            "name": "Van Orsouw Kleding",
+            "modules": ["store"]
+        },
+        {
+            "id": "4cSsKIXusX6a40QhQ7Nc",
+            "name": "St. Jeugd & Jongeren",
+            "modules": []
+        }
+    ],
+    "hosts": [
+        {
+            "host": "localhost",
+            "multi_tenant": true,
+            "tenantId": ""
+        },
+        {
+            "host": "mendo.nickstick.nl",
+            "multi_tenant": true,
+            "tenantId": ""
+        }
+    ]
+}
