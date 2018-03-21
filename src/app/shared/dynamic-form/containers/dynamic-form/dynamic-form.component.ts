@@ -75,6 +75,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges() {
+    console.log('onchg: ', )
     if(this.formAction != 0){
       this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
     } else {this.toPopulate = this.config}
@@ -184,8 +185,10 @@ export class DynamicFormComponent implements OnChanges, OnInit {
           configToUpdate.value = value
           if(this.onValueChg != undefined) this.onValueChg();
         }
+      } else {
+        if(this.onValueChg != undefined) this.onValueChg(name, value);      
       }
-    }
+    } 
   }
 
   objectValue(o, key) {

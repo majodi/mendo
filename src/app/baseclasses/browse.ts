@@ -114,7 +114,7 @@ export class BrwBaseClass<T> {
         this.selected.emit(brwClick)
         this.dialogRef.close(rec)
       } else {
-        this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
+        this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
       }
       return
     }    

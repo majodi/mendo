@@ -7,7 +7,7 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-lookup',
   template: `
-<div [formGroup]="group">
+<div *ngIf="!config.doNotPopulate" [formGroup]="group">
   <app-lookup
     ngDefaultControl
     [lookupComponent]="config.customLookupComponent"

@@ -17,11 +17,13 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServicesModule } from './services/services.module';
-import { AppSuperModule } from './modules/app_super.module';
-// import { AppTenantModule } from './modules/app_tenant.module';
 import { AppUserModule } from './modules/app_user.module';
-import { StoreTenantModule } from './modules/store/store_tenant.module';
-import { StoreUserModule } from './modules/store/store_user.module';
+
+import { AppLookupModule } from './modules/app_lookup.module';
+import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
+import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
+
+import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 
 import './rxjs-operators';
 
@@ -41,12 +43,10 @@ import './rxjs-operators';
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
     ServicesModule,
     AppUserModule,
-    // AppTenantModule,
-    // AppSuperModule,
-    // StoreUserModule,
-    // StoreTenantModule,
+    AppLookupModule,
     AppRoutingModule, // onderaan houden
   ],
+  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })

@@ -51,9 +51,11 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
       Object.keys(obj).map(l1 => {
         if(l1){
           let fieldDef = config.find(c => c.name == l1)
-          if(typeof obj[l1] == 'object' && obj[l1] != null && (fieldDef && fieldDef['type'] != 'chiplist')) {
-            Object.keys(obj[l1]).map(l2 => this.form.setValue(l1+'.'+l2, obj[l1][l2]))
-          } else {this.form.setValue(l1, obj[l1])}  
+          if(fieldDef && fieldDef['type'] != 'chiplist'){
+            if(typeof obj[l1] == 'object' && obj[l1] != null) {
+              Object.keys(obj[l1]).map(l2 => this.form.setValue(l1+'.'+l2, obj[l1][l2]))
+            } else {this.form.setValue(l1, obj[l1])}    
+          }
         }
       })      
     }

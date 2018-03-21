@@ -10,7 +10,7 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-checkbox',
   template: `
-<div [formGroup]="group">
+<div *ngIf="!config.doNotPopulate" [formGroup]="group">
   <mat-checkbox [formControlName]="config.name" (blur)="onBlur($event)">
     {{config.label}}
   </mat-checkbox>

@@ -8,6 +8,9 @@ import { EmployeesBrwComponent } from '../entities/tenants/organisations/employe
 import { ImagesBrwComponent } from '../entities/tenants/images/images.brw';
 import { BulletinsBrwComponent } from '../entities/tenants/bulletins/bulletins.brw';
 import { SettingsBrwComponent } from '../entities/tenants/settings/settings.brw';
+import { FormsBrwComponent } from '../entities/tenants/forms/forms.brw';
+import { FormFieldsBrwComponent } from '../entities/tenants/forms/formfields/formfields.brw';
+import { FormResultsBrwComponent } from '../entities/tenants/forms/formresults/formresults.brw';
 
 const app_tenantRoutes: Routes = [
   { path: '', canActivate: [AuthGuard],
@@ -18,6 +21,9 @@ const app_tenantRoutes: Routes = [
       { path: 'images', component: ImagesBrwComponent },
       { path: 'bulletins', component: BulletinsBrwComponent },
       { path: 'settings', component: SettingsBrwComponent },
+      { path: 'forms', component: FormsBrwComponent },
+      { path: 'formfields', component: FormFieldsBrwComponent },
+      { path: 'formresults', component: FormResultsBrwComponent },
     ]
   }
 ];

@@ -7,12 +7,12 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-input',
   template: `
-  <mat-form-field style="width:100%" [formGroup]="group">
+  <mat-form-field *ngIf="!config.doNotPopulate" style="width:100%" [formGroup]="group">
   <ng-container *ngIf="!config.inputLines; then input_tpl else textarea_tpl"></ng-container>
   <ng-template #input_tpl>
     <input
       matInput
-      type="text"
+      [type]="getOverruleType()"
       (keyup)="onKeyUp($event)"
       (blur)="onBlur($event)"
       [placeholder]="config.placeholder"
@@ -40,6 +40,14 @@ export class FormInputComponent implements Field {
     if(this.config.inputValueTransform != undefined){
       e.target.value = this.config.inputValueTransform(e.target.value)
       this.config.value = e.target.value
+    }
+  }
+
+  getOverruleType() {
+    if(this.config.inputType != undefined) {
+      if(['number','password','date','email'].includes(this.config.inputType)){
+        return this.config.inputType
+      }
     }
   }
 

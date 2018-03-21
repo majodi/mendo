@@ -3,19 +3,19 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './auth-guard.service';
 
-import { HomePageComponent } from './homepage';
-import { TenantsBrwComponent } from './entities/tenants/tenants.brw';
-import { StoreComponent } from './entities/tenants/store/store';
-import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
-import { PropertiesBrwComponent } from './entities/tenants/properties/properties.brw';
-import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
-import { OrganisationsBrwComponent } from './entities/tenants/organisations/organisation.brw';
-import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
-import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
-import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
-import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
-import { BulletinsBrwComponent } from './entities/tenants/bulletins/bulletins.brw';
-import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
+// import { HomePageComponent } from './homepage';
+// import { TenantsBrwComponent } from './entities/tenants/tenants.brw';
+// import { StoreComponent } from './entities/tenants/store/store';
+// import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
+// import { PropertiesBrwComponent } from './entities/tenants/properties/properties.brw';
+// import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
+// import { OrganisationsBrwComponent } from './entities/tenants/organisations/organisation.brw';
+// import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
+// import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
+// import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
+// import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
+// import { BulletinsBrwComponent } from './entities/tenants/bulletins/bulletins.brw';
+// import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 import { LoginComponent } from './shared/authentication/login.component';
 import { LoginEmailComponent } from './shared/authentication/login-email.component';
 import { SignUpComponent } from './shared/authentication/sign-up.component';
@@ -26,19 +26,6 @@ const routes: Routes = [
   { path: 'app-super', loadChildren: 'app/modules/app_super.module#AppSuperModule', canLoad: [AuthGuard] },
   { path: 'store-user', loadChildren: 'app/modules/store/store_user.module#StoreUserModule', canLoad: [AuthGuard] },
   { path: 'store-tenant', loadChildren: 'app/modules/store/store_tenant.module#StoreTenantModule', canLoad: [AuthGuard] },
-  // { path: 'homepage', component: HomePageComponent },
-  // { path: 'tenants', component: TenantsBrwComponent },
-  // { path: 'store', component: StoreComponent },
-  // { path: 'categories', component: CategoriesBrwComponent },
-  // { path: 'properties', component: PropertiesBrwComponent },
-  // { path: 'articles', component: ArticlesBrwComponent },
-  // { path: 'organisations', component: OrganisationsBrwComponent },
-  // { path: 'employees', component: EmployeesBrwComponent },
-  // { path: 'images', component: ImagesBrwComponent },
-  // { path: 'orders', component: OrdersBrwComponent },
-  // { path: 'orderlines', component: OrderLinesBrwComponent },
-  // { path: 'bulletins', component: BulletinsBrwComponent },
-  // { path: 'settings', component: SettingsBrwComponent },
   { path: 'login', component: LoginComponent },
   { path: 'login-email', component: LoginEmailComponent },
   { path: 'sign-up', component: SignUpComponent },

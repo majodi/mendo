@@ -13,36 +13,46 @@ import { ImageService } from '../entities/tenants/images/image.service';
 import { SettingsBrwComponent } from '../entities/tenants/settings/settings.brw';
 import { SettingService } from '../entities/tenants/settings/setting.service';
 import { BulletinsBrwComponent } from '../entities/tenants/bulletins/bulletins.brw';
+import { FormsBrwComponent } from '../entities/tenants/forms/forms.brw';
+import { FormFieldsBrwComponent } from '../entities/tenants/forms/formfields/formfields.brw';
+import { FormResultsBrwComponent } from '../entities/tenants/forms/formresults/formresults.brw';
+
+import { OrdersBrwComponent } from '../entities/tenants/orders/orders.brw';
 
 import { AppTenantRoutingModule } from './app_tenant.routing.module';
+import { AppLookupModule } from './app_lookup.module';
 
 @NgModule({
   imports: [
       CommonModule,
       SharedModule,
+      AppLookupModule,
       AppTenantRoutingModule,
     ],
   declarations: [
       PropertiesBrwComponent,
       OrganisationsBrwComponent,
-      EmployeesBrwComponent,
-      ImagesBrwComponent,
       BulletinsBrwComponent,
       SettingsBrwComponent,
+      FormsBrwComponent,
+      FormFieldsBrwComponent,
+      FormResultsBrwComponent,
     ],
   exports: [
       PropertiesBrwComponent,
       OrganisationsBrwComponent,
-      EmployeesBrwComponent,
-      ImagesBrwComponent,
       BulletinsBrwComponent,
       SettingsBrwComponent,
+      FormsBrwComponent,
+      FormFieldsBrwComponent,
+      FormResultsBrwComponent,
     ],
-  providers: [
+    entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent],
+    providers: [
       PropertyService,
-      OrganisationService,
-      EmployeeService,
-      ImageService,
+      // OrganisationService,
+      // EmployeeService,
+      // ImageService,
       SettingService,
     ]
 })

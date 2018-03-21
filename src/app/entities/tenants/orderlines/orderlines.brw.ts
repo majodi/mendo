@@ -103,12 +103,15 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
         if(id){
           return this.orderLineSrv.initEntity$([{fld: 'order', operator: '==', value: id}])
         } else {
-          return this.orderLineSrv.initEntity$()
+          return Observable.of(null)
+          // return this.orderLineSrv.initEntity$()
         }
       }).takeUntil(this.ngUnsubscribe).subscribe(orderlines => {
-        this.orderLineData = orderlines
-        this.total = orderlines.reduce((a, b) => a + Number(b['amount']), 0)
-        this.isLoading = false
+        if(orderlines != null){
+          this.orderLineData = orderlines
+          this.total = orderlines.reduce((a, b) => a + Number(b['amount']), 0)
+        }
+        this.isLoading = false  
       })
     }
 
@@ -128,7 +131,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   clicked(brwClick: {fld: string, rec: {}}) {
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
     if(!['insert','selection'].includes(brwClick.fld)){
-      this.cs.changeDeleteDialog(this.formConfig, rec, this.orderLineSrv.entityPath, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
+      this.cs.changeDeleteDialog(this.formConfig, rec, this.orderLineSrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
       return
     }    
     if(brwClick.fld == 'insert'){

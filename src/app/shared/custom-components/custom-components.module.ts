@@ -38,7 +38,6 @@ import { FilepickComponent } from './components/filepick.component';
     LookupComponent,
     FilepickComponent,
   ],
-  entryComponents: [
-  ]
+  entryComponents: []
 })
 export class CustomComponentsModule {}

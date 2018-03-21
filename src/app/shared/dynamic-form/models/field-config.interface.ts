@@ -30,6 +30,7 @@ export interface FieldConfig {
   buttonClick?: Function,
   inputValueTransform?: Function,
   inputLines?: number,
+  inputType?: string,
   customValueChg?: Function,
   customValidator?: Function,
   customLookupItems?: LookupItem[],

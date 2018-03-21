@@ -7,7 +7,7 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-imagedisplay',
   template: `
-  <div>
+  <div *ngIf="!config.doNotPopulate">
     <img src="{{config.value}}" onerror="this.onerror=null;this.src='assets/image.svg'" width="64">
     <br><br>
   </div>

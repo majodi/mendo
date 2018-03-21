@@ -56,6 +56,7 @@ export class DbService {
   }
 
   updateDoc(data, path: string) {
+    console.log('updatedoc: ', path, data)
     return this.db.doc(path).update(data)
   }
 

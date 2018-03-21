@@ -15,25 +15,29 @@ import { PropertyService } from '../../entities/tenants/properties/property.serv
 import { OrganisationService } from '../../entities/tenants/organisations/organisation.service';
 import { EmployeeService } from '../../entities/tenants/organisations/employees/employee.service';
 
+import { AppLookupModule } from '../app_lookup.module';
+
 @NgModule({
   imports: [
       CommonModule,
       SharedModule,
+      AppLookupModule,
       StoreTenantRoutingModule,
     ],
   declarations: [
       CategoriesBrwComponent,
       ArticlesBrwComponent,
-      OrdersBrwComponent,
+      // OrdersBrwComponent,
       OrderLinesBrwComponent,
     ],
   exports: [
       CategoriesBrwComponent,
       ArticlesBrwComponent,
-      OrdersBrwComponent,
+      // OrdersBrwComponent,
       OrderLinesBrwComponent,
     ],
-    providers: [
+  entryComponents: [OrdersBrwComponent],
+  providers: [
       CategoryService,
       ArticleService,
       PropertyService,
