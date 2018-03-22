@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core'
+import { Router } from '@angular/router';
+import { QueryItem } from '../models/query-item.interface';
 
 @Injectable()
 export class GlobService {
@@ -11,6 +13,15 @@ export class GlobService {
     entityId = {}
     actionMessage = {0:'Selectie', 1:'Toevoegen', 2:'Wijzigen', 3:'Verwijderen', 10:'Formulier'}
 
-  constructor() {}
+    NavQueries: QueryItem[] = []
+    backButton = false
+
+  constructor(private router: Router) {}
   
+  navigateWithQuery(link, fld, operator, value){
+    this.NavQueries.push({fld: fld, operator: operator, value: value})
+    this.backButton = true        
+    return this.router.navigate([link])
+}
+
 }

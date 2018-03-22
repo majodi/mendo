@@ -20,6 +20,7 @@ export class BrwBaseClass<T> {
   @Output() selected = new EventEmitter()
   data: T
   ngUnsubscribe = new Subject<string>()
+  userDefinedBrowse = false
   title = ''
   titleIcon = ''
   isLoading = true
@@ -53,6 +54,7 @@ export class BrwBaseClass<T> {
     this.selectMode = this.select
     this.entitySrv.formConfig = this.formConfig
     this.entitySrv.colDef = this.colDef
+    this.baseQueries = this.gs.NavQueries
     this.initDataSource()
     this.setSelectionItems()
   }
@@ -87,8 +89,10 @@ export class BrwBaseClass<T> {
 
   setLookupComponent(component: Type<any>, fldName: string, displayFld: string, subDisplayFld?: string, addSearchFld?: string) {
     let formConfig = this.formConfig.find(c => {return c.name === fldName})
-    formConfig['customLookupComponent'] = component
-    formConfig['customLookupItem'] = {id: '', display: displayFld, subDisplay: subDisplayFld, addSearch: addSearchFld}
+    if(formConfig != undefined){
+      formConfig['customLookupComponent'] = component
+      formConfig['customLookupItem'] = {id: '', display: displayFld, subDisplay: subDisplayFld, addSearch: addSearchFld}  
+    }
   }
 
   resolveObjPath(obj, path) {
@@ -119,8 +123,9 @@ export class BrwBaseClass<T> {
       return
     }    
     if(brwClick.fld == 'insert'){
-      this.formConfig.map(fld => fld.value = '')
-      // this.isLoading = true
+      if(!this.userDefinedBrowse){
+        this.formConfig.map(fld => fld.value = '')
+      }
       this.cs.insertDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }

@@ -120,6 +120,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   handleSubmit(action: string, event?: Event) {
+    // console.log('handle submit config: ', this.config)
     if(event != undefined){
       event.preventDefault();
       event.stopPropagation();  
@@ -176,7 +177,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         if(this.config[configIndex].type == 'lookup'){
           this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
             if(rec){
-              // configToUpdate.value = configToUpdate.type == 'imagedisplay' ? rec[this.config[configIndex].customUpdateWithLookup.lookupFld] : rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
               configToUpdate.value = rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
               if(this.onValueChg != undefined) this.onValueChg();
             }

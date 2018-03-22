@@ -29,7 +29,7 @@ export class CrudService {
   
     changeDeleteDialog(config, rec, path, fld, embeds?: Embed[]) {
       let beforeChgDialogEmbed: Function = this.getEmbed(embeds, 'beforeChgDialog')
-      if(beforeChgDialogEmbed != undefined){beforeChgDialogEmbed(rec, fld)}
+      if(beforeChgDialogEmbed != undefined){if(beforeChgDialogEmbed(rec, fld)) return Promise.resolve()}
       // let saveEmbed: Function // -- oppassen met wegdoen -- maar kan denk ik weg...
       // if(embeds != undefined){
       //   const saveEmbedIndex = embeds.findIndex(e => e.type == 'beforeSave')

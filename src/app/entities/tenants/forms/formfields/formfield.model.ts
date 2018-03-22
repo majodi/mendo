@@ -35,7 +35,7 @@ export const defaultColDef = [
   ]
 export const defaultFormConfig = [
     {type: 'input',         label: 'Veldnaam',            name: 'name',             placeholder: 'Veldnaam',              value: '', validation: [Validators.required]},
-    {type: 'select',        label: 'Type',                name: 'type',             placeholder: 'Veld Type',             value: '', options: ['invoer', 'keuze', 'vink', 'text', 'afbeelding']},
+    {type: 'select',        label: 'Type',                name: 'type',             placeholder: 'Veld Type',             value: '', options: ['invoer', 'keuze', 'vink', 'tekst', 'afbeelding']},
     {type: 'input',         label: 'Prompt',              name: 'label',            placeholder: 'Prompt',                value: ''},
     {type: 'select',        label: 'Transformatie',       name: 'transform',        placeholder: 'Invoer transformatie',  value: '', options: ['geen', 'hoofdletters', 'woord-hoofdletter']},
     {type: 'checkbox',      label: 'Verplicht',           name: 'required',         placeholder: 'Invoer verplicht',      value: false},
@@ -48,8 +48,8 @@ export const defaultFormConfig = [
     {type: 'stringdisplay', label: 'Tabelinstelling',     name: 'tabelinstelling',  placeholder: 'Tabelinstelling',       value: ''},
     {type: 'checkbox',      label: 'Toon in tabel',       name: 'showInBrw',        placeholder: 'Toon in tabel',         value: false},
     {type: 'checkbox',      label: 'Verberg mobiel',      name: 'hideXs',           placeholder: 'Verberg mobiel',        value: false},
-    {type: 'checkbox',      label: 'Sorteermogelijkheid', name: 'sort',             placeholder: 'Sorteermogelijkheid',   value: false},
-    {type: 'checkbox',      label: 'Filtermogelijkheid',  name: 'filter',           placeholder: 'Filtermogelijkheid',    value: false},
+    {type: 'checkbox',      label: 'Sorteermogelijkheid', name: 'allowSort',        placeholder: 'Sorteermogelijkheid',   value: false},
+    {type: 'checkbox',      label: 'Filtermogelijkheid',  name: 'allowfilter',      placeholder: 'Filtermogelijkheid',    value: false},
   ]
 
 //['invoer', 'keuze', 'vink', 'text', 'afbeelding']

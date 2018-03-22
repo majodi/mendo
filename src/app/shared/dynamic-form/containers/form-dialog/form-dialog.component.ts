@@ -45,6 +45,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
     }
 
     setFormValues() { // flatten to match control names, only 2 levels!! Not for chiplist!!
+      // console.log('data in form-dialog', this.data.formRecord)
       let obj = this.data.formRecord
       let config: FieldConfig[] = this.data.fieldConfig
       this.form.form.reset()

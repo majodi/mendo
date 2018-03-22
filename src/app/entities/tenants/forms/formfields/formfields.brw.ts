@@ -19,9 +19,9 @@ import { Validators } from '@angular/forms';
 export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
-      // console.log('onvalchg: ', ctrl, value)
       if(ctrl == 'type'){
         const hideGroup = ['transform', 'required', 'minLength', 'image', 'imagedisplay', 'options']
+        const hideGroup2 = ['showInBrw', 'hideXs', 'allowSort', 'allowfilter']
         this.formConfig.forEach(c => {
           c.doNotPopulate = false
           if(value == 'invoer' && (c.name == 'options' || c.name == 'image' || c.name == 'imagedisplay')){
@@ -33,15 +33,27 @@ export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements
           if(value == 'afbeelding' && hideGroup.includes(c.name)){
             c.doNotPopulate = (c.name == 'image' || c.name == 'imagedisplay') ? false : true
           }
-          if((value == 'vink' || value == 'text') && hideGroup.includes(c.name)){
+          // if(value == 'afbeelding' && c.name == 'value'){
+          //   c.doNotPopulate = true
+          // }          
+          if((value == 'vink' || value == 'tekst') && hideGroup.includes(c.name)){
             c.doNotPopulate = true
           }
-          if(value == 'text' && c.name == 'label'){
+          if(value == 'afbeelding' && (c.name == 'label'  || hideGroup2.includes(c.name))){
             c.doNotPopulate = true
-          }          
+          }
+          if(value == 'tekst' && (c.name == 'value' || hideGroup2.includes(c.name))){
+            c.doNotPopulate = true
+          }
         })
       }
     }},
+    {type: 'beforeSave', code: (action, o) => {
+      if(action == 1){
+        o['form'] = this.gs.NavQueries.find(q => q.fld == 'form').value
+        return Promise.resolve()
+      } else return Promise.resolve()  
+    }}    
   ]
 
   constructor(

@@ -15,6 +15,7 @@ export const defaultColDef = [
     {name: 'code',        header: 'Code', sort: true},
     {name: 'description', header: 'Omschrijving'},
     {name: 'edit',        header: '', iconSelect: rec => 'edit'},
+    {name: 'results',     header: '', iconSelect: rec => 'inbox'},
   ]
 export const defaultFormConfig = [
     {type: 'input', label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},

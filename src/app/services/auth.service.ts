@@ -163,7 +163,8 @@ export class AuthService {
         displayName: user.displayName || noName,
         isAnonymous: user.isAnonymous != undefined ? user.isAnonymous : true,
         providerLogin: user.providerData[0] != undefined && user.providerData[0]['providerId'] != 'password' ? true : false,
-        level: 0
+        level: 0,
+        tenant: this.gs.tenantId
       }
       return userRef.set(data, { merge: true })
     })

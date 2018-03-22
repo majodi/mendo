@@ -1,11 +1,12 @@
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatIconRegistry, MatSidenav } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
-
-
+import { GlobService } from './services/glob.service';
+import { PopupService } from './services/popup.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,13 @@ import { AuthService } from './services/auth.service';
 <div class="main-container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="main-toolbar">
     <button *ngIf="_as.userLevel > 0" mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="app-name">{{_as.tenantName}}</h1>
+    <button *ngIf="_gs.backButton" mat-button color="warn" (click)="routerGoBack()">
+      <mat-icon>fast_rewind</mat-icon>
+      Terug
+    </button>
+    <ng-container *ngIf="!_gs.backButton">
+      <h1 class="app-name" (click)="about()">{{_as.tenantName}}</h1>
+    </ng-container>
     <span class="spacer"></span>
     <mat-menu #accountMenu="matMenu">
       <button mat-menu-item routerLink="/profile"> Profiel </button>
@@ -38,7 +45,7 @@ import { AuthService } from './services/auth.service';
     <mat-sidenav #snav [style.width]="'200px'" class="mendo-dark-theme" [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-nav-list>
-        <a mat-list-item *ngFor="let item of _as.navList" [routerLink]="item.link"><mat-icon>{{item.icon}}</mat-icon>{{item.text}}</a>
+        <a mat-list-item *ngFor="let item of _as.navList" [routerLink]="item.link" (click)="navClick(item)"><mat-icon>{{item.icon}}</mat-icon>{{item.text}}</a>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
@@ -61,6 +68,9 @@ export class AppComponent {
     private sanitizer: DomSanitizer,
     private iconReg: MatIconRegistry,
     private router: Router,
+    private location: Location,
+    public _gs: GlobService,
+    private ps: PopupService,
   ) {
     iconReg.addSvgIcon('google', sanitizer.bypassSecurityTrustResourceUrl('/assets/google.svg'))
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -78,12 +88,24 @@ export class AppComponent {
 
   signOut() {this._as.signOut()}
 
+  navClick() {
+    this._gs.backButton = false
+    this._gs.NavQueries = []
+  }
+
+  routerGoBack() {
+    this._gs.backButton = false
+    this._gs.NavQueries = []
+    this.location.back()
+  }
+
+  about() {
+    this.ps.buttonDialog('Mendo PWA-platform v0.1 NickStick B.V.', 'OK')
+  }
+
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
 }
 
-// .is-mobile .sidenav-container {flex: 1 0 auto;} //When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the <body> to be our scrolling element for mobile layouts.
-// .is-mobile .main-toolbar {position: fixed; z-index: 2;} //Make sure the toolbar will stay on top of the content as it scrolls past.
-// .sidenav-container {flex: 1;} //When the sidenav is not fixed, stretch the sidenav container to fill the available space. This causes <mat-sidenav-content> to act as our scrolling element for desktop layouts.
