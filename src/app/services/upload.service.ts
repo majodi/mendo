@@ -33,10 +33,7 @@ export class UploadService {
       return this.gs.storageBasePath + filepath + '_64_thumb.png'
     }
 
-    setThumb(imageId) {
-      // als thumb not updated dan update
-      // console.log('setThumb: ', imageId)
-    }
+    setThumb(imageId) {}
 
     getFilePath(url, root?) {
       if(root == undefined) {root = `${this.gs.entityBasePath}/`}

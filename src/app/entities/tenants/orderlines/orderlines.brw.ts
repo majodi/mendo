@@ -110,12 +110,24 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
         if(orderlines != null){
           this.orderLineData = orderlines
           this.total = orderlines.reduce((a, b) => a + Number(b['amount']), 0)
+          this.db.updateDoc({total: this.total}, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`)
         }
         this.isLoading = false  
       })
     }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if(this.gs.NavQueries && this.gs.NavQueries.length > 0 && !this.gs.NavQueriesRead){
+      this.gs.NavQueriesRead = true
+      const orderQuery = this.gs.NavQueries.find(nq => nq.fld == 'order' && nq.operator == '==')
+      if(orderQuery != undefined){
+        this.orderLookup.value = ''+orderQuery.value
+        this.db.getDoc(`${this.gs.entityBasePath}/orders/${orderQuery.value}`).then(rec => {
+          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation']})  
+        })
+      }
+    }
+  }
 
   orderChoosen(e) {
     this.db.getDoc(`${this.gs.entityBasePath}/employees/${e['employee']}`).then(rec => {

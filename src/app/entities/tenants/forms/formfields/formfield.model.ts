@@ -42,7 +42,7 @@ export const defaultFormConfig = [
     {type: 'input',         label: 'Min. Lengte',         name: 'minLength',        placeholder: 'Minimale lengte',       value: '', inputType: 'number'},
     {type: 'input',         label: 'Keuze Opties',        name: 'options',          placeholder: 'Keuze Opties',          value: ''},
     {type: 'input',         label: 'Waarde',              name: 'value',            placeholder: 'Veld Waarde',           value: ''},
-    {type: 'lookup',        label: 'Afbeelding',          name: 'image',            placeholder: 'Afbeelding',            value: '', inputValueTransform: forceUppercase, customLookupFld: {path: 'images', tbl: 'image', fld: 'code', overruleVirtual: 'thumbName'}, customUpdateWithLookup: {fld: 'imagedisplay', lookupFld: 'name'}},
+    {type: 'lookup',        label: 'Afbeelding',          name: 'image',            placeholder: 'Afbeelding',            value: '', inputValueTransform: forceUppercase, customLookupFld: {path: 'images', tbl: 'image', fld: 'code', overruleVirtual: 'thumbName'}, customUpdateWithLookup: [{fld: 'imagedisplay', lookupFld: 'name'}]},
     {type: 'imagedisplay',  label: 'Afbeelding',          name: 'imagedisplay',     placeholder: 'Afbeelding',            value: ''},
     {type: 'input',         label: 'Afw. Volgorde',       name: 'order',            placeholder: 'Afwijkende Volgorde',   value: '', inputType: 'number'},
     {type: 'stringdisplay', label: 'Tabelinstelling',     name: 'tabelinstelling',  placeholder: 'Tabelinstelling',       value: ''},

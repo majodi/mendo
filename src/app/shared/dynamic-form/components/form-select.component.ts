@@ -24,7 +24,6 @@ export class FormSelectComponent implements Field {
   onValueChg: Function;
 
   onSelectionChange(e) {
-    // console.log('e value: ', e.value)
     this.config.value = e.value
     if(this.onValueChg != undefined) this.onValueChg(this.config.name, this.config.value);
   }

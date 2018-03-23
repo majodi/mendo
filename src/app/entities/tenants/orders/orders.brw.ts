@@ -19,6 +19,13 @@ import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 })
 export class OrdersBrwComponent extends BrwBaseClass<Order[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
+    {type: 'beforeChgDialog', code: (rec, fld) => {
+      if(fld == 'lines' && !this.selectMode){
+        this.gs.navigateWithQuery('store-tenant/orderlines', 'order', '==', rec['id'])
+        return true
+      }
+      return false
+    }},    
     {type: 'beforeSave', code: (action, o) => {
       if(action == 1 || action == 2){
         return this.db.getDoc(`${this.gs.entityBasePath}/employees/${o['employee']}`).then(employee => {

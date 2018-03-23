@@ -12,7 +12,8 @@ export interface lookupFld {
 
 export interface updateWithLookup {
   fld: string,
-  lookupFld: string
+  lookupFld: string,
+  onlyVirgin?: boolean
 }
 
 export interface FieldConfig {
@@ -39,5 +40,5 @@ export interface FieldConfig {
   customLookupComponent?: Type<any>,
   customLookupItem?: LookupItem,
   customFile?: File,
-  customUpdateWithLookup?: updateWithLookup
+  customUpdateWithLookup?: updateWithLookup[]
 }

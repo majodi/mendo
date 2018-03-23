@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit {
   loginGoogle() {
     this.as.googleLogin()
     .then(v => {
-      console.log('login successful')
       this.router.navigate(['/homepage'])
     })
     .catch(e => this.error = e)

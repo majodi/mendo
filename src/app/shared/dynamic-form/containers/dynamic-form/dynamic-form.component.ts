@@ -75,7 +75,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges() {
-    console.log('onchg: ', )
     if(this.formAction != 0){
       this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
     } else {this.toPopulate = this.config}
@@ -111,7 +110,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
         this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
         this.setFormValue(name, config.type == 'lookup' ? value['id'] : value)
         if((config.customValidator != undefined) && !config.customValidator(config.type == 'lookup' ? value['id'] : value)){
-          console.log('ERR name: ', value)
           this.form.controls[name].setErrors({'invalid': true}, {emitEvent: true})
         }
       }
@@ -120,7 +118,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   handleSubmit(action: string, event?: Event) {
-    // console.log('handle submit config: ', this.config)
     if(event != undefined){
       event.preventDefault();
       event.stopPropagation();  
@@ -173,18 +170,25 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     if(configIndex != -1){
       this.config[configIndex].value = value
       if(this.config[configIndex].customUpdateWithLookup){
-        let configToUpdate = this.config.find((control) => control.name === this.config[configIndex].customUpdateWithLookup.fld)
-        if(this.config[configIndex].type == 'lookup'){
-          this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
-            if(rec){
-              configToUpdate.value = rec[this.config[configIndex].customUpdateWithLookup.lookupFld]
+        this.config[configIndex].customUpdateWithLookup.forEach(customUpdate => {
+          let configToUpdate = this.config.find((control) => control.name === customUpdate.fld)
+          if(!configToUpdate.value || (customUpdate.onlyVirgin == undefined || !customUpdate.onlyVirgin)){
+            if(this.config[configIndex].type == 'lookup' || this.config[configIndex].type == 'pulldown'){
+              this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
+                if(rec){
+                  configToUpdate.value = rec[customUpdate.lookupFld]
+                  if(this.onValueChg != undefined) this.onValueChg();
+                  if(this.form.controls[configToUpdate.name]){
+                    this.form.controls[configToUpdate.name].setValue(configToUpdate.value, {emitEvent: true})
+                  }          
+                }
+              })          
+            } else {
+              configToUpdate.value = value
               if(this.onValueChg != undefined) this.onValueChg();
-            }
-          })          
-        } else {
-          configToUpdate.value = value
-          if(this.onValueChg != undefined) this.onValueChg();
-        }
+            }  
+          }
+        })
       } else {
         if(this.onValueChg != undefined) this.onValueChg(name, value);      
       }

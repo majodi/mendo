@@ -14,14 +14,18 @@ export class GlobService {
     actionMessage = {0:'Selectie', 1:'Toevoegen', 2:'Wijzigen', 3:'Verwijderen', 10:'Formulier'}
 
     NavQueries: QueryItem[] = []
+    NavQueriesRead = false
     backButton = false
 
   constructor(private router: Router) {}
   
   navigateWithQuery(link, fld, operator, value){
-    this.NavQueries.push({fld: fld, operator: operator, value: value})
-    this.backButton = true        
-    return this.router.navigate([link])
+    if(!this.backButton){ // currently can not take nested navQueries
+      this.NavQueries.push({fld: fld, operator: operator, value: value})
+      this.NavQueriesRead = false
+      this.backButton = true        
+      return this.router.navigate([link])  
+    }
 }
 
 }

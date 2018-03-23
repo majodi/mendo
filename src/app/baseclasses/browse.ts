@@ -1,6 +1,7 @@
 import { Input, Output, EventEmitter, Type, Inject, Injector } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { MatDialogRef } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 
 // import { LookupItem } from '../../../shared/custom-components/models/lookup-item.model';
 import { ColumnDefenition } from '../shared/custom-components/models/column-defenition.model'
@@ -37,6 +38,7 @@ export class BrwBaseClass<T> {
   gs: GlobService
   us: UploadService
   cs: CrudService
+  ar: ActivatedRoute
 
   constructor(
     public dialogRef: MatDialogRef<any>,
@@ -48,13 +50,19 @@ export class BrwBaseClass<T> {
     this.gs = injectorSrv.get(GlobService)
     this.us = injectorSrv.get(UploadService)
     this.cs = injectorSrv.get(CrudService)
+    this.ar = injectorSrv.get(ActivatedRoute)
   }
 
   ngOnInit() {
     this.selectMode = this.select
     this.entitySrv.formConfig = this.formConfig
     this.entitySrv.colDef = this.colDef
-    this.baseQueries = this.gs.NavQueries
+    if(!this.gs.NavQueriesRead){
+      this.baseQueries = this.gs.NavQueries
+      this.gs.NavQueriesRead = true  
+    } else {
+      this.baseQueries = []
+    }
     this.initDataSource()
     this.setSelectionItems()
   }
@@ -66,6 +74,7 @@ export class BrwBaseClass<T> {
     } else {
       allQueries = additionalQueries ? additionalQueries : null
     }
+    if(allQueries && allQueries.length > 0){this.selectionActive = true}
     this.isLoading = true
     this.entitySrv.initEntity$(allQueries).takeUntil(this.ngUnsubscribe).subscribe((data: T) => {
       this.data = data
@@ -105,7 +114,12 @@ export class BrwBaseClass<T> {
     if(this.selectionFields.length > 0){
       this.selectionButton = true
       this.selectionFields.forEach(fld => {
-        this.selectionFieldConfig.push(this.formConfig.find(fc => fc.name == fld.name))
+        const formConfig = this.formConfig.find(fc => fc.name == fld.name)
+        if(formConfig != undefined){
+          const matchingBaseQuery = this.baseQueries.find(bq => bq.fld == fld.name)
+          formConfig.value = matchingBaseQuery != undefined ? matchingBaseQuery.value : ''
+          this.selectionFieldConfig.push(formConfig)
+        }
       })
     }
   }
@@ -137,7 +151,6 @@ export class BrwBaseClass<T> {
           Object.keys(frmResult.value).forEach(frmFld => {
             addQs.push({fld: frmFld, operator: '==', value: frmResult.value[frmFld]})
           })
-          if(addQs.length > 0){this.selectionActive = true}
           this.initDataSource(addQs)
         }
         if(frmResult && (frmResult.response == 'delete')){

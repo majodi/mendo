@@ -25,6 +25,7 @@ import { EmployeesBrwComponent } from './entities/tenants/organisations/employee
 
 import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { PopupDialog } from './shared/custom-components/components/popupdialog.component';
+import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
 
 import './rxjs-operators';
 
@@ -47,7 +48,7 @@ import './rxjs-operators';
     AppLookupModule,
     AppRoutingModule, // onderaan houden
   ],
-  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, PopupDialog],
+  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, PopupDialog],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })

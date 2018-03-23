@@ -22,11 +22,9 @@ export class WaitOnAuthComponent {
 
   constructor(public as: AuthService, public router: Router) {
     this.as.authReady$.subscribe(() => {
-      console.log('auth ready in wait')
       if(this.as.isLoggedIn){
         const redirectRoute = this.as.navList.find(item => item['link'] == this.as.redirectUrl)
         let redirect = redirectRoute != undefined ? redirectRoute['link'] : '/homepage'
-        console.log('nav to: ', redirect)
         this.router.navigate([redirect])
       }
     })

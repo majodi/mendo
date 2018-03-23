@@ -17,16 +17,14 @@ import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 export class FormsBrwComponent extends BrwBaseClass<Form[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
     {type: 'beforeChgDialog', code: (rec, fld) => {
-      // console.log('beforeChgDialog embed', rec, fld)
-      if(fld == 'edit'){
+      if(fld == 'edit' && !this.selectMode){
         this.gs.navigateWithQuery('/app-tenant/formfields', 'form', '==', rec['id'])
         return true
       }
-      if(fld == 'results'){
+      if(fld == 'results' && !this.selectMode){
         this.gs.navigateWithQuery('/app-tenant/formresults', 'form', '==', rec['id'])
         return true
       }
-      // return Promise.resolve('nothing...')
       return false
     }}
   ]

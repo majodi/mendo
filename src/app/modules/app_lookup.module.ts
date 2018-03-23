@@ -11,6 +11,10 @@ import { OrganisationService } from '../entities/tenants/organisations/organisat
 
 import { OrdersBrwComponent } from '../entities/tenants/orders/orders.brw';
 import { OrderService } from '../entities/tenants/orders/order.service';
+import { ArticlesBrwComponent } from '../entities/tenants/articles/articles.brw';
+import { ArticleService } from '../entities/tenants/articles/article.service';
+import { CategoryService } from '../entities/tenants/categories/category.service';
+import { PropertyService } from '../entities/tenants/properties/property.service';
 
 @NgModule({
   imports: [
@@ -21,17 +25,22 @@ import { OrderService } from '../entities/tenants/orders/order.service';
       ImagesBrwComponent,
       EmployeesBrwComponent,
       OrdersBrwComponent,
+      ArticlesBrwComponent,
     ],
   exports: [
       ImagesBrwComponent,
       EmployeesBrwComponent,
       OrdersBrwComponent,
+      ArticlesBrwComponent,
     ],
   providers: [
       ImageService,
       EmployeeService,
       OrganisationService,
       OrderService,
+      ArticleService,
+      CategoryService,
+      PropertyService,
     ]
 })
 export class AppLookupModule { }

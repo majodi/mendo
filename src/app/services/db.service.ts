@@ -47,7 +47,6 @@ export class DbService {
 
   addDoc(data, collection: string) {
     data.meta = this.getMeta()
-    // console.log('data: ', data)
     return this.db.collection(collection).add(data)
   }
 
@@ -56,7 +55,6 @@ export class DbService {
   }
 
   updateDoc(data, path: string) {
-    console.log('updatedoc: ', path, data)
     return this.db.doc(path).update(data)
   }
 

@@ -31,9 +31,7 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
   }
 
   checkLogin(url: string): boolean {
-    // if (this.as.isLoggedIn) {this.router.navigate(['/homepage']) ;return true};
     if (this.as.isLoggedIn) {return true};
-    console.log('set redirect url to: ', url)
     this.as.redirectUrl = url;
     this.router.navigate(['/waitOnAuth']);
     return false;

@@ -20,8 +20,7 @@ export class CrudService {
             saveEmbedPromise = saveEmbed(1, frmResult.value)
           }
           saveEmbedPromise.then(() => {
-            // console.log('frmresult: ', frmResult)
-            return this.db.addDoc(this.fixSubProperties(frmResult.value), path)//.then(id => {}).catch(err => console.log(err))  
+            return this.db.addDoc(this.fixSubProperties(frmResult.value), path)
           })
         }
       })
@@ -44,7 +43,7 @@ export class CrudService {
             saveEmbedPromise = saveEmbed(1, frmResult.value)
           }
           saveEmbedPromise.then(() => {
-            return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)//.catch(err => console.log(err))
+            return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)
           })
         }
         if(frmResult && (frmResult.response == 'delete')){
@@ -53,7 +52,7 @@ export class CrudService {
               this.us.deleteUpload(rec[config.name])
             }
           })
-          return this.db.deleteDoc(`${path}/${rec['id']}`)//.catch(err => console.log(err))
+          return this.db.deleteDoc(`${path}/${rec['id']}`)
         }
       })
     }

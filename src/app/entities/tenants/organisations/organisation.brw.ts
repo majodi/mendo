@@ -6,6 +6,7 @@ import { OrganisationService } from './organisation.service';
 
 import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 
 @Component({
   selector: 'app-organisations-brw',
@@ -13,6 +14,15 @@ import { MatDialogRef } from '@angular/material';
   styles: [``]
 })
 export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> implements OnInit, OnDestroy {
+  embeds: Embed[] = [
+    {type: 'beforeChgDialog', code: (rec, fld) => {
+      if(fld == 'employees'){
+        this.gs.navigateWithQuery('app-tenant/employees', 'organisation', '==', rec['id'])
+        return true
+      }
+      return false
+    }}
+  ]
 
   constructor(
     public dialogRef: MatDialogRef<any>,

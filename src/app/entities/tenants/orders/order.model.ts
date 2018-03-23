@@ -18,10 +18,11 @@ export const defaultTitle = 'Orders'
 export const defaultTitleIcon = 'list'
 export const defaultColDef = [
     {name: 'number',            header: 'Order', sort: true},       // status with icon
-    {name: 'date',              header: 'Datum', sort: true},
+    {name: 'date',              header: 'Datum', sort: true, hideXs: true},
     {name: 'organisation_v',    header: 'Organisatie', sort: true, hideXs: true},
     {name: 'employee_v',        header: 'Medewerker', sort: true},
     {name: 'total',             header: 'Totaal'},
+    {name: 'lines',             header: 'Regels', iconSelect: rec => 'view_list'},
   ]
 export const defaultFormConfig = [
     {type: 'input',     label: 'Order',         name: 'number',       placeholder: 'Ordernummer',  value: '', initWithCounter: 'orderNumber', disabled: true},

@@ -45,7 +45,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   onButtonClicked(e) {
-    // console.log('e: ', e['buttonLink'])
     this.router.navigate([e['buttonLink']])
   }
 

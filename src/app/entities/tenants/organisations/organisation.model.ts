@@ -16,7 +16,8 @@ export const defaultColDef = [
     {name: 'address.name',      header: 'Naam',       sort: true},
     {name: 'address.address',   header: 'Adres',      hideXs: true},
     {name: 'address.postcode',  header: 'Postcode',   hideXs: true},
-    {name: 'address.city',      header: 'Woonplaats', sort: true}
+    {name: 'address.city',      header: 'Woonplaats', sort: true},
+    {name: 'employees',         header: 'Medewerkers', iconSelect: rec => 'person'},
   ]
 export const defaultFormConfig = [
     {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
