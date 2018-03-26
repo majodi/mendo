@@ -5,6 +5,16 @@ import { CategoryService } from '../categories/category.service';
 import { ArticleService } from '../articles/article.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { QueryItem } from '../../../models/query-item.interface';
+import { DbService } from '../../../services/db.service';
+import { GlobService } from '../../../services/glob.service';
+import { PopupService } from '../../../services/popup.service';
+import { defaultFormConfig } from '../orderlines/orderline.model';
+import { CrudService } from '../../../services/crud.service';
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
+import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
+import { Image } from '../images/image.model';
+import { Property } from '../properties/property.model';
+import { CartComponent } from './cart';
 
 @Component({
   selector: 'app-store',
@@ -23,6 +33,10 @@ import { QueryItem } from '../../../models/query-item.interface';
     [buttonIcon]="'shopping_cart'"
     [buttonText]="'Bestel'"
     [data]="articleData"
+    [showFilter]="true"
+    [actionButtonIcon]="actionIcon"
+    [actionButtonInfo]="lineCount"
+    (actionButtonClicked)="orderFulfilment($event)"
     (clicked)="onClickArticle('tile', $event)"
     (buttonClicked)="onClickArticle('button', $event)"
   ></app-grid>
@@ -35,10 +49,51 @@ export class StoreComponent implements OnInit, OnDestroy {
   articleData: Tile[]
   ngUnsubscribe = new Subject<string>()
   articleSelect = new BehaviorSubject<string|null>(null)
+  actionIcon = ''
+  currentOrder = ''
+  lineCount = 0
+  formConfig: FieldConfig[] = defaultFormConfig
+  embeds: Embed[] = [
+    {type: 'onValueChg', code: () => {
+      const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
+      const number = this.formConfig[this.formConfig.findIndex(c => c.name == 'number')].value
+      if(price_unit && number){
+        this.formConfig[this.formConfig.findIndex(c => c.name == 'amount')].value = (Number(price_unit) * Number(number)).toString()
+      }
+      const imageId = this.formConfig[this.formConfig.findIndex(c => c.name == 'imageid')].value
+      if(imageId){
+        const image = this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', imageId).subscribe((image: Image) => {
+          return this.formConfig[this.formConfig.findIndex(c => c.name == 'imagedisplay')].value = image['name']
+        })
+      }
+      const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
+      if(sizesId){
+        const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
+          return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = property['choices'].split(',')
+        })
+      }
+      const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name == 'colors')].value
+      if(colorsId){
+        const colors = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', colorsId).subscribe((property: Property) => {
+          return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = property['choices'].split(',')
+        })
+      }
+    }},
+    {type: 'beforeSave', code: (action, o) => {
+      if(action == 1){
+        o['order'] = this.currentOrder
+        return Promise.resolve()
+      } else return Promise.resolve()  
+    }}    
+  ]
 
   constructor(
     private CategorySrv: CategoryService,
     private ArticleSrv: ArticleService,
+    private db: DbService,
+    private gs: GlobService,
+    private ps: PopupService,
+    private cs: CrudService,
   ) {
     this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
@@ -73,14 +128,48 @@ export class StoreComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.refreshCart()
+  }
+
+  refreshCart() {
+    this.db.getFirst(`${this.gs.entityBasePath}/orders`, [
+      {fld:'status', operator:'==', value:'new'},
+      {fld:'employee', operator:'==', value:'5NXaJ8AOcjfmw7xjHS32'}
+    ]).subscribe(o => {
+      if(o['number']){
+        this.currentOrder = o['id']
+        this.actionIcon = 'shopping_cart'
+        this.db.getCount(`${this.gs.entityBasePath}/orderlines`, [{fld: 'order', operator: '==', value: this.currentOrder}]).subscribe(count => {
+          this.lineCount = count
+        })
+      }
+    })
+  }
 
   onClickCategory(e) {
     this.articleSelect.next(e.id)
   }
 
   onClickArticle(clickedOn, e) {
-    console.log('naar artikelinfo of bestelformulier', clickedOn)
+    if(clickedOn == 'tile'){
+      this.ps.buttonDialog(`${e['title']}\r\nToevoegen aan bestelling?`, 'OK', 'Annuleer').then(v => {
+        if(v == 1){
+          const articleFld = this.formConfig.find(c => c.name == 'article')
+          articleFld['doNotPopulate'] = true
+          articleFld['value'] = e['id']
+          const description_s = this.formConfig.find(c => c.name == 'description_s')
+          description_s['doNotPopulate'] = false
+          const description_l = this.formConfig.find(c => c.name == 'description_l')
+          description_l['doNotPopulate'] = false
+          this.cs.insertDialog(this.formConfig, {order: this.currentOrder, article: e['id']}, `${this.gs.entityBasePath}/orderlines`, this['embeds'] ? this['embeds'] : undefined).then(id => {this.refreshCart()}).catch(err => {console.log(err)})
+        }
+      })
+    }
+  }
+  
+  orderFulfilment(e) {
+    this.ps.BrowseDialog(CartComponent, false, true, [{fld: 'order', operator: '==', value: this.currentOrder}]).then(v => this.refreshCart())
   }
 
   ngOnDestroy() {

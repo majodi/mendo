@@ -12,11 +12,13 @@ import { OrdersBrwComponent } from '../orders/orders.brw';
 import { Organisation } from '../organisations/organisation.model';
 import { Employee } from '../organisations/employees/employee.model';
 import { GlobService } from '../../../services/glob.service';
+import { Property } from '../properties/property.model';
+import { Image } from '../images/image.model';
 
 @Component({
   selector: 'app-orderlines-brw',
   styles: [`
-  .boxed {margin: 10px 10px; border: 3px solid #3f51b5; border-radius: 5px; width:25%; padding: 10px}
+  .boxed {margin: 10px 10px; border: 3px solid #3f51b5; border-radius: 5px; width:65%; padding: 10px}
   `],
   template: `
   <div style="width:100%">
@@ -60,15 +62,33 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   title = defaultTitle
   titleIcon = defaultTitleIcon
   columnDef = defaultColDef
-  formConfig = defaultFormConfig
+  formConfig: FieldConfig[] = defaultFormConfig
   isLoading = false
   total = 0
   embeds: Embed[] = [
     {type: 'onValueChg', code: () => {
-      let price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
-      let number = this.formConfig[this.formConfig.findIndex(c => c.name == 'number')].value
+      const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
+      const number = this.formConfig[this.formConfig.findIndex(c => c.name == 'number')].value
       if(price_unit && number){
         this.formConfig[this.formConfig.findIndex(c => c.name == 'amount')].value = (Number(price_unit) * Number(number)).toString()
+      }
+      const imageId = this.formConfig[this.formConfig.findIndex(c => c.name == 'imageid')].value
+      if(imageId){
+        const image = this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', imageId).subscribe((image: Image) => {
+          return this.formConfig[this.formConfig.findIndex(c => c.name == 'imagedisplay')].value = image['name']
+        })
+      }
+      const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
+      if(sizesId){
+        const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
+          return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = property['choices'].split(',')
+        })
+      }
+      const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name == 'colors')].value
+      if(colorsId){
+        const colors = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', colorsId).subscribe((property: Property) => {
+          return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = property['choices'].split(',')
+        })
       }
     }},
     {type: 'beforeSave', code: (action, o) => {
@@ -148,7 +168,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     }    
     if(brwClick.fld == 'insert'){
       this.formConfig.map(fld => fld.value = '')
-      this.isLoading = true
+      // this.isLoading = true
       this.cs.insertDialog(this.formConfig, rec, this.orderLineSrv.entityPath, this['embeds'] ? this['embeds'] : undefined).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }

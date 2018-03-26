@@ -13,12 +13,20 @@ styles: [`
 .outer {white-space: nowrap; overflow-x:scroll;}
 .inner {margin: 0 0.5% 0.5%; display: inline-block;}
 .item-title {font-size: calc(16px + 0.25vw); line-height: calc(22px + 0.25vw); margin-bottom: 0}
+.badge {margin: 0px; padding: 2px 6px 0px; border: 1px solid black; color: white; border-radius: 20px 20px; background: red; width: 10px; height: 20px;}
 `],
 template: `
 <div [@pageAnim] style="padding: 0px 5px; width:100%">
-  <div fxLayout="row" fxLayoutAlign="start start" style="margin: 0 0.5%">
-      <mat-icon *ngIf="titleIcon" fxFlex class="container-title-icon">{{titleIcon}}</mat-icon>
-      <p fxFlex class="mat-display-1 container-title-text">{{title}}</p>
+  <div fxLayout="row" fxLayoutAlign="start center" style="margin: 0 0.5% 1%">
+    <mat-icon *ngIf="titleIcon" class="container-title-icon">{{titleIcon}}</mat-icon>
+    <p class="mat-display-1 container-title-text">{{title}}</p>
+    <mat-form-field *ngIf="showFilter" fxFlex="40" style="margin-left:2vw">
+      <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+    <div *ngIf="actionButtonIcon" fxLayout="row" fxLayoutAlign="start center" (click)="onActionButtonClick('action')" style="margin-left: 2vw">
+      <button mat-fab color="primary"><mat-icon>{{actionButtonIcon}}</mat-icon></button>
+      <p fxFlexAlign="start" class="badge">{{actionButtonInfo}}</p>
+    </div>
   </div>
   <div [ngClass]="{'outer': singleRow}">
     <div *ngFor="let tile of tiles" class="inner" [ngStyle]="getItemStyle()">
@@ -46,6 +54,7 @@ template: `
 
 export class GridComponent implements OnInit, OnDestroy, OnChanges {
   private ngUnsubscribe = new Subject<string>()
+  filterKeyUp = new Subject<string>()
   @Input() singleRow: boolean
   @Input() title: string
   @Input() titleIcon: string
@@ -54,13 +63,23 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() maxImageHeight: string
   @Input() maxItemWidth: string
   @Input() data: Tile[]
+  @Input() showFilter: boolean
+  @Input() actionButtonIcon: string
+  @Input() actionButtonInfo: string
   @Output() clicked = new EventEmitter();
   @Output() buttonClicked = new EventEmitter();
+  @Output() actionButtonClicked = new EventEmitter();
   tiles: Tile[]
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.filterKeyUp
+    .takeUntil(this.ngUnsubscribe)
+    .debounceTime(400)
+    .distinctUntilChanged()
+    .subscribe(v => this.applyFilter(v))
+  }
 
   ngOnChanges() {
     this.loadData()
@@ -68,6 +87,18 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
 
   loadData() {
     this.tiles = this.data
+  }
+
+  applyFilter(filter) {
+    this.tiles = this.data.filter(item => {
+      let flatDataStr = ''
+      Object.keys(item).filter(v => !['id','meta'].includes(v)).map(l1 => {
+              if(typeof item[l1] == 'object' && item[l1] != null) {
+                  Object.keys(item[l1]).map(l2 => flatDataStr += item[l1][l2] ? item[l1][l2] : '')
+              } else {flatDataStr += item[l1] ? item[l1] : ''}  
+      })      
+      return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) != -1;    
+    })
   }
 
   getItemStyle() {
@@ -95,6 +126,10 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  onActionButtonClick(e) {
+    this.actionButtonClicked.emit(e)
+  }
+  
   setColumns() {}
 
   ngOnDestroy() {

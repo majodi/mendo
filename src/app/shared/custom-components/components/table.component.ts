@@ -22,7 +22,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
   <div [@pageAnim]>
   <mat-card class="gradient-bg">
       <div fxLayout="column">
-      <div class="page-header" fxLayout="row" fxLayoutAlign="space-around start">
+      <div *ngIf="!soberMode" class="page-header" fxLayout="row" fxLayoutAlign="space-around start">
           <div *ngIf="!mediaLtMd" fxFlex="30" fxLayout="row" fxLayoutAlign="start start">
               <mat-icon fxFlex="noshrink" class="title-icon">{{titleIcon}}</mat-icon>
               <h1 fxFlex class="mat-display-1">{{title}}</h1>
@@ -34,6 +34,11 @@ import { ColumnDefenition } from '../models/column-defenition.model'
           <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
               <button class="lg-button" *ngIf="insertButton" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
               <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon> Selectie</button>
+          </div>
+      </div>
+      <div *ngIf="soberMode" class="page-header" style="padding: 0px">
+          <div fxLayout="row" fxLayoutAlign="start start">
+              <h1 fxFlex class="mat-display-1">{{title}}</h1>
           </div>
       </div>
       <!-- table -->
@@ -85,6 +90,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() title: string
   @Input() titleIcon: string
   @Input() selectMode: boolean
+  @Input() soberMode: boolean
   @Input() backRoute: string
   @Input() isLoading = true
   @Input() insertButton = true

@@ -9,8 +9,7 @@ import { Observable } from 'rxjs';
   selector: 'form-stringdisplay',
   template: `
   <div *ngIf="!config.hidden">
-    <p class="mat-title">{{config.label}}: {{config.value}}</p>
-    <br><br>
+    <p class="mat-title">{{config.label}}: <span class="mat-body-2">{{config.value}}</span></p>
   </div>
   `
 })

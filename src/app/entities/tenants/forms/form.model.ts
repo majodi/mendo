@@ -14,8 +14,8 @@ export const defaultTitleIcon = 'art_track'
 export const defaultColDef = [
     {name: 'code',        header: 'Code', sort: true},
     {name: 'description', header: 'Omschrijving'},
-    {name: 'edit',        header: 'Velden', iconSelect: rec => 'edit'},
-    {name: 'results',     header: 'Data', iconSelect: rec => 'inbox'},
+    {name: 'edit',        header: 'Velden', icon: 'edit'},
+    {name: 'results',     header: 'Data', icon: 'inbox'},
   ]
 export const defaultFormConfig = [
     {type: 'input', label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},

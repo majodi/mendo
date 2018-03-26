@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
+import { MatDialogModule, MatButtonModule } from '@angular/material';
 
 import { SharedModule } from '../shared/shared.module';
 
@@ -15,23 +16,28 @@ import { ArticlesBrwComponent } from '../entities/tenants/articles/articles.brw'
 import { ArticleService } from '../entities/tenants/articles/article.service';
 import { CategoryService } from '../entities/tenants/categories/category.service';
 import { PropertyService } from '../entities/tenants/properties/property.service';
+import { CartComponent } from '../entities/tenants/store/cart';
+import { OrderLineService } from '../entities/tenants/orderlines/orderline.service';
 
 @NgModule({
   imports: [
       CommonModule,
       SharedModule,
+      MatDialogModule, MatButtonModule,
     ],
   declarations: [
       ImagesBrwComponent,
       EmployeesBrwComponent,
       OrdersBrwComponent,
       ArticlesBrwComponent,
+      CartComponent,
     ],
   exports: [
       ImagesBrwComponent,
       EmployeesBrwComponent,
       OrdersBrwComponent,
       ArticlesBrwComponent,
+      CartComponent,
     ],
   providers: [
       ImageService,
@@ -41,6 +47,7 @@ import { PropertyService } from '../entities/tenants/properties/property.service
       ArticleService,
       CategoryService,
       PropertyService,
+      OrderLineService,
     ]
 })
 export class AppLookupModule { }

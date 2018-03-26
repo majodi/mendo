@@ -95,6 +95,42 @@ export class DbService {
     })
   }
 
+  getFirst(collection: string, queries: QueryItem[]) {
+    return this.db.collection(collection, ref => {
+      let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;
+      if (queries){
+        queries.forEach(q => {
+          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
+        })
+      }
+      return query.limit(1);
+    })
+    .snapshotChanges()
+    .map(actions => {
+      if(actions.length > 0){
+        const data = actions[0].payload.doc.data()
+        const id = actions[0].payload.doc.id
+        return { id, ...data }
+      } else {return {}}
+    }).take(1)
+  }
+
+  getCount(collection: string, queries: QueryItem[]) {
+    return this.db.collection(collection, ref => {
+      let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;
+      if (queries){
+        queries.forEach(q => {
+          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
+        })
+      }
+      return query;
+    })
+    .snapshotChanges()
+    .map(children => {
+      return children.length
+    })
+  }
+
   getIncrementedCounter(counterName: string) {
     let new_count = 0
     const counterRef = firebase.firestore().doc(`${this.gs.entityBasePath}/settings/${counterName}`)

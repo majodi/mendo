@@ -11,18 +11,26 @@ export interface Order {
     date: Date;
     total: number;
     line_count: number;
-    status: string; // new, closed, processed, delivered, cancelled
+    status: string; // new (fiber_new), closed (lock_outline), approved (thumb_up), processed (done), delivered (done_all), cancelled (cancel)
 }
 
 export const defaultTitle = 'Orders'
 export const defaultTitleIcon = 'list'
 export const defaultColDef = [
-    {name: 'number',            header: 'Order', sort: true},       // status with icon
+    {name: 'number',            header: 'Order', sort: true},
+    {name: 'status',            header: 'Status', sort: true, iconSelect: rec => {
+        if(rec['status'] == 'new') return 'fiber_new'
+        if(rec['status'] == 'closed') return 'lock_outline'
+        if(rec['status'] == 'approved') return 'thumb_up'
+        if(rec['status'] == 'processed') return 'done'
+        if(rec['status'] == 'delivered') return 'done_all'
+        if(rec['status'] == 'cancelled') return 'cancel'
+    }},
     {name: 'date',              header: 'Datum', sort: true, hideXs: true},
     {name: 'organisation_v',    header: 'Organisatie', sort: true, hideXs: true},
     {name: 'employee_v',        header: 'Medewerker', sort: true},
     {name: 'total',             header: 'Totaal'},
-    {name: 'lines',             header: 'Regels', iconSelect: rec => 'view_list'},
+    {name: 'lines',             header: 'Regels', icon: 'view_list'},
   ]
 export const defaultFormConfig = [
     {type: 'input',     label: 'Order',         name: 'number',       placeholder: 'Ordernummer',  value: '', initWithCounter: 'orderNumber', disabled: true},

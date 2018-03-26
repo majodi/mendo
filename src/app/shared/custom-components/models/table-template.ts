@@ -4,6 +4,7 @@ export const defaultTableTemplate = `
   [titleIcon]="titleIcon"
   [isLoading]="isLoading"
   [selectMode]="selectMode"
+  [soberMode]="soberMode"
   [selectionButton]="selectionButton"
   [selectionActive]="selectionActive"
   [data]="data"

@@ -18,14 +18,17 @@ import { EntityService } from '../models/entity-service.interface';
 
 export class BrwBaseClass<T> {
   @Input() select: boolean
+  @Input() sober: boolean
   @Output() selected = new EventEmitter()
   data: T
   ngUnsubscribe = new Subject<string>()
+  dataLoaded = new Subject()
   userDefinedBrowse = false
   title = ''
   titleIcon = ''
   isLoading = true
   selectMode = false
+  soberMode = false
   selectionButton = false
   selectionActive = false
   colDef: ColumnDefenition[]
@@ -55,6 +58,7 @@ export class BrwBaseClass<T> {
 
   ngOnInit() {
     this.selectMode = this.select
+    this.soberMode = this.sober
     this.entitySrv.formConfig = this.formConfig
     this.entitySrv.colDef = this.colDef
     if(!this.gs.NavQueriesRead){
@@ -78,6 +82,7 @@ export class BrwBaseClass<T> {
     this.isLoading = true
     this.entitySrv.initEntity$(allQueries).takeUntil(this.ngUnsubscribe).subscribe((data: T) => {
       this.data = data
+      this.dataLoaded.next()
       this.isLoading = false
     })
   }

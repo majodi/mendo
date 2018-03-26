@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 
 import { SharedModule } from '../../shared/shared.module';
 import { StoreComponent } from '../../entities/tenants/store/store';
+// import { CartComponent } from '../../entities/tenants/store/cart';
 import { ArticleService } from '../../entities/tenants/articles/article.service';
 import { CategoryService } from '../../entities/tenants/categories/category.service';
 import { StoreUserRoutingModule } from './store_user.routing.module';
@@ -15,11 +16,14 @@ import { StoreUserRoutingModule } from './store_user.routing.module';
     ],
   declarations: [
       StoreComponent,
+      // CartComponent,
     ],
   exports: [
       StoreComponent,
+      // CartComponent,
     ],
-    providers: [
+  entryComponents: [],
+  providers: [
       ArticleService,
       CategoryService,
     ]    

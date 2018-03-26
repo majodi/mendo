@@ -27,6 +27,8 @@ import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
 import { PopupDialog } from './shared/custom-components/components/popupdialog.component';
 import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
 
+import { CartComponent } from './entities/tenants/store/cart';
+
 import './rxjs-operators';
 
 @NgModule({
@@ -48,7 +50,7 @@ import './rxjs-operators';
     AppLookupModule,
     AppRoutingModule, // onderaan houden
   ],
-  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, PopupDialog],
+  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, CartComponent, PopupDialog],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })

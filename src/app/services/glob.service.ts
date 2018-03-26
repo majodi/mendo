@@ -17,6 +17,8 @@ export class GlobService {
     NavQueriesRead = false
     backButton = false
 
+    activeOrder: string
+
   constructor(private router: Router) {}
   
   navigateWithQuery(link, fld, operator, value){

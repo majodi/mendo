@@ -17,7 +17,7 @@ import { LookupItem } from '../models/lookup-item.model';
       (keyup)="onKeyUp($event)"
       [formControl]="lookupInputCtrl"
       [placeholder]="lookupPlaceholder"
-      [disabled]=isDisabled
+      [hidden]=isDisabled
     >
   </mat-form-field>
   <button
@@ -26,6 +26,7 @@ import { LookupItem } from '../models/lookup-item.model';
     fxFlex="10"
     fxFlexAlign="center"
     mat-button
+    [disabled]=isDisabled
     (click)="lookupButtonClick()">
     <mat-icon>search</mat-icon>
   </button>
@@ -66,13 +67,13 @@ export class LookupComponent {
       if(this.lastFoundFld != x){
         this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.collectionPath}`, this.collectionFld, x, this.numeric ? true : undefined).subscribe(rec => {
           if(rec){
-            displayValue = this.objectValue(rec, this.lookupItemDef.display) + ' - ' + this.objectValue(rec, this.lookupItemDef.subDisplay)
+            displayValue = this.objectValue(rec, this.lookupItemDef.display) + (this.objectValue(rec, this.lookupItemDef.subDisplay) != undefined ? ' - ' + this.objectValue(rec, this.lookupItemDef.subDisplay) : '')
             this.setControlValue(rec.id, this.objectValue(rec, this.lookupItemDef.display), this.objectValue(rec, this.lookupItemDef.subDisplay))
             this.itemChosen.emit(rec)
           }
         })
       } else {
-        displayValue = this.lastFoundFld + ' - ' + this.lastFoundSub
+        displayValue = this.lastFoundFld + (this.lastFoundSub != undefined ? ' - ' + this.lastFoundSub : '')
       }
       this.display = displayValue
       return Observable.of(input)

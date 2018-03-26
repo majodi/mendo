@@ -10,18 +10,18 @@ import { PopupService } from './services/popup.service';
 
 @Component({
   selector: 'app-root',
-  styles: [`
-  .main-container {display: flex; flex-direction: column; position: absolute; top: 0; bottom: 0; left: 0; right: 0;}
-  .spacer {-webkit-box-flex: 1; -ms-flex: 1 1 auto; flex: 1 1 auto;}
-  .avatar-img {border-radius: 50%; width:40px;}
-  .is-mobile .sidenav-container {flex: 1 0 auto;}
-  .is-mobile .main-toolbar {position: fixed; z-index: 2;}
-  h1.app-name {margin-left: 8px;}
-  .sidenav-container {flex: 1;}
-  .mat-list-item {font-size:12px;}
-  .mat-list-item mat-icon {margin-right:10px;}
-  `],
-  template: `
+styles: [`
+.main-container {display: flex; flex-direction: column; position: absolute; top: 0; bottom: 0; left: 0; right: 0;}
+.spacer {-webkit-box-flex: 1; -ms-flex: 1 1 auto; flex: 1 1 auto;}
+.avatar-img {border-radius: 50%; width:40px;}
+.is-mobile .sidenav-container {flex: 1 0 auto;}
+.is-mobile .main-toolbar {position: fixed; z-index: 2;}
+h1.app-name {margin-left: 8px;}
+.sidenav-container {flex: 1;}
+.mat-list-item {font-size:12px;}
+.mat-list-item mat-icon {margin-right:10px;}
+`],
+template: `
 <div class="main-container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="main-toolbar">
     <button *ngIf="_as.userLevel > 0" mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
@@ -108,4 +108,3 @@ export class AppComponent {
   }
 
 }
-

@@ -12,6 +12,8 @@ import { AppUserRoutingModule } from './app_user.routing.module';
 
 import { AuthGuard } from '../auth-guard.service';
 
+// import { CartComponent } from '../entities/tenants/store/cart';
+
 @NgModule({
   imports: [
       CommonModule,
@@ -26,6 +28,7 @@ import { AuthGuard } from '../auth-guard.service';
       WaitOnAuthComponent,
       HomePageComponent,
     ],
+  entryComponents: [],
   providers: [
       AuthGuard,
       BulletinService,

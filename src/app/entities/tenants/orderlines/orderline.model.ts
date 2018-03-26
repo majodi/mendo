@@ -9,6 +9,8 @@ export interface OrderLine {
     order: string; // order
     article: string; // article
     price_unit: number;
+    size: string;
+    color: string;
     number: number;
     amount: number;    
 }
@@ -27,9 +29,24 @@ export const defaultFormConfig = [
         customLookupFld: {path: 'articles', tbl: 'article', fld: 'code'},
         customLookupComponent: ArticlesBrwComponent,
         customLookupItem: {id: '', display: 'code', subDisplay: 'description_s', addSearch: 'description_l'},
-        customUpdateWithLookup: [{fld: 'price_unit', lookupFld: 'price'}]
+        customUpdateWithLookup: [
+            {fld: 'description_s', lookupFld: 'description_s'},
+            {fld: 'description_l', lookupFld: 'description_l'},
+            {fld: 'price_unit', lookupFld: 'price'},
+            {fld: 'sizes', lookupFld: 'measurements'},
+            {fld: 'colors', lookupFld: 'colors'},
+            {fld: 'imageid', lookupFld: 'image'}
+        ]
     },
-    {type: 'stringdisplay', label: 'Prijs',     name: 'price_unit', placeholder: 'Prijs per eenheid',  value: '0'},
-    {type: 'input',         label: 'Aantal',    name: 'number',     placeholder: 'Aantal',  value: '0'},
-    {type: 'stringdisplay', label: 'Bedrag',    name: 'amount',     placeholder: 'Bedrag',  value: '0'},
+    {type: 'stringdisplay', label: 'Afbeelding',    name: 'imageid',        placeholder: 'Afbeelding',  value: '', doNotPopulate: true},
+    {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: ''},
+    {type: 'stringdisplay', label: 'Artikel',       name: 'description_s',  placeholder: 'Artikel',     value: '', doNotPopulate: true},
+    {type: 'stringdisplay', label: 'Omschrijving',  name: 'description_l',  placeholder: 'Omschrijving', value: '', doNotPopulate: true},
+    {type: 'stringdisplay', label: 'Prijs',         name: 'price_unit',     placeholder: 'Prijs per eenheid',  value: '0'},
+    {type: 'stringdisplay', label: 'Maten',         name: 'sizes',          placeholder: 'Maten',       value: '', doNotPopulate: true},
+    {type: 'select',        label: 'Maat',          name: 'size',           placeholder: 'Maat',        value: '', options: []},
+    {type: 'stringdisplay', label: 'Kleuren',       name: 'colors',         placeholder: 'Kleuren',     value: '', doNotPopulate: true},
+    {type: 'select',        label: 'Kleur',         name: 'color',          placeholder: 'Kleur',       value: '', options: []},
+    {type: 'input',         label: 'Aantal',        name: 'number',         placeholder: 'Aantal',      value: '0'},
+    {type: 'stringdisplay', label: 'Bedrag',        name: 'amount',         placeholder: 'Bedrag',      value: '0'},
 ]

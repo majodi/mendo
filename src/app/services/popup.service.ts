@@ -4,12 +4,13 @@ import { MatDialog } from '@angular/material';
 import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
 import { FormDialogComponent } from '../shared/dynamic-form/containers/form-dialog/form-dialog.component';
 import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
-// import { BrowseDialogComponent } from '../shared/dynamic-form/containers/browse-dialog/browse-dialog.component';
+import { QueryItem } from '../models/query-item.interface';
+import { GlobService } from './glob.service';
 
 @Injectable()
 export class PopupService {
   
-    constructor(private dialog: MatDialog) { }
+    constructor(private dialog: MatDialog, private gs: GlobService) { }
 
     buttonDialog(text, button1, button2?) {
       let dialogRef = this.dialog.open(PopupDialog, {
@@ -33,12 +34,23 @@ export class PopupService {
       });
     }
 
-    BrowseDialog(brwComponent: Type<any>) {
+    BrowseDialog(brwComponent: Type<any>, selectMode?: boolean, soberMode?: boolean, query?: QueryItem[]) {
+      if(query != undefined){
+        query.forEach(q => {
+          this.gs.NavQueries.push({fld: q.fld, operator: q.operator, value: q.value})
+        })
+        this.gs.NavQueriesRead = false
+      }
       let dialogRef = this.dialog.open(brwComponent, {
         width: '1000px',
         data: {}
       });
-      dialogRef.componentInstance.select = true
+      if(selectMode != undefined){
+        dialogRef.componentInstance.select = selectMode  
+      } else dialogRef.componentInstance.select = true;
+      if(soberMode != undefined){
+        dialogRef.componentInstance.sober = soberMode  
+      } else dialogRef.componentInstance.sober = false;
 
       return dialogRef.afterClosed().toPromise().then(result => {
         return result

@@ -7,7 +7,7 @@ import { ArticlesBrwComponent } from '../../entities/tenants/articles/articles.b
 import { OrdersBrwComponent } from '../../entities/tenants/orders/orders.brw';
 import { OrderService } from '../../entities/tenants/orders/order.service';
 import { OrderLinesBrwComponent } from '../../entities/tenants/orderlines/orderlines.brw';
-import { OrderLineService } from '../../entities/tenants/orderlines/orderline.service';
+// import { OrderLineService } from '../../entities/tenants/orderlines/orderline.service';
 import { StoreTenantRoutingModule } from './store_tenant.routing.module';
 import { CategoryService } from '../../entities/tenants/categories/category.service';
 import { ArticleService } from '../../entities/tenants/articles/article.service';
@@ -44,7 +44,7 @@ import { AppLookupModule } from '../app_lookup.module';
       OrganisationService,
       EmployeeService,
       OrderService,
-      OrderLineService,
+      // OrderLineService,
     ]    
 })
 export class StoreTenantModule { }
