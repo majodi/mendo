@@ -14,4 +14,6 @@ export interface User {
     level: number;
     fcmTokens?: { [token: string]: true };
     tenant?: string; // tenant
+    organisation?: string; // organisation
+    employee?: string; // employee
 }

@@ -15,6 +15,8 @@ import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.in
 import { Image } from '../images/image.model';
 import { Property } from '../properties/property.model';
 import { CartComponent } from './cart';
+import { AuthService } from '../../../services/auth.service';
+import { Employee } from '../organisations/employees/employee.model';
 
 @Component({
   selector: 'app-store',
@@ -52,6 +54,9 @@ export class StoreComponent implements OnInit, OnDestroy {
   actionIcon = ''
   currentOrder = ''
   lineCount = 0
+  employeeBudged = 0
+  employeeSpent = 0
+  verified = false
   formConfig: FieldConfig[] = defaultFormConfig
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
@@ -82,6 +87,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     {type: 'beforeSave', code: (action, o) => {
       if(action == 1){
         o['order'] = this.currentOrder
+        o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
         return Promise.resolve()
       } else return Promise.resolve()  
     }}    
@@ -94,6 +100,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     private gs: GlobService,
     private ps: PopupService,
     private cs: CrudService,
+    private as: AuthService,
   ) {
     this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
@@ -129,21 +136,39 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.refreshCart()
+    this.db.getDoc(`${this.gs.entityBasePath}/employees/${this.as.user.employee}`)
+    .then((employee: Employee) => {
+      this.verified = true
+      this.employeeBudged = employee.budget
+      this.employeeSpent = employee.spent
+      this.refreshCart()
+    })
+    .catch(e => this.verified = false)
   }
 
   refreshCart() {
     this.db.getFirst(`${this.gs.entityBasePath}/orders`, [
       {fld:'status', operator:'==', value:'new'},
-      {fld:'employee', operator:'==', value:'5NXaJ8AOcjfmw7xjHS32'}
+      {fld:'employee', operator:'==', value: this.as.user.employee}
     ]).subscribe(o => {
       if(o['number']){
         this.currentOrder = o['id']
-        this.actionIcon = 'shopping_cart'
-        this.db.getCount(`${this.gs.entityBasePath}/orderlines`, [{fld: 'order', operator: '==', value: this.currentOrder}]).subscribe(count => {
-          this.lineCount = count
-        })
+        this.refreshCartCount()
+      } else {
+        this.db.getIncrementedCounter('orderNumber').then(number => {
+          this.db.addDoc({number: number, date: new Date(), employee: this.as.user.employee, organisation: this.as.user.organisation, status: 'new'}, `${this.gs.entityBasePath}/orders`).then(ref => {
+            this.currentOrder = ref.id
+            this.refreshCartCount()
+          })
+        })  
       }
+    })
+  }
+
+  refreshCartCount() {
+    this.actionIcon = 'shopping_cart'
+    this.db.getCount(`${this.gs.entityBasePath}/orderlines`, [{fld: 'order', operator: '==', value: this.currentOrder}]).subscribe(count => {
+      this.lineCount = count
     })
   }
 
@@ -153,6 +178,7 @@ export class StoreComponent implements OnInit, OnDestroy {
 
   onClickArticle(clickedOn, e) {
     if(clickedOn == 'tile'){
+      if(!this.verified){this.ps.buttonDialog('Account niet geverifieerd, bestelling plaatsen niet mogelijk', 'OK'); return}
       this.ps.buttonDialog(`${e['title']}\r\nToevoegen aan bestelling?`, 'OK', 'Annuleer').then(v => {
         if(v == 1){
           const articleFld = this.formConfig.find(c => c.name == 'article')

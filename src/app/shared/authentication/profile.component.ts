@@ -2,6 +2,9 @@ import { Component, OnInit, trigger, transition, style, animate } from '@angular
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
+import { DbService } from '../../services/db.service';
+import { GlobService } from '../../services/glob.service';
+import { PopupService } from '../../services/popup.service';
 
 @Component({
   selector: 'app-profile',
@@ -33,17 +36,32 @@ import { AuthService } from '../../services/auth.service';
           <button mat-raised-button type="submit" [disabled]="!formData.valid">Wijzig</button>
         </div>
       </form>
-      <div *ngIf="!_as.user.providerLogin && !_as.user.isAnonymous">
-        <button color="primary" [disabled]="changeEmail" mat-raised-button (click)="updateEmail()">
+      <form *ngIf="changeVerification" #formData='ngForm' (ngSubmit)="onSubmit(formData)" style="width:100%" fxLayout="column" fxLayoutAlign="center center">
+        <mat-form-field>
+          <input type="text" matInput placeholder="Verificatie Code" [(ngModel)]="verificationCode" name="verificationcode" required>
+        </mat-form-field>
+        <div fxLayout="row">
+          <button mat-raised-button type="button" (click)="cancelUpdateVerification()">Annuleer</button>
+          <button mat-raised-button type="submit" [disabled]="!formData.valid">Wijzig</button>
+        </div>
+      </form>
+      <div *ngIf="!_as.user.isAnonymous">
+        <button *ngIf="!_as.user.providerLogin" color="primary" [disabled]="changeEmail" mat-raised-button (click)="updateEmail()">
           <div fxLayoutAlign="start center" style="width:200px">
             <mat-icon style="padding-right:10px">email</mat-icon>
             <span>Wijzig Email Adres</span>
           </div>
         </button>
-        <button color="primary" mat-raised-button (click)="requestPasswordReset()" [disabled]="resetSent">
+        <button *ngIf="!_as.user.providerLogin" color="primary" mat-raised-button (click)="requestPasswordReset()" [disabled]="resetSent">
           <div fxLayoutAlign="start center" style="width:200px">
             <mat-icon style="padding-right:10px">lock</mat-icon>
             <span>Reset Wachtwoord</span>
+          </div>
+        </button>
+        <button color="primary" [disabled]="changeVerification" mat-raised-button (click)="updateVerification()">
+          <div fxLayoutAlign="start center" style="width:200px">
+            <mat-icon style="padding-right:10px">verified_user</mat-icon>
+            <span>Wijzig Verificatie</span>
           </div>
         </button>
       </div>
@@ -61,10 +79,15 @@ export class ProfileComponent implements OnInit {
   feedback = ''
   changeEmail = false
   resetSent = false
+  changeVerification = false
+  verificationCode = ''
 
   constructor(
     public _as: AuthService,
-    private router: Router    
+    private router: Router,
+    private db: DbService,
+    private gs: GlobService,
+    private ps: PopupService,
   ) {}
 
   ngOnInit() {
@@ -73,21 +96,53 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmit(formData) {
-    this._as.sendUpdateEmail(this.email)
-    .then(v => {
-      this.router.navigate(['/homepage'])
-    })
-    .catch(e => {this.error = e})
-    this.changeEmail = false
+    if(this.changeEmail){
+      this._as.sendUpdateEmail(this.email)
+      .then(v => {
+        this.router.navigate(['/homepage'])
+      })
+      .catch(e => {this.error = e})
+      this.changeEmail = false
+      return  
+    }
+    if(this.changeVerification){
+      this.db.getUniqueValueId((`${this.gs.entityBasePath}/employees`), 'id', this.verificationCode).subscribe(employee => {
+        if(employee['organisation']){
+          this.db.updateDoc({employee: employee['id'], organisation: employee['organisation']}, `users/${this._as.user.uid}`)
+          .then(v => {
+            this._as.user.employee = employee['id']
+            this._as.user.organisation = employee['organisation']
+            this.ps.buttonDialog('Verificatie geslaagd, u kunt bestellingen plaatsen', 'OK')
+          })
+          .catch(e => {
+            this.ps.buttonDialog('Verificatie mislukt, u kunt GEEN bestellingen plaatsen', 'OK')
+          })
+        } else {
+          this.ps.buttonDialog('Verificatie mislukt, u kunt GEEN bestellingen plaatsen', 'OK')          
+        }
+      })
+      this.changeVerification = false
+      this.verificationCode = ''
+      return  
+    }
   }
 
   updateEmail() {
     this.changeEmail = true
   }
 
+  updateVerification() {
+    this.changeVerification = true
+  }
+
   cancelUpdateEmail() {
     this.email = ''
     this.changeEmail = false
+  }
+
+  cancelUpdateVerification() {
+    this.verificationCode = ''
+    this.changeVerification = false
   }
 
   requestPasswordReset() {

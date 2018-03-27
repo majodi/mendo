@@ -53,6 +53,9 @@ export class PopupService {
       } else dialogRef.componentInstance.sober = false;
 
       return dialogRef.afterClosed().toPromise().then(result => {
+        if(query != undefined){
+          this.gs.NavQueries = []
+        }
         return result
       });
     }

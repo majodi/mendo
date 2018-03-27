@@ -8,6 +8,9 @@ export interface Employee {
     meta: EntityMeta;
     organisation: string;
     address: Address;
+    budget: number;
+    bugetYear: number;
+    spent: number;
 }
 
 export const defaultTitle = 'Medewerkers'
@@ -16,7 +19,9 @@ export const defaultColDef = [
     {name: 'address.name',      header: 'Naam',       sort: true},
     {name: 'address.address',   header: 'Adres',      hideXs: true},
     {name: 'address.postcode',  header: 'Postcode',   hideXs: true},
-    {name: 'address.city',      header: 'Woonplaats', sort: true}
+    {name: 'address.city',      header: 'Woonplaats', sort: true},
+    {name: 'budget',            header: 'Budget',     sort: true},
+    {name: 'spent',             header: 'Verbruikt',  sort: true},
   ]
 export const defaultFormConfig = [
     {type: 'pulldown', label: 'Organisatie', name: 'organisation',        placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
@@ -28,7 +33,8 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''}
+    {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},
+    {type: 'input', label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
   ]
 //for selection button
 export const defaultSelectionFields = [

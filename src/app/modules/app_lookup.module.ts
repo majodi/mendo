@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { MatDialogModule, MatButtonModule } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { SharedModule } from '../shared/shared.module';
 
@@ -23,6 +24,7 @@ import { OrderLineService } from '../entities/tenants/orderlines/orderline.servi
   imports: [
       CommonModule,
       SharedModule,
+      FlexLayoutModule,
       MatDialogModule, MatButtonModule,
     ],
   declarations: [
