@@ -54,7 +54,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   lineCount = 0
   formConfig: FieldConfig[] = defaultFormConfig
   embeds: Embed[] = [
-    {type: 'onValueChg', code: () => {
+    {type: 'onValueChg', code: (ctrl, value) => {
       const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
       const number = this.formConfig[this.formConfig.findIndex(c => c.name == 'number')].value
       if(price_unit && number){

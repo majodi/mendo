@@ -10,9 +10,9 @@ export class CrudService {
   
     constructor(private db: DbService, private ps: PopupService, private us: UploadService) { }
 
-    insertDialog(config, rec, path, embeds?: Embed[]) {
+    insertDialog(config, rec, path, embeds?: Embed[], alternativeFormActionTitle?: string) {
       config.forEach(config => this.db.getSetting(config.options).subscribe(setting => {config.options = setting ? setting : config.options}))
-      return this.ps.formDialog(1, config, rec, this.getEmbed(embeds, 'onValueChg')).then((frmResult: {response: string, value: {}}) => {
+      return this.ps.formDialog(1, config, rec, this.getEmbed(embeds, 'onValueChg'), alternativeFormActionTitle).then((frmResult: {response: string, value: {}}) => {
         if(frmResult && (frmResult.response == 'save')){
           let saveEmbedPromise = Promise.resolve()
           let saveEmbed = this.getEmbed(embeds, 'beforeSave')
@@ -26,7 +26,7 @@ export class CrudService {
       })
     }
   
-    changeDeleteDialog(config, rec, path, fld, embeds?: Embed[]) {
+    changeDeleteDialog(config, rec, path, fld, embeds?: Embed[], alternativeFormActionTitle?: string) {
       let beforeChgDialogEmbed: Function = this.getEmbed(embeds, 'beforeChgDialog')
       if(beforeChgDialogEmbed != undefined){if(beforeChgDialogEmbed(rec, fld)) return Promise.resolve()}
       // let saveEmbed: Function // -- oppassen met wegdoen -- maar kan denk ik weg...
@@ -35,7 +35,7 @@ export class CrudService {
       //   if(saveEmbedIndex != -1){saveEmbed = embeds[saveEmbedIndex].code}
       // }
       config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
-      return this.ps.formDialog(2, config, rec, this.getEmbed(embeds, 'onValueChg')).then((frmResult: {response: string, value: {}}) => {
+      return this.ps.formDialog(2, config, rec, this.getEmbed(embeds, 'onValueChg'), alternativeFormActionTitle).then((frmResult: {response: string, value: {}}) => {
         if(frmResult && (frmResult.response == 'save')){
           let saveEmbedPromise = Promise.resolve()
           let saveEmbed = this.getEmbed(embeds, 'beforeSave')

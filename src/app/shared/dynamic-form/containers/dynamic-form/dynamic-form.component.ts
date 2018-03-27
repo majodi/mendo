@@ -69,14 +69,14 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   ngOnInit() {
     this.info = ''
     if(this.formAction != 0){
-      this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
+      this.setToPopulate()
     } else {this.toPopulate = this.config}
     this.form = this.createGroup();
   }
 
   ngOnChanges() {
     if(this.formAction != 0){
-      this.toPopulate = this.config.filter(({doNotPopulate}) => doNotPopulate == undefined || !doNotPopulate)
+      this.setToPopulate()
     } else {this.toPopulate = this.config}
     if (this.form) {
       const controls = Object.keys(this.form.controls);
@@ -177,7 +177,8 @@ export class DynamicFormComponent implements OnChanges, OnInit {
               this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
                 if(rec){
                   configToUpdate.value = rec[customUpdate.lookupFld]
-                  if(this.onValueChg != undefined) this.onValueChg();
+                  if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
+                  this.setToPopulate()
                   if(this.form.controls[configToUpdate.name]){
                     this.form.controls[configToUpdate.name].setValue(configToUpdate.value, {emitEvent: true})
                   }          
@@ -185,14 +186,23 @@ export class DynamicFormComponent implements OnChanges, OnInit {
               })          
             } else {
               configToUpdate.value = value
-              if(this.onValueChg != undefined) this.onValueChg();
+              if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
+              this.setToPopulate()
             }  
           }
         })
       } else {
-        if(this.onValueChg != undefined) this.onValueChg(name, value);      
+        if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
+        this.setToPopulate()
       }
     } 
+  }
+
+  setToPopulate() {
+    this.toPopulate = this.config
+    .filter(c => {
+      return !(c.doNotPopulate != undefined && c.doNotPopulate)
+    })
   }
 
   objectValue(o, key) {

@@ -25,7 +25,7 @@ export class FormCheckboxComponent implements Field {
 
   onBlur(e) { //checkbox not included in customValueChg, so after blur
     this.config.value = e.target.value
-    if(this.onValueChg != undefined) this.onValueChg();
+    if(this.onValueChg != undefined) this.onValueChg(this.config.name, this.config.value);
   }
   
 }

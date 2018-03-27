@@ -41,7 +41,7 @@ import './rxjs-operators';
     BrowserAnimationsModule,
     MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule.enablePersistence(),
+    AngularFirestoreModule, //.enablePersistence(),
     AngularFireAuthModule,
     AngularFireStorageModule,
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),

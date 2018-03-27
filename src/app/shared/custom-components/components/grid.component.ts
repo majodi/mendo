@@ -46,6 +46,10 @@ template: `
           <br/><br/>
         </div>
       </div>
+      <div *ngIf="divider">
+        <hr>
+        <br>
+      </div>
     </div>
   </div>
 </div>
@@ -66,6 +70,7 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() showFilter: boolean
   @Input() actionButtonIcon: string
   @Input() actionButtonInfo: string
+  @Input() divider: boolean
   @Output() clicked = new EventEmitter();
   @Output() buttonClicked = new EventEmitter();
   @Output() actionButtonClicked = new EventEmitter();
@@ -103,6 +108,7 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
 
   getItemStyle() {
     return {
+      'width': '100%',
       'max-width': this.maxItemWidth != undefined ? this.maxItemWidth + '%': '30%' // leave default at 30% for store module
     }
   }

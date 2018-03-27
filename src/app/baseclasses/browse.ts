@@ -33,6 +33,8 @@ export class BrwBaseClass<T> {
   selectionActive = false
   colDef: ColumnDefenition[]
   formConfig: FieldConfig[]
+  alternativeFormActionTitle: string
+  resetDoNotPopulate = false
   selectionFields: SelectionField[] = []
   selectionFieldConfig: FieldConfig[] = []
   baseQueries: QueryItem[]
@@ -137,7 +139,7 @@ export class BrwBaseClass<T> {
         this.selected.emit(brwClick)
         this.dialogRef.close(rec)
       } else {
-        this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
+        this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined, this.alternativeFormActionTitle).catch(err => console.log(err))
       }
       return
     }    
@@ -145,7 +147,8 @@ export class BrwBaseClass<T> {
       if(!this.userDefinedBrowse){
         this.formConfig.map(fld => fld.value = '')
       }
-      this.cs.insertDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
+      if(this.resetDoNotPopulate){this.formConfig.forEach(c => c.doNotPopulate = false)}
+      this.cs.insertDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined, this.alternativeFormActionTitle).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }
     if(brwClick.fld == 'selection'){

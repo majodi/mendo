@@ -51,5 +51,3 @@ export const defaultFormConfig = [
     {type: 'checkbox',      label: 'Sorteermogelijkheid', name: 'allowSort',        placeholder: 'Sorteermogelijkheid',   value: false},
     {type: 'checkbox',      label: 'Filtermogelijkheid',  name: 'allowfilter',      placeholder: 'Filtermogelijkheid',    value: false},
   ]
-
-//['invoer', 'keuze', 'vink', 'text', 'afbeelding']

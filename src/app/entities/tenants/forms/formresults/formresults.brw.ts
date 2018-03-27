@@ -38,9 +38,12 @@ export class FormResultsBrwComponent extends BrwBaseClass<FormResult[]> implemen
 
   ngOnInit() {
     this.userDefinedBrowse = true
+    this.alternativeFormActionTitle = 'Invulformulier'
     this.colDef = []
     this.formConfig = []
-    this.formFieldSrv.initEntity$(this.gs.NavQueries).subscribe(flds => flds.forEach(fld => {
+    this.formFieldSrv.initEntity$(this.gs.NavQueries)
+    .map(flds => flds.sort(function(a,b) {return (a['order'] > b['order']) ? 1 : ((b['order'] > a['order']) ? -1 : 0);}))
+    .subscribe(flds => flds.forEach(fld => {
       const fieldType = ['input', 'select', 'checkbox', 'stringdisplay', 'imagedisplay'][['invoer', 'keuze', 'vink', 'tekst', 'afbeelding'].findIndex(t => t == fld['type'])]
       if(fld['showInBrw']){
         this.colDef.push({name: fld['name'], header: fld['label'], hideXs: fld['hideXs'], sort: fld['allowSort'], filter: fld['allowFilter']})

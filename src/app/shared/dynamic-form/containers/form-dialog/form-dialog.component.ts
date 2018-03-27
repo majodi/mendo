@@ -9,7 +9,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
 @Component({
   template: `
     <mat-dialog-content>
-      <h1 fxFlex class="mat-display-1">{{gs.actionMessage[data.action]}}</h1>
+      <h1 fxFlex class="mat-display-1">{{getActionTitle()}}</h1>
       <dynamic-form
         [config]="data.fieldConfig"
         [formAction]="data.action"
@@ -43,6 +43,8 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
       this.form.setDisabled('submit', true);
       this.cd.detectChanges(); // nodig anders foutmelding
     }
+
+    getActionTitle() {return this.data.alternativeFormActionTitle != undefined ? this.data.alternativeFormActionTitle : this.gs.actionMessage[this.data.action]}
 
     setFormValues() { // flatten to match control names, only 2 levels!! Not for chiplist!!
       let obj = this.data.formRecord

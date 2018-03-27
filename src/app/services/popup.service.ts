@@ -23,10 +23,10 @@ export class PopupService {
       });
     }
 
-    formDialog(action: number, fieldConfig: FieldConfig[], formRecord: {}, onValueChg?: Function) {
+    formDialog(action: number, fieldConfig: FieldConfig[], formRecord: {}, onValueChg?: Function, alternativeFormActionTitle?: string) {
       let dialogRef = this.dialog.open(FormDialogComponent, {
         width: '800px',
-        data: { action: action, fieldConfig: fieldConfig, formRecord: formRecord, onValueChg: onValueChg}
+        data: { action: action, fieldConfig: fieldConfig, formRecord: formRecord, onValueChg: onValueChg, alternativeFormActionTitle: alternativeFormActionTitle}
       });
 
       return dialogRef.afterClosed().toPromise().then(result => {

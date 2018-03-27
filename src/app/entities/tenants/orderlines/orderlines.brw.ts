@@ -66,7 +66,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   isLoading = false
   total = 0
   embeds: Embed[] = [
-    {type: 'onValueChg', code: () => {
+    {type: 'onValueChg', code: (ctrl, value) => {
       const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
       const number = this.formConfig[this.formConfig.findIndex(c => c.name == 'number')].value
       if(price_unit && number){

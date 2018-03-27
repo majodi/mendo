@@ -17,34 +17,35 @@ import { Validators } from '@angular/forms';
   styles: [``]
 })
 export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements OnInit, OnDestroy {
+
+  // HIDE
+  // 'invoer'                                                      'options',  'value',  'image', 'imagedisplay'
+  // 'keuze'                 'transform', 'required', 'minLength',             'value',  'image', 'imagedisplay'
+  // 'vink'                  'transform', 'required', 'minLength', 'options',  'value',  'image', 'imagedisplay'
+  // 'tekst'       'label',  'transform', 'required', 'minLength', 'options',  'value',  'image', 'imagedisplay'
+  // 'afbeelding'  'label',  'transform', 'required', 'minLength', 'options',  'value'
+
   embeds: Embed[] = [
-    {type: 'onValueChg', code: (ctrl, value) => {
+    {type: 'onValueChg', code: (ctrl, value, formAction?) => {
+      // console.log('embed onvaluechg, ctrl: ', ctrl, formAction)
       if(ctrl == 'type'){
-        const hideGroup = ['transform', 'required', 'minLength', 'image', 'imagedisplay', 'options']
-        const hideGroup2 = ['showInBrw', 'hideXs', 'allowSort', 'allowfilter']
         this.formConfig.forEach(c => {
-          c.doNotPopulate = false
-          if(value == 'invoer' && (c.name == 'options' || c.name == 'image' || c.name == 'imagedisplay')){
-            c.doNotPopulate = true
-          }
-          if(value == 'keuze' && hideGroup.includes(c.name)){
-            c.doNotPopulate = c.name == 'options' ? false : true
-          }
-          if(value == 'afbeelding' && hideGroup.includes(c.name)){
-            c.doNotPopulate = (c.name == 'image' || c.name == 'imagedisplay') ? false : true
-          }
-          // if(value == 'afbeelding' && c.name == 'value'){
-          //   c.doNotPopulate = true
-          // }          
-          if((value == 'vink' || value == 'tekst') && hideGroup.includes(c.name)){
-            c.doNotPopulate = true
-          }
-          if(value == 'afbeelding' && (c.name == 'label'  || hideGroup2.includes(c.name))){
-            c.doNotPopulate = true
-          }
-          if(value == 'tekst' && (c.name == 'value' || hideGroup2.includes(c.name))){
-            c.doNotPopulate = true
-          }
+          c.doNotPopulate = true
+
+          if(c.name == 'value' || c.name == 'order'){c.doNotPopulate = false}
+          if((c.name == 'name' || c.name =='type') && (formAction == undefined || formAction != 2)){c.doNotPopulate = false}
+
+          if(['tabelinstelling', 'showInBrw', 'hideXs', 'allowSort', 'allowfilter'].includes(c.name) && ['invoer', 'keuze', 'vink'].includes(value)){c.doNotPopulate = false}
+          if(c.name == 'label'        && ['invoer', 'keuze', 'vink', 'tekst'].includes(value)){c.doNotPopulate = false}
+          if(c.name == 'transform'    && value == 'invoer'){c.doNotPopulate = false}
+          if(c.name == 'required'     && value == 'invoer'){c.doNotPopulate = false}
+          if(c.name == 'minLength'    && value == 'invoer'){c.doNotPopulate = false}
+          if(c.name == 'options'      && value == 'keuze'){c.doNotPopulate = false}
+          if(c.name == 'image'        && value == 'afbeelding'){c.doNotPopulate = false}
+          if(c.name == 'imagedisplay' && value == 'afbeelding'){c.doNotPopulate = false}
+
+          if(c.name == 'hideXs') console.log('hideXs: ', c.doNotPopulate)
+          if(c.name == 'tabelinstelling') console.log('tabelinstelling: ', c.doNotPopulate)
         })
       }
     }},
@@ -67,7 +68,7 @@ export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements
   ngOnInit() {
     this.colDef = defaultColDef
     this.formConfig = defaultFormConfig
-    // this.embeds[0].code('type', )
+    this.resetDoNotPopulate = true
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')

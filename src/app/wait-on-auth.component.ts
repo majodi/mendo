@@ -11,7 +11,7 @@ import { AuthService }      from './services/auth.service';
   `],
   template: `
   <div style="text-align: center">
-    <p class="mat-display-1 container-title-text">Verbinding leggen met server</p>
+    <p class="mat-display-1 container-title-text">Verbinding leggen</p>
     <br>
     <p class="mat-headline item-title"><b>Ogenblik...</b></p>
   </div>
