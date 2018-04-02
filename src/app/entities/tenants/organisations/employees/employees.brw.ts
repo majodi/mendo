@@ -7,6 +7,7 @@ import { OrganisationService } from '../organisation.service';
 
 import { BrwBaseClass } from '../../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
+import { Embed } from '../../../../shared/dynamic-form/models/embed.interface';
 
 @Component({
   selector: 'app-employees-brw',
@@ -14,6 +15,26 @@ import { MatDialogRef } from '@angular/material';
   styles: [``]
 })
 export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements OnInit, OnDestroy {
+  emailOnEntry = ''
+  nameOnEntry = ''
+  embeds: Embed[] = [
+    {type: 'onValueChg', code: (ctrl, value, formAction?) => {
+      if(ctrl == 'address.email'){
+        if(formAction == undefined && value && value != this.emailOnEntry){
+          this.db.syncEmailRecord(value, this.formConfig, 'address.name', 'medewerker')
+        } else {
+          this.emailOnEntry = value
+        }
+      }
+      if(ctrl == 'address.name'){
+        if(formAction == undefined && value && this.emailOnEntry && value != this.nameOnEntry){
+          this.db.syncEmailRecord(this.emailOnEntry, this.formConfig, 'address.name', 'medewerker')
+        } else {
+          this.nameOnEntry = value
+        }
+      }
+    }},
+  ]
 
   constructor(
     public dialogRef: MatDialogRef<any>,

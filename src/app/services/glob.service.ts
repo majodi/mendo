@@ -12,6 +12,7 @@ export class GlobService {
     storageBasePath = 'https://storage.cloud.google.com/mendo-app.appspot.com/'
     entityId = {}
     actionMessage = {0:'Selectie', 1:'Toevoegen', 2:'Wijzigen', 3:'Verwijderen', 10:'Formulier'}
+    emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     NavQueries: QueryItem[] = []
     NavQueriesRead = false

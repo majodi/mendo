@@ -14,6 +14,8 @@ import { FieldConfig } from '../shared/dynamic-form/models/field-config.interfac
 import { DocumentData } from '@firebase/firestore-types';
 import { Setting } from '../entities/tenants/settings/setting.model';
 import { QueryItem } from '../models/query-item.interface';
+import { MatDialog } from '@angular/material';
+import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
 
 @Injectable()
 export class DbService {
@@ -23,6 +25,7 @@ export class DbService {
     private as: AuthService,
     private us: UploadService,
     private gs: GlobService,
+    private dialog: MatDialog,
   ) { }
 
   getMeta(): EntityMeta {
@@ -95,6 +98,53 @@ export class DbService {
     })
   }
 
+  buttonDialog(text, button1, button2?) {
+    let dialogRef = this.dialog.open(PopupDialog, {
+      width: '250px',
+      data: { text: text, but1: button1, but2: button2 }
+    });
+
+    return dialogRef.afterClosed().toPromise().then(result => {
+      return result
+    });
+  }
+
+  syncEmailRecord(emailToCheck, formConfig, nameFld, tag){
+    if(!this.gs.emailRegex.test(String(emailToCheck).toLowerCase())){
+      this.buttonDialog('Email adres ongeldig!', 'OK')
+      return
+    }
+    const currentName: string = formConfig.find(c => c.name == nameFld)['value']
+    let prefix = '', lastName = '', firstName = ''
+    if(currentName != undefined){
+      const nameArray = currentName.split(' ')
+      firstName = nameArray[0]
+      prefix = '', lastName = ''
+      if(nameArray.length > 1) {lastName = nameArray[nameArray.length-1]}
+      if(nameArray.length > 2) {prefix = nameArray.slice(1, nameArray.length-1).join(' ')}
+      this.getDoc(`${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`)
+      .then(email => {
+        const emailName = `${email['firstName']}${email['prefix'] ? ' '+email['prefix']+' ' : ' '}${email['lastName']}`
+        if(currentName != undefined && currentName != emailName){
+          this.buttonDialog(`${emailToCheck} gevonden in mailing-bestand met afwijkende naam: ${emailName} \r\n\r\nDeze naam als ontvanger behouden in mailing-bestand of aanpassen naar ${currentName}?`, 'behouden', 'aanpassen')
+          .then(choice => {
+            if(choice == 2){
+              let typetag = {}
+              typetag[tag] = true
+              if(email['typetag'] != undefined) {typetag = Object.assign(typetag, email['typetag'])}
+              this.updateDoc({firstName: firstName, prefix: prefix, lastName: lastName, typetag: typetag}, `${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`)
+            }
+          })
+        }
+      })
+      .catch(e => {
+        if(currentName != undefined){
+          this.setDoc({firstName: firstName, prefix: prefix, lastName: lastName, typetag: {medewerker: true}}, `${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`).catch(e => {})
+        }
+      })
+    }
+  }
+  
   getFirst(collection: string, queries: QueryItem[]) {
     return this.db.collection(collection, ref => {
       let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;

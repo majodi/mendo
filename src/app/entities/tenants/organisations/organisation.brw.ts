@@ -14,7 +14,25 @@ import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
   styles: [``]
 })
 export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> implements OnInit, OnDestroy {
+  emailOnEntry = ''
+  nameOnEntry = ''
   embeds: Embed[] = [
+    {type: 'onValueChg', code: (ctrl, value, formAction?) => {
+      if(ctrl == 'address.email'){
+        if(formAction == undefined && value && value != this.emailOnEntry){
+          this.db.syncEmailRecord(value, this.formConfig, 'address.name', 'tenant')
+        } else {
+          this.emailOnEntry = value
+        }
+      }
+      if(ctrl == 'address.name'){
+        if(formAction == undefined && value && this.emailOnEntry && value != this.nameOnEntry){
+          this.db.syncEmailRecord(this.emailOnEntry, this.formConfig, 'address.name', 'tenant')
+        } else {
+          this.nameOnEntry = value
+        }
+      }
+    }},
     {type: 'beforeChgDialog', code: (rec, fld) => {
       if(fld == 'employees'){
         this.gs.navigateWithQuery('app-tenant/employees', 'organisation', '==', rec['id'])

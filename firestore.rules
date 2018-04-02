@@ -5,3 +5,20 @@ service cloud.firestore {
     }
   }
 }
+
+//                  read    write   
+// tenants          0       100
+// users            0       0
+// articles         0       0
+// bulletins        0       0
+// categories       etc...
+// employees
+// formfields
+// formresults
+// forms
+// images
+// orderlines
+// orders
+// organisations
+// properties
+// settings
