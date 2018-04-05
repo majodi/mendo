@@ -34,7 +34,7 @@ export class CrudService {
       //   const saveEmbedIndex = embeds.findIndex(e => e.type == 'beforeSave')
       //   if(saveEmbedIndex != -1){saveEmbed = embeds[saveEmbedIndex].code}
       // }
-      config.forEach(config => this.db.getSetting(config.options).subscribe(setting => config.options = setting ? setting : config.options))
+      config.forEach(config => this.db.getSetting(config.options).subscribe(setting => {config.options = setting ? setting : config.options}))
       return this.ps.formDialog(2, config, rec, this.getEmbed(embeds, 'onValueChg'), alternativeFormActionTitle).then((frmResult: {response: string, value: {}}) => {
         if(frmResult && (frmResult.response == 'save')){
           let saveEmbedPromise = Promise.resolve()
@@ -82,3 +82,6 @@ export class CrudService {
     }
 
   }
+
+  // 
+//  aeen, atwee, adrie, avier, avijf, azes, azeven, aacht, anegen, atien, been, btwee, bdrie, bvier, bvijf, bzes, bzeven, bacht, bnegen, btien, ceen, ctwee, cdrie, cvier, cvijf, czes, czeven, cacht, cnegen, ctien, deen, dtwee, ddrie, dvier, dvijf, dzes, dzeven, dacht, dnegen, dtien, eeen, etwee, edrie, evier, evijf, ezes, ezeven, eacht, enegen, etien, feen, ftwee, fdrie, fvier, fvijf, fzes, fzeven, facht, fnegen, ftien, geen, gtwee, gdrie, gvier, gvijf, gzes, gzeven, gacht, gnegen, gtien, heen, htwee, hdrie, hvier, hvijf, hzes, hzeven, hacht, hnegen, htien, ieen, itwee, idrie, ivier, ivijf, izes, izeven, iacht, inegen, itien, jeen, jtwee, jdrie, jvier, jvijf, jzes, jzeven, jacht, jnegen, jtien

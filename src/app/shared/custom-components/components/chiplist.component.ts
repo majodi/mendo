@@ -12,8 +12,13 @@ import { FormControl } from '@angular/forms';
       </mat-chip>
   </mat-chip-list><br>
   <mat-form-field>
-    <mat-select placeholder="Tags" name="tags" multiple [(ngModel)]="tagListArr" (selectionChange)="selectionChange($event)" [disabled]=isDisabled>
-      <mat-select-trigger>Select tags...</mat-select-trigger>                  
+    <mat-select [placeholder]="placeholder" name="tags" multiple [(ngModel)]="tagListArr" (selectionChange)="selectionChange($event)" [disabled]=isDisabled>
+      <mat-select-trigger>Selecteer...</mat-select-trigger>                  
+      <div style="text-align: right; padding: 5px">
+        <button mat-mini-fab color="primary" (click)="selectNone()">geen</button>
+        <button mat-mini-fab color="primary" (click)="selectAll()">alle</button>
+        <button mat-mini-fab color="primary" (click)="swapSelected()">keer</button>
+      </div>
       <mat-option *ngFor="let tagoption of tagOptionsArr" [value]="tagoption">{{tagoption}}</mat-option>
     </mat-select>
   </mat-form-field>
@@ -23,6 +28,7 @@ import { FormControl } from '@angular/forms';
 export class ChiplistComponent implements OnInit, OnChanges {
   @Input() tagOptions: string | string[]
   @Input() tagList: any
+  @Input() placeholder: string
   @Output() tagListChange = new EventEmitter();
   @Input() isDisabled = false;
   tagOptionsArr = []
@@ -46,6 +52,18 @@ export class ChiplistComponent implements OnInit, OnChanges {
 
   selectionChange(event) {
     this.returnList()
+  }
+
+  selectNone() {
+    this.tagListArr = []
+  }
+
+  selectAll() {
+    this.tagListArr = this.tagOptionsArr
+  }
+
+  swapSelected() {
+    this.tagListArr = this.tagOptionsArr.filter(e => !this.tagListArr.includes(e))
   }
 
   removeTag(tag:any):void {

@@ -9,8 +9,8 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-chiplist',
   template: `
-    <div [formGroup]="group">
-      <app-chiplist ngDefaultControl [isDisabled]="config.disabled" [formControlName]="config.name" [tagList]="config.value" [tagOptions]="config.options" (tagListChange)="valueChanged($event)"></app-chiplist>
+    <div *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group">
+      <app-chiplist ngDefaultControl [isDisabled]="config.disabled" [formControlName]="config.name" [placeholder]="config.placeholder" [tagList]="config.value" [tagOptions]="config.options" (tagListChange)="valueChanged($event)"></app-chiplist>
     </div>
   `
 })

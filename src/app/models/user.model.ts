@@ -16,4 +16,5 @@ export interface User {
     tenant?: string; // tenant
     organisation?: string; // organisation
     employee?: string; // employee
+    pushSubscriptions?: PushSubscription[];
 }

@@ -169,5 +169,17 @@ export class AuthService {
       return userRef.set(data, { merge: true })
     })
   }
-  
+
+  setSubscription(subscription: PushSubscription) {
+    if(subscription != undefined){
+      return this.getDoc(`users/${this.user.uid}`).then((user: User) => {
+        const parsedSubscription = JSON.parse(JSON.stringify(subscription)) //anders foutmelding
+        if(user.pushSubscriptions == undefined) user.pushSubscriptions = [];
+        if(user.pushSubscriptions.find(subs => subs.endpoint == subscription.endpoint) == undefined){
+          user.pushSubscriptions.push(parsedSubscription)
+          return this.afs.doc(`users/${this.user.uid}`).update({pushSubscriptions: user.pushSubscriptions})
+        }
+      })  
+    }
+  }
 }

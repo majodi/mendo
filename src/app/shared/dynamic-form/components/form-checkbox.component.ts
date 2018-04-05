@@ -11,7 +11,7 @@ import { FieldConfig } from '../models/field-config.interface';
   selector: 'form-checkbox',
   template: `
 <div *ngIf="!config.doNotPopulate" [formGroup]="group">
-  <mat-checkbox [formControlName]="config.name" (blur)="onBlur($event)">
+  <mat-checkbox [formControlName]="config.name" (change)="onChange($event)">
     {{config.label}}
   </mat-checkbox>
 </div>
@@ -23,8 +23,8 @@ export class FormCheckboxComponent implements Field {
   group: FormGroup;
   onValueChg: Function;
 
-  onBlur(e) { //checkbox not included in customValueChg, so after blur
-    this.config.value = e.target.value
+  onChange(e) { //checkbox not included in customValueChg, so after change
+    this.config.value = e.checked
     if(this.onValueChg != undefined) this.onValueChg(this.config.name, this.config.value);
   }
   

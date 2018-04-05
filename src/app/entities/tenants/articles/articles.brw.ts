@@ -9,6 +9,7 @@ import { ImagesBrwComponent } from '../images/images.brw';
 
 import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 
 @Component({
   selector: 'app-articles-brw',
@@ -16,6 +17,42 @@ import { MatDialogRef } from '@angular/material';
   styles: [``]
 })
 export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnInit, OnDestroy {
+  embeds: Embed[] = [
+    {type: 'onValueChg', code: (ctrl, value) => {
+      if(ctrl == 'overruleMeasurements'){
+        const overruleMeasurements = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleMeasurements')].value
+        this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].hidden = !overruleMeasurements
+      }
+      if(ctrl == 'measurements'){
+        const measurementsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsChoices')].value
+        if(measurementsChoices){
+          let measurementsChoicesArray: Array<string> = measurementsChoices.split(',')
+          this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].options = measurementsChoicesArray
+          const measurementsOverruleValue = this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].value
+          for (var key in measurementsOverruleValue){
+            if(!measurementsChoicesArray.includes(key)){delete measurementsOverruleValue[key]}
+          }
+          this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].value = measurementsOverruleValue
+        }
+      }
+      if(ctrl == 'overruleColors'){
+        const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value
+        this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].hidden = !overruleColors
+      }
+      if(ctrl == 'colors'){
+        const colorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsChoices')].value
+        if(colorsChoices){
+          let colorsChoicesArray: Array<string> = colorsChoices.split(',')
+          this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].options = colorsChoicesArray
+          const colorsOverruleValue = this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].value
+          for (var key in colorsOverruleValue){
+            if(!colorsChoicesArray.includes(key)){delete colorsOverruleValue[key]}
+          }
+          this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].value = colorsOverruleValue
+        }
+      }
+    }},
+  ]
 
   constructor(
     public dialogRef: MatDialogRef<any>,

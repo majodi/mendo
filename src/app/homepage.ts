@@ -10,6 +10,10 @@ import { FormFieldService } from './entities/tenants/forms/formfields/formfield.
 import { Validators } from '@angular/forms';
 import { forceUppercase, forceCapitalize } from './shared/dynamic-form/models/form-functions';
 import { CrudService } from './services/crud.service';
+import { Embed } from './shared/dynamic-form/models/embed.interface';
+import { AuthService } from './services/auth.service';
+import { SwPush } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -25,12 +29,25 @@ import { CrudService } from './services/crud.service';
     [divider]="true"
     (buttonClicked)="onButtonClicked($event)"
   ></app-grid>
+  <div *ngIf="_as.userLevel==100">
+    <button (click)="pushSubscribe()">subscribe</button>
+  </div>
   </div>
   `,
 })
 export class HomePageComponent implements OnInit, OnDestroy {
   ngUnsubscribe = new Subject<string>()
   bulletinData: Tile[]
+  formId: string
+  embeds: Embed[] = [
+    {type: 'beforeSave', code: (action, o) => {
+      if(action == 1){
+        o['form'] = this.formId
+        return Promise.resolve()
+      } else return Promise.resolve()  
+    }}
+  ]
+
 
   constructor(
     private BulletinSrv: BulletinService,
@@ -38,6 +55,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
     private db: DbService,
     private gs: GlobService,
     private cs: CrudService,
+    public _as: AuthService,
+    private swPush: SwPush,
     private formFieldSrv: FormFieldService,
   ) {
     this.BulletinSrv.colDef = [{name: 'image_v'}]
@@ -60,6 +79,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {}
 
+  pushSubscribe() {
+    return this.swPush.requestSubscription({
+      serverPublicKey: environment.vapidPublic
+    })
+      .then((pushSubscription: PushSubscription) => {
+        return this._as.setSubscription(pushSubscription) //.then(v => {console.log('pushSubscription written: ', pushSubscription, v)})
+      })
+  }
+
   test() {
     console.log('data: ', this.bulletinData)
     const sorted = this.bulletinData.sort(function(a,b) {console.log('a-date, b-date, a-b-sticky: ', a['date'], b['date'], a['sticky'], b['sticky']) ;return (a['date'] > b['date'] || a['sticky']) ? -1 : ((b['date'] > a['date'] || b['sticky']) ? 1 : 0);})
@@ -68,13 +96,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   onButtonClicked(e) {
     const link: string = e['buttonLink']
-    if(link.toUpperCase().startsWith('HTTP')){window.open(link); return}
-    if(link.toUpperCase().startsWith('FORM:')){this.openUserForm(link.toUpperCase().split(':')[1]); return}
-    this.router.navigate([e['buttonLink']])
+    if(link.toUpperCase().startsWith('HTTP')){this.pushSubscribe().then(v => window.open(link)); return}
+    if(link.toUpperCase().startsWith('FORM:')){this.openUserForm(link.toUpperCase().split(':')[1]); return} // subscribe on form save (below)
+    this.pushSubscribe().then(v => this.router.navigate([e['buttonLink']]))
   }
 
   openUserForm(formCode) {
     this.db.getFirst(`${this.gs.entityBasePath}/forms`, [{fld: 'code', operator: '==', value: formCode}]).subscribe(form => {
+      this.formId = form['id']
       const formConfig = []
       this.formFieldSrv.initEntity$([{fld: 'form', operator: '==', value: form['id']}])
       .map(flds => flds.sort(function(a,b) {return (a['order'] > b['order']) ? 1 : ((b['order'] > a['order']) ? -1 : 0);}))
@@ -95,7 +124,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
           const optionsStr: string = fld['options']; const options = optionsStr ? optionsStr.split(',') : []
           formConfig.push({type: fieldType, label: fld['label'], name: fld['name'], placeholder: fld['label'], value: fld['value'], options: options, validation: validation, inputValueTransform: transform})
         })
-        this.cs.insertDialog(formConfig, {}, `${this.gs.entityBasePath}/formresults`, this['embeds'] ? this['embeds'] : undefined, 'Invulformulier').then(id => {}).catch(err => {console.log(err)})
+        this.cs.insertDialog(formConfig, {}, `${this.gs.entityBasePath}/formresults`, this['embeds'] ? this['embeds'] : undefined, 'Invulformulier').then(id => {this.pushSubscribe()}).catch(err => {console.log(err)})
       })
     })
   }
