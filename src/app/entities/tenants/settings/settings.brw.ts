@@ -24,7 +24,8 @@ export class SettingsBrwComponent extends BrwBaseClass<Setting[]> implements OnI
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     super.ngOnInit() //volgorde van belang!

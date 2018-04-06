@@ -23,7 +23,7 @@ import { environment } from '../environments/environment';
   <app-grid
     [singleRow]="false"
     [buttonIcon]="'open_in_browser'"
-    [maxItemWidth]="'80'"
+    [maxItemWidth]="'97'"
     [maxImageHeight]="'100'"
     [data]="bulletinData"
     [divider]="true"
@@ -96,9 +96,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   onButtonClicked(e) {
     const link: string = e['buttonLink']
-    if(link.toUpperCase().startsWith('HTTP')){this.pushSubscribe().then(v => window.open(link)); return}
+    if(link.toUpperCase().startsWith('HTTP')){window.open(link); return}
     if(link.toUpperCase().startsWith('FORM:')){this.openUserForm(link.toUpperCase().split(':')[1]); return} // subscribe on form save (below)
-    this.pushSubscribe().then(v => this.router.navigate([e['buttonLink']]))
+    this.router.navigate([e['buttonLink']])
   }
 
   openUserForm(formCode) {

@@ -58,6 +58,11 @@ export class StoreComponent implements OnInit, OnDestroy {
   employeeSpent = 0
   verified = false
   formConfig: FieldConfig[] = defaultFormConfig
+  currentArticleId = ''
+  articleChanged = false
+  currentImageId = ''
+  currentSizesId = ''
+  currentColorsId = ''  
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
       const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
@@ -65,29 +70,66 @@ export class StoreComponent implements OnInit, OnDestroy {
       if(price_unit && number){
         this.formConfig[this.formConfig.findIndex(c => c.name == 'amount')].value = (Number(price_unit) * Number(number)).toString()
       }
-      const imageId = this.formConfig[this.formConfig.findIndex(c => c.name == 'imageid')].value
-      if(imageId){
-        const image = this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', imageId).subscribe((image: Image) => {
-          return this.formConfig[this.formConfig.findIndex(c => c.name == 'imagedisplay')].value = image['name']
-        })
-      }
-      const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
-      if(sizesId){
-        const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
-          return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = property['choices'].split(',')
-        })
-      }
-      const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name == 'colors')].value
-      if(colorsId){
-        const colors = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', colorsId).subscribe((property: Property) => {
-          return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = property['choices'].split(',')
-        })
+      if(ctrl == 'article'){
+        const articleId = this.formConfig[this.formConfig.findIndex(c => c.name == 'article')].value
+        if(articleId != this.currentArticleId) {this.articleChanged = true; this.currentArticleId = articleId}
+        const imageId = this.formConfig[this.formConfig.findIndex(c => c.name == 'imageid')].value
+        if(imageId && imageId != this.currentImageId){
+          this.currentImageId = imageId
+          const image = this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', imageId).subscribe((image: Image) => {
+            return this.formConfig[this.formConfig.findIndex(c => c.name == 'imagedisplay')].value = image['name']
+          })
+        }
+        const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
+        if(this.articleChanged || (sizesId && sizesId != this.currentSizesId)) {
+          this.currentSizesId = sizesId
+          const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
+            if(property){
+              const defaultSizesChoices = property['choices'].split(',')
+              const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
+              if(overruleSizes){
+                const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
+                let overruleSizesChoicesArray: Array<string> = []
+                for (var key in overruleSizesChoices){
+                  if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key)}
+                }                  
+                return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = overruleSizesChoicesArray
+              }
+              return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = defaultSizesChoices  
+            }
+          })
+        }
+        const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name == 'colors')].value
+        if(this.articleChanged || (colorsId && colorsId != this.currentColorsId)){
+          this.currentColorsId = colorsId
+          const colors = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', colorsId).subscribe((property: Property) => {
+            if(property){
+              const defaultColorsChoices = property['choices'].split(',')
+              const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value
+              if(overruleColors){
+                const overruleColorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColorsChoices')].value
+                let overruleColorsChoicesArray: Array<string> = []
+                for (var key in overruleColorsChoices){
+                  if(defaultColorsChoices.includes(key)){overruleColorsChoicesArray.push(key)}
+                }                  
+                return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = overruleColorsChoicesArray
+              }
+              return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = defaultColorsChoices  
+            }
+          })
+        }
+        this.articleChanged = false
       }
     }},
     {type: 'beforeSave', code: (action, o) => {
       if(action == 1){
         o['order'] = this.currentOrder
         o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
+        for (var key in o){
+          if(o[key] == undefined) {
+            o[key] = null
+          }
+        }
         return Promise.resolve()
       } else return Promise.resolve()  
     }}    
@@ -102,6 +144,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     private cs: CrudService,
     private as: AuthService,
   ) {
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
     this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(categories => {

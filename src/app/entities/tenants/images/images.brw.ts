@@ -33,7 +33,8 @@ export class ImagesBrwComponent extends BrwBaseClass<Image[]> implements OnInit,
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields

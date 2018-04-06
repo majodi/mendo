@@ -30,7 +30,7 @@ template: `
   </div>
   <div [ngClass]="{'outer': singleRow}">
     <div *ngFor="let tile of tiles" class="inner" [ngStyle]="getItemStyle()">
-      <div fxLayout="column" fxLayoutAlign="start start" (click)="onClick(tile)">
+      <div fxLayout="column" fxLayoutAlign="start center" (click)="onClick(tile)">
         <div>
           <img src="{{tile.image}}" onerror="this.onerror=null;this.src='assets/image.svg'" [ngStyle]="getImageStyle()">
         </div>

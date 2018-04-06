@@ -176,7 +176,6 @@ export class DynamicFormComponent implements OnChanges, OnInit {
             if(this.config[configIndex].type == 'lookup' || this.config[configIndex].type == 'pulldown'){
               this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
                 if(rec){
-                  console.log('update value: ', customUpdate.fld, rec[customUpdate.lookupFld])
                   configToUpdate.value = rec[customUpdate.lookupFld]
                   if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
                   this.setToPopulate()

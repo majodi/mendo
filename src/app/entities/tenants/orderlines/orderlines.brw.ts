@@ -91,34 +91,38 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
         if(this.articleChanged || (sizesId && sizesId != this.currentSizesId)) {
           this.currentSizesId = sizesId
           const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
-            const defaultSizesChoices = property['choices'].split(',')
-            const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
-            if(overruleSizes){
-              const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
-              let overruleSizesChoicesArray: Array<string> = []
-              for (var key in overruleSizesChoices){
-                if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key)}
-              }                  
-              return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = overruleSizesChoicesArray
+            if(property){
+              const defaultSizesChoices = property['choices'].split(',')
+              const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
+              if(overruleSizes){
+                const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
+                let overruleSizesChoicesArray: Array<string> = []
+                for (var key in overruleSizesChoices){
+                  if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key)}
+                }                  
+                return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = overruleSizesChoicesArray
+              }
+              return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = defaultSizesChoices  
             }
-            return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = defaultSizesChoices
           })
         }
         const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name == 'colors')].value
         if(this.articleChanged || (colorsId && colorsId != this.currentColorsId)){
           this.currentColorsId = colorsId
           const colors = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', colorsId).subscribe((property: Property) => {
-            const defaultColorsChoices = property['choices'].split(',')
-            const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value
-            if(overruleColors){
-              const overruleColorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColorsChoices')].value
-              let overruleColorsChoicesArray: Array<string> = []
-              for (var key in overruleColorsChoices){
-                if(defaultColorsChoices.includes(key)){overruleColorsChoicesArray.push(key)}
-              }                  
-              return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = overruleColorsChoicesArray
+            if(property){
+              const defaultColorsChoices = property['choices'].split(',')
+              const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value
+              if(overruleColors){
+                const overruleColorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColorsChoices')].value
+                let overruleColorsChoicesArray: Array<string> = []
+                for (var key in overruleColorsChoices){
+                  if(defaultColorsChoices.includes(key)){overruleColorsChoicesArray.push(key)}
+                }                  
+                return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = overruleColorsChoicesArray
+              }
+              return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = defaultColorsChoices  
             }
-            return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = defaultColorsChoices
           })
         }
         this.articleChanged = false
@@ -127,6 +131,12 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     {type: 'beforeSave', code: (action, o) => {
       if(action == 1){
         o['order'] = this.selectedOrder
+        o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
+        for (var key in o){
+          if(o[key] == undefined) {
+            o[key] = null
+          }
+        }
         return Promise.resolve()
       } else return Promise.resolve()  
     }}
@@ -149,6 +159,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     private db: DbService,
     private gs: GlobService,
   ) {
+      this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
       this.orderLineSrv.colDef = this.columnDef
       this.orderLineSrv.formConfig = this.formConfig
       this.orderSelect.switchMap(id => {

@@ -24,7 +24,8 @@ export class EmailAddressesBrwComponent extends BrwBaseClass<EmailAddress[]> imp
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     super.ngOnInit() //volgorde van belang!

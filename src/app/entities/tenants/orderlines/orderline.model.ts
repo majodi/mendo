@@ -24,7 +24,7 @@ export const defaultColDef = [
     {name: 'amount',            header: 'Bedrag'},
   ]
 export const defaultFormConfig = [
-    {type: 'lookup',        label: 'Artikel',   name: 'article',    placeholder: 'Artikel',  value: '',
+    {type: 'lookup',        label: 'Artikel',   name: 'article',    placeholder: 'Artikel',  value: '', doNotPopulate: false,
         inputValueTransform: forceUppercase,
         customLookupFld: {path: 'articles', tbl: 'article', fld: 'code'},
         customLookupComponent: ArticlesBrwComponent,

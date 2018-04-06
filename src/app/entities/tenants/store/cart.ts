@@ -87,7 +87,8 @@ export class CartComponent extends BrwBaseClass<OrderLine[]> implements OnInit, 
         {name: 'amount',            header: 'Bedrag', hideXs: true},
         {name: 'remove',            header: '-', icon: 'remove_shopping_cart', flex: '15'},
       ]
-    this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    // this.formConfig = defaultFormConfig
     super.ngOnInit() //volgorde van belang!
     this.initData()
   }

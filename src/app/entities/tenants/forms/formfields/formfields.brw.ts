@@ -67,7 +67,8 @@ export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
+    // this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
     this.resetDoNotPopulate = true
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon

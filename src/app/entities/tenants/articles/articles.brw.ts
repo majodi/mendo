@@ -21,7 +21,7 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     {type: 'onValueChg', code: (ctrl, value) => {
       if(ctrl == 'overruleMeasurements'){
         const overruleMeasurements = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleMeasurements')].value
-        this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].hidden = !overruleMeasurements
+        this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].hidden = overruleMeasurements ? !overruleMeasurements : true
       }
       if(ctrl == 'measurements'){
         const measurementsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsChoices')].value
@@ -37,7 +37,7 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
       }
       if(ctrl == 'overruleColors'){
         const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value
-        this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].hidden = !overruleColors
+        this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].hidden = overruleColors ? !overruleColors : true
       }
       if(ctrl == 'colors'){
         const colorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsChoices')].value
@@ -66,7 +66,10 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    // this.formConfig = defaultFormConfig
+    this.formConfig[this.formConfig.findIndex(c => c.name == 'measurementsOverrule')].hidden = true //quick fix
+    this.formConfig[this.formConfig.findIndex(c => c.name == 'colorsOverrule')].hidden = true
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields

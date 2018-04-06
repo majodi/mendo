@@ -38,7 +38,8 @@ export class BulletinsBrwComponent extends BrwBaseClass<Bulletin[]> implements O
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')
