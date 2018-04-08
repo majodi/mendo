@@ -9,7 +9,7 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-pulldown',
   template: `
-    <div [formGroup]="group">
+    <div *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group">
       <app-pulldown ngDefaultControl [isDisabled]="config.disabled" [value]="config.value" [formControlName]="config.name" [lookupPlaceholder]="config.placeholder" [lookupItems]="config.customLookupItems" (itemChosen)="valueChanged($event)"></app-pulldown>
     </div>
   `

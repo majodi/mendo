@@ -17,7 +17,7 @@ export interface Bulletin {
 export const defaultTitle = 'Bulletins'
 export const defaultTitleIcon = 'event_note'
 export const defaultColDef = [
-    {name: 'sticky',      header: 'Sticky', iconSelect: rec => {if(rec['sticky']) return 'vertical_align_top'}},
+    {name: 'sticky',      header: 'Sticky', iconSelect: rec => {if(rec['sticky']) return 'vertical_align_top'}, flex: '10'},
     {name: 'date',        header: 'Datum', sort: true},
     {name: 'title',       header: 'Titel'},
     {name: 'buttonLink',  header: 'Link'},

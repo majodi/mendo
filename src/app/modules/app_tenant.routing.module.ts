@@ -11,6 +11,8 @@ import { SettingsBrwComponent } from '../entities/tenants/settings/settings.brw'
 import { FormsBrwComponent } from '../entities/tenants/forms/forms.brw';
 import { FormFieldsBrwComponent } from '../entities/tenants/forms/formfields/formfields.brw';
 import { FormResultsBrwComponent } from '../entities/tenants/forms/formresults/formresults.brw';
+import { UsersBrwComponent } from '../entities/tenants/users/users.brw';
+import { MessagesBrwComponent } from '../entities/tenants/messages/messages.brw';
 
 const app_tenantRoutes: Routes = [
   { path: '', canActivate: [AuthGuard],
@@ -24,6 +26,8 @@ const app_tenantRoutes: Routes = [
       { path: 'forms', component: FormsBrwComponent },
       { path: 'formfields', component: FormFieldsBrwComponent },
       { path: 'formresults', component: FormResultsBrwComponent },
+      { path: 'messages', component: MessagesBrwComponent },
+      { path: 'users', component: UsersBrwComponent },
     ]
   }
 ];

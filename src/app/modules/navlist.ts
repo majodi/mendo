@@ -15,6 +15,8 @@ export const fullNavList = [
     {module: 'app',   level: 50,  text: 'Kenmerken',        icon: 'class',         link: 'app-tenant/properties'},
     {module: 'store', level: 50,  text: 'Artikelen',        icon: 'label_outline', link: 'store-tenant/articles'},
     {module: 'app',   level: 50,  text: 'Afbeeldingen',     icon: 'image',         link: 'app-tenant/images'},
+    {module: 'app',   level: 50,  text: 'Berichten',        icon: 'message',       link: 'app-tenant/messages'},
+    {module: 'app',   level: 50,  text: 'Gebruikers',       icon: 'verified_user', link: 'app-tenant/users'},
     {module: 'app',   level: 100, text: 'Email Adressen',   icon: 'email',         link: 'app-super/emailaddresses'},
   ]
 

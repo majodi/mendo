@@ -31,6 +31,7 @@ import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
 import { CartComponent } from './entities/tenants/store/cart';
 
 import './rxjs-operators';
+import { UsersBrwComponent } from './entities/tenants/users/users.brw';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,7 @@ import './rxjs-operators';
     AppLookupModule,
     AppRoutingModule, // onderaan houden
   ],
-  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, CartComponent, PopupDialog],
+  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, CartComponent, PopupDialog, UsersBrwComponent],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })

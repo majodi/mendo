@@ -7,6 +7,7 @@ export const defaultTableTemplate = `
   [soberMode]="soberMode"
   [selectionButton]="selectionButton"
   [selectionActive]="selectionActive"
+  [insertButton]="insertButton"
   [data]="data"
   [columnDefs]="colDef"
   (clicked)="clicked($event)"

@@ -19,6 +19,8 @@ import { CategoryService } from '../entities/tenants/categories/category.service
 import { PropertyService } from '../entities/tenants/properties/property.service';
 import { CartComponent } from '../entities/tenants/store/cart';
 import { OrderLineService } from '../entities/tenants/orderlines/orderline.service';
+import { UsersBrwComponent } from '../entities/tenants/users/users.brw';
+import { UserService } from '../entities/tenants/users/user.service';
 
 @NgModule({
   imports: [
@@ -33,6 +35,7 @@ import { OrderLineService } from '../entities/tenants/orderlines/orderline.servi
       OrdersBrwComponent,
       ArticlesBrwComponent,
       CartComponent,
+      UsersBrwComponent,
     ],
   exports: [
       ImagesBrwComponent,
@@ -40,6 +43,7 @@ import { OrderLineService } from '../entities/tenants/orderlines/orderline.servi
       OrdersBrwComponent,
       ArticlesBrwComponent,
       CartComponent,
+      UsersBrwComponent,
     ],
   providers: [
       ImageService,
@@ -50,6 +54,7 @@ import { OrderLineService } from '../entities/tenants/orderlines/orderline.servi
       CategoryService,
       PropertyService,
       OrderLineService,
+      UserService,
     ]
 })
 export class AppLookupModule { }

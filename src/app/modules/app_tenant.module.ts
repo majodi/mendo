@@ -16,6 +16,8 @@ import { BulletinsBrwComponent } from '../entities/tenants/bulletins/bulletins.b
 import { FormsBrwComponent } from '../entities/tenants/forms/forms.brw';
 import { FormFieldsBrwComponent } from '../entities/tenants/forms/formfields/formfields.brw';
 import { FormResultsBrwComponent } from '../entities/tenants/forms/formresults/formresults.brw';
+import { MessagesBrwComponent } from '../entities/tenants/messages/messages.brw';
+import { MessageService } from '../entities/tenants/messages/message.service';
 
 import { OrdersBrwComponent } from '../entities/tenants/orders/orders.brw';
 
@@ -37,6 +39,7 @@ import { AppLookupModule } from './app_lookup.module';
       FormsBrwComponent,
       FormFieldsBrwComponent,
       FormResultsBrwComponent,
+      MessagesBrwComponent,
     ],
   exports: [
       PropertiesBrwComponent,
@@ -46,6 +49,7 @@ import { AppLookupModule } from './app_lookup.module';
       FormsBrwComponent,
       FormFieldsBrwComponent,
       FormResultsBrwComponent,
+      MessagesBrwComponent,
     ],
     entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent],
     providers: [
@@ -54,6 +58,7 @@ import { AppLookupModule } from './app_lookup.module';
       // EmployeeService,
       // ImageService,
       SettingService,
+      MessageService,
     ]
 })
 export class AppTenantModule { }

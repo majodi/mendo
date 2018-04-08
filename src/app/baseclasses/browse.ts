@@ -31,6 +31,7 @@ export class BrwBaseClass<T> {
   soberMode = false
   selectionButton = false
   selectionActive = false
+  insertButton = true
   colDef: ColumnDefenition[]
   formConfig: FieldConfig[]
   alternativeFormActionTitle: string
