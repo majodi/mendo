@@ -77,7 +77,7 @@ export class CartComponent extends BrwBaseClass<OrderLine[]> implements OnInit, 
   }
 
   ngOnInit() {
-    console.log('queriesread en queries: ', this.gs.NavQueriesRead, this.gs.NavQueries)
+    // console.log('queriesread en queries: ', this.gs.NavQueriesRead, this.gs.NavQueries)
     this.title = 'Winkelwagen'
     this.titleIcon = defaultTitleIcon
     this.colDef = [

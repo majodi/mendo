@@ -16,7 +16,8 @@ import { FieldConfig } from '../models/field-config.interface';
       (keyup)="onKeyUp($event)"
       (blur)="onBlur($event)"
       [placeholder]="config.placeholder"
-      [formControlName]="config.name">
+      [formControlName]="config.name"
+      [readonly]="config.readOnly">
   </ng-template>
   <ng-template #textarea_tpl>
     <textarea
@@ -26,7 +27,8 @@ import { FieldConfig } from '../models/field-config.interface';
       (keyup)="onKeyUp($event)"
       (blur)="onBlur($event)"
       [placeholder]="config.placeholder"
-      [formControlName]="config.name"></textarea>
+      [formControlName]="config.name"
+      [readonly]="config.readOnly"></textarea>
   </ng-template>
   </mat-form-field>
   `

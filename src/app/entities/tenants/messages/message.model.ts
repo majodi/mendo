@@ -11,7 +11,9 @@ export interface Message {
     fromEmail: string;
     fromName: string;
     recipientSource: string; // user, organisation, employee
-    recipientRef: string; // id of user, organisation, employee
+    user: string; // user
+    organisation: string; // organisation
+    employee: string; // employee
     recipientDesignation: string;
     toList: EmailDestination[];
     ccList: EmailDestination[];
@@ -34,13 +36,14 @@ export const defaultColDef = [
     {name: 'subject',               header: 'Onderwerp', hideXs: true},
   ]
 export const defaultFormConfig = [
-    {type: 'stringdisplay', label: 'Status',    name: 'status',             placeholder: 'Status',          value: 'New', doNotPopulate: true},
-    {type: 'stringdisplay', label: 'Status',    name: 'statusDisplay',      placeholder: 'Status',          value: 'Nieuw'},
-    {type: 'select',    label: 'Kanaal',        name: 'channel',            placeholder: 'Kanaal',          value: '', options: ['email', 'push']},
-    {type: 'select',    label: 'Ontvanger bron',name: 'recipientSource',    placeholder: 'Ontvanger bron',  value: '', options: ['Gebruiker', 'Organisatie', 'Medewerker']},
-    {type: 'lookup',    label: 'Gebruiker',     name: 'user',               placeholder: 'Gebruiker',       value: '', hidden: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'users', tbl: 'user', fld: 'displayName'}},
-    {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',       placeholder: 'Organisatie',     value: '', hidden: true, customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
-    {type: 'lookup',    label: 'Medewerker',    name: 'employee',           placeholder: 'Medewerker',      value: '', hidden: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'employees', tbl: 'employee', fld: 'address.name'}},
-    {type: 'input',     label: 'Onderwerp',     name: 'subject',            placeholder: 'Onderwerp',       value: ''},
-    {type: 'input', inputLines: 5,  label: 'Berichtinhoud', name: 'textContent', placeholder: 'Berichtinhoud', value: '',},
+    {type: 'stringdisplay', label: 'Status',        name: 'status',             placeholder: 'Status',          value: 'new', doNotPopulate: true},
+    {type: 'stringdisplay', label: 'Status',        name: 'statusDisplay',      placeholder: 'Status',          value: 'Nieuw', hidden: true},
+    {type: 'select',        label: 'Kanaal',        name: 'channel',            placeholder: 'Kanaal',          value: '', options: ['email', 'push']},
+    {type: 'select',        label: 'Ontvanger bron',name: 'recipientSource',    placeholder: 'Ontvanger bron',  value: '', hidden: true, options: ['Gebruiker', 'Organisatie', 'Medewerker']},
+    {type: 'lookup',        label: 'Gebruiker',     name: 'user',               placeholder: 'Gebruiker',       value: '', hidden: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'users', tbl: 'user', fld: 'displayName'}},
+    {type: 'pulldown',      label: 'Organisatie',   name: 'organisation',       placeholder: 'Organisatie',     value: '', hidden: true, customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
+    {type: 'lookup',        label: 'Medewerker',    name: 'employee',           placeholder: 'Medewerker',      value: '', hidden: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'employees', tbl: 'employee', fld: 'address.name'}},
+    {type: 'stringdisplay', label: 'Ontvanger',     name: 'recipientDesignation', placeholder: 'Ontvanger',     value: '', hidden: true},
+    {type: 'input',         label: 'Onderwerp',     name: 'subject',            placeholder: 'Onderwerp',       value: ''},
+    {type: 'input', inputLines: 5, label: 'Berichtinhoud', name: 'textContent', placeholder: 'Berichtinhoud', value: ''},
   ]

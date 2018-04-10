@@ -7,7 +7,7 @@ import { FieldConfig } from '../models/field-config.interface';
 @Component({
   selector: 'form-select',
   template: `
-    <mat-form-field *ngIf="!config.doNotPopulate" [formGroup]="group" [floatLabel]="config.label">
+    <mat-form-field *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group" [floatLabel]="config.label">
       <mat-select [formControlName]="config.name" (selectionChange)="onSelectionChange($event)">
         <mat-option *ngFor="let option of config.options" [value]="option">
           {{ option }}
