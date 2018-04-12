@@ -24,7 +24,7 @@ export class MessagesBrwComponent extends BrwBaseClass<Message[]> implements OnI
 embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
         if(ctrl == 'status'){
-            this.formConfig[this.formConfig.findIndex(c => c.name == 'statusDisplay')].value = {new: 'Nieuw', send: 'Verzenden', sent: 'Verzonden'}[value]
+            this.formConfig[this.formConfig.findIndex(c => c.name == 'statusDisplay')].value = {new: 'Nieuw', send: 'Verzenden', sent: 'Verzonden', error: 'Fout'}[value]
             if(value != 'new'){
                 this.formConfig.forEach(c => c.hidden = true)
                 this.formConfig[this.formConfig.findIndex(c => c.name == 'recipientDesignation')].hidden = false
@@ -100,6 +100,7 @@ embeds: Embed[] = [
                 } else {
                     return this.db.getUniqueValueId(`users`, 'employee', o.employee).take(1).map((user: User) => {
                         if(user){
+                            o.user = user //important for Cloud function for push
                             o.recipientDesignation = `${employee.address.name} <push>`
                             o.subscriptionList = user.pushSubscriptions
                             o.dataObject = {
@@ -118,8 +119,10 @@ embeds: Embed[] = [
         }
     }},
     {type: 'beforeChgDialog', code: (rec, fld) => {
-        if(fld == 'status' && rec.status == 'new' && !this.selectMode){
-            return this.ps.buttonDialog('Berich versturen?', 'Verstuur', 'Annuleer').then(b => {
+        if(fld == 'status' && (rec.status == 'new' || rec.status == 'error') && !this.selectMode){
+            let dialogText = 'Berich versturen?'
+            if(rec.status == 'error'){dialogText = 'Mislukt bericht opnieuw proberen te versturen?'}
+            return this.ps.buttonDialog(dialogText, 'Verstuur', 'Annuleer').then(b => {
                 if(b == 1){
                     return this.db.updateDoc({status: 'send'}, `${this.gs.entityBasePath}/messages/${rec['id']}`).then(v => {
                         return true

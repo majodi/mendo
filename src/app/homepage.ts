@@ -96,8 +96,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   onButtonClicked(e) {
     const link: string = e['buttonLink']
-    if(link.toUpperCase().startsWith('HTTP')){window.open(link); return}
+    if(link.toUpperCase().startsWith('HTTP')){this.pushSubscribe(); window.open(link); return}
     if(link.toUpperCase().startsWith('FORM:')){this.openUserForm(link.toUpperCase().split(':')[1]); return} // subscribe on form save (below)
+    this.pushSubscribe()
     this.router.navigate([e['buttonLink']])
   }
 

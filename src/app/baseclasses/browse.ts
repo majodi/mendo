@@ -94,7 +94,8 @@ export class BrwBaseClass<T> {
 
   setPulldownItems(items$: Observable<any>, fldName: string, displayFld: string, subDisplayFld?: string, addSearchFld?: string) {
     items$.takeUntil(this.ngUnsubscribe).subscribe((items) => {
-      this.formConfig.find(c => {return c.name === fldName})['customLookupItems'] = items
+      // this.formConfig.find(c => {return c.name === fldName})['customLookupItems'] = items
+      let customLookupItems = items
       .map((item) => {
         return {
           id: item.id,
@@ -103,7 +104,9 @@ export class BrwBaseClass<T> {
           addSearch: addSearchFld != undefined ? this.resolveObjPath(item, addSearchFld) : ''
         }
       })
-    })    
+      this.formConfig.find(c => {return c.name === fldName})['customLookupItems'] = customLookupItems
+      this.formConfigInitial.find(c => {return c.name === fldName})['customLookupItems'] = customLookupItems //async not available at copy in init
+    })
   }
 
   setLookupComponent(component: Type<any>, fldName: string, displayFld: string, subDisplayFld?: string, addSearchFld?: string) {
