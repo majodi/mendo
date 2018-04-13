@@ -54,7 +54,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   waitOnUpload = false
   info = ''
 
-  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)); }
+  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)); } //filter controls that have no custom ctrl
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
@@ -105,7 +105,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
     const newCtrl = this.fb.control({ disabled, value }, validation);
-    if(!['button', 'input', 'select', 'checkbox'].includes(config.type)){
+    if(!['button', 'input', 'select', 'checkbox'].includes(config.type)){ // does it need a custom value change
       config.customValueChg = (name: string, value: any) => { //for custom components
         this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
         this.setFormValue(name, config.type == 'lookup' ? value['id'] : value)
@@ -123,7 +123,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       event.stopPropagation();  
     }
     this.config.forEach(config => {
-      if(['chiplist', 'lookup', 'pulldown', 'stringdisplay'].includes(config.type)){
+      if(['chiplist', 'lookup', 'pulldown', 'stringdisplay', 'selectchildren'].includes(config.type)){
         this.value[config.name] = config.value
       }
       if(config.type == 'filepick' && this.formAction == 1){ //only on insert!!

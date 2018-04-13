@@ -11,7 +11,7 @@ import { AuthService } from './auth.service'; ///// hoeft niet meer met gs = glo
 import { UploadService } from './upload.service';
 import { GlobService } from './glob.service';
 import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
-import { DocumentData } from '@firebase/firestore-types';
+import { DocumentData, SetOptions } from '@firebase/firestore-types';
 import { Setting } from '../entities/tenants/settings/setting.model';
 import { QueryItem } from '../models/query-item.interface';
 import { MatDialog } from '@angular/material';
@@ -53,8 +53,8 @@ export class DbService {
     return this.db.collection(collection).add(data)
   }
 
-  setDoc(data, path: string) {
-    return this.db.doc(path).set(data)
+  setDoc(data, path: string, options?: SetOptions) {
+    if(options != undefined){return this.db.doc(path).set(data, options)} else {return this.db.doc(path).set(data)}
   }
 
   updateDoc(data, path: string) {

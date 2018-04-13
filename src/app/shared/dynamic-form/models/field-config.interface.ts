@@ -41,5 +41,7 @@ export interface FieldConfig {
   customLookupComponent?: Type<any>,
   customLookupItem?: LookupItem,
   customFile?: File,
-  customUpdateWithLookup?: updateWithLookup[]
+  customUpdateWithLookup?: updateWithLookup[],
+  customSelectChildrenComponent?: Type<any>,
+  customSelectChildrenCurrentParent?: string
 }

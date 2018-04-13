@@ -12,6 +12,7 @@ import { TableComponent } from './components/table.component';
 import { GridComponent } from './components/grid.component';
 import { LookupComponent } from './components/lookup.component';
 import { FilepickComponent } from './components/filepick.component';
+import { SelectChildrenComponent } from './components/selectchildren.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { FilepickComponent } from './components/filepick.component';
     GridComponent,
     LookupComponent,
     FilepickComponent,
+    SelectChildrenComponent,
   ],
   exports: [
     ChiplistComponent,
@@ -37,6 +39,7 @@ import { FilepickComponent } from './components/filepick.component';
     GridComponent,
     LookupComponent,
     FilepickComponent,
+    SelectChildrenComponent,
   ],
   entryComponents: []
 })

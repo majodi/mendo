@@ -15,6 +15,7 @@ import { FormChiplistComponent } from './form-chiplist.component';
 
 import { Field } from '../models/field.interface';
 import { FieldConfig } from '../models/field-config.interface';
+import { FormSelectChildrenComponent } from './form-selectchildren.component';
 
 const components: {[type: string]: Type<Field>} = {
   button: FormButtonComponent,
@@ -27,6 +28,7 @@ const components: {[type: string]: Type<Field>} = {
   imagedisplay: FormImagedisplayComponent,
   stringdisplay: FormStringdisplayComponent,
   checkbox: FormCheckboxComponent,
+  selectchildren: FormSelectChildrenComponent
 };
 
 @Directive({
@@ -68,7 +70,6 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
         Supported types: ${supportedTypes}`
       );
     }
-    // let ctrlType: string = !(this.formAction == 0 && this.config.type == 'chiplist') ? this.config.type : 'select'
     let ctrlType: string = this.config.type
     const component = this.resolver.resolveComponentFactory<Field>(components[ctrlType]);
     this.component = this.container.createComponent(component);

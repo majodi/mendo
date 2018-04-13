@@ -34,7 +34,7 @@ export class PopupService {
       });
     }
 
-    BrowseDialog(brwComponent: Type<any>, selectMode?: boolean, soberMode?: boolean, query?: QueryItem[]) {
+    BrowseDialog(brwComponent: Type<any>, selectMode?: boolean, soberMode?: boolean, query?: QueryItem[], itemSelect?: boolean, itemSelectParent?: string, itemSelectEntity?: string) {
       if(query != undefined){
         query.forEach(q => {
           this.gs.NavQueries.push({fld: q.fld, operator: q.operator, value: q.value})
@@ -51,6 +51,11 @@ export class PopupService {
       if(soberMode != undefined){
         dialogRef.componentInstance.sober = soberMode  
       } else dialogRef.componentInstance.sober = false;
+      if(itemSelect != undefined){
+        dialogRef.componentInstance.itemSelect = itemSelect  
+      } else dialogRef.componentInstance.itemSelect = false;      
+      dialogRef.componentInstance.itemSelectParent = itemSelectParent
+      dialogRef.componentInstance.itemSelectEntity = itemSelectEntity
 
       return dialogRef.afterClosed().toPromise().then(result => {
         if(query != undefined){

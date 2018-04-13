@@ -19,8 +19,9 @@ import { EntityService } from '../models/entity-service.interface';
 export class BrwBaseClass<T> {
   @Input() select: boolean
   @Input() sober: boolean
+  @Input() itemSelect: boolean
   @Output() selected = new EventEmitter()
-  data: T
+  data: T[]
   ngUnsubscribe = new Subject<string>()
   dataLoaded = new Subject()
   userDefinedBrowse = false
@@ -32,6 +33,8 @@ export class BrwBaseClass<T> {
   selectionButton = false
   selectionActive = false
   insertButton = true
+  itemSelectParent: string
+  itemSelectEntity: string
   colDef: ColumnDefenition[]
   formConfig: FieldConfig[]
   formConfigInitial: FieldConfig[]
@@ -85,7 +88,7 @@ export class BrwBaseClass<T> {
     }
     if(allQueries && allQueries.length > 0){this.selectionActive = true}
     this.isLoading = true
-    this.entitySrv.initEntity$(allQueries).takeUntil(this.ngUnsubscribe).subscribe((data: T) => {
+    this.entitySrv.initEntity$(allQueries).takeUntil(this.ngUnsubscribe).subscribe((data: T[]) => {
       this.data = data
       this.dataLoaded.next()
       this.isLoading = false
@@ -137,15 +140,16 @@ export class BrwBaseClass<T> {
     }
   }
 
-  clicked(brwClick: {fld: string, rec: {}}) {
+  clicked(brwClick: {fld: string, rec: {}, itemSelection: {}[]}) {
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
-    if(!['insert','selection'].includes(brwClick.fld)){
+    if(!['insert','selection','acceptItemSelect'].includes(brwClick.fld)){
       if(this.selectMode){
         this.gs.entityId[this.entitySrv.entityName] = rec['id']
         this.selected.emit(brwClick)
         this.dialogRef.close(rec)
       } else {
         this.formConfig = this.formConfigInitial.map(x => Object.assign({}, x));
+        this.setParentId(rec['id'])
         this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined, this.alternativeFormActionTitle).catch(err => console.log(err))
       }
       return
@@ -155,6 +159,7 @@ export class BrwBaseClass<T> {
         this.formConfig.map(fld => fld.value = '')
       }
       this.formConfig = this.formConfigInitial.map(x => Object.assign({}, x));
+      this.setParentId(rec['id'])
       if(this.resetDoNotPopulate){this.formConfig.forEach(c => c.doNotPopulate = false)}
       this.cs.insertDialog(this.formConfig, rec, this.entitySrv.entityPath, this['embeds'] ? this['embeds'] : undefined, this.alternativeFormActionTitle).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
@@ -177,8 +182,43 @@ export class BrwBaseClass<T> {
       })
       return
     }
+    if(brwClick.fld == 'acceptItemSelect' && brwClick.itemSelection != undefined){
+      this.ps.buttonDialog('Selectie toepassen?', 'Pas toe', 'Annuleer').then(b => {
+        if(b == 1){
+          this.isLoading = true
+          let currentlyChild: boolean, nowSelected: boolean, promises = []
+          this.data.forEach(currentRec => {
+            currentlyChild = currentRec[this.itemSelectEntity] != undefined ? (currentRec[this.itemSelectEntity][this.itemSelectParent] ? currentRec[this.itemSelectEntity][this.itemSelectParent] : false) : false
+            nowSelected = brwClick.itemSelection.find(i => i['id'] == currentRec['id']) != undefined
+            if(nowSelected != currentlyChild){
+              const currentChildOf = currentRec[this.itemSelectEntity] != undefined ? currentRec[this.itemSelectEntity] : {}
+              currentChildOf[this.itemSelectParent] = nowSelected
+              const childOfData = {}
+              childOfData[this.itemSelectEntity] = currentChildOf
+              promises.push(
+                this.db.setDoc(childOfData, `${this.entitySrv.entityPath}/${currentRec['id']}`, {merge: true})
+              )
+            }
+          })
+          let processed = promises.length
+          Promise.all(promises).then(() => {
+            this.isLoading = false
+            this.dialogRef.close(processed)  
+          }).catch(e => {
+            this.isLoading = false
+            this.ps.buttonDialog('Fout bij toepassen selectie '+e, 'OK').then(b => {
+              this.dialogRef.close('Fout opgetreden, ?')                
+            })
+          })
+        }
+      })
+    }
   }
-  
+
+  setParentId(parentId) {
+    this.formConfig.filter(c => c.type == 'selectchildren').forEach(c => c.customSelectChildrenCurrentParent = parentId)
+  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next()
     this.ngUnsubscribe.complete()

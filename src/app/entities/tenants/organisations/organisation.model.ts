@@ -2,12 +2,14 @@ import { Validators } from '@angular/forms';
 import { EntityMeta } from '../../../models/entity-meta.model';
 import { Address } from '../../../models/address.model';
 import { forceCapitalize, forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
+import { ArticlesBrwComponent } from '../articles/articles.brw';
 
 export interface Organisation {
     id: string;
     meta: EntityMeta;
     address: Address;
     logo?: string; // asset
+    packageSelection: boolean;
 }
 
 export const defaultTitle = 'Organisaties'
@@ -21,6 +23,7 @@ export const defaultColDef = [
   ]
 export const defaultFormConfig = [
     {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'selectchildren', label: 'Pakketselectie', name: 'packageSelection', placeholder: 'Pakketselectie', value: false, customSelectChildrenComponent: ArticlesBrwComponent},
     {type: 'input', label: 'Omschrijving',  name: 'address.description',  placeholder: 'Omschrijving',  value: ''},
     {type: 'input', label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input', label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},

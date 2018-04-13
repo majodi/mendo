@@ -6,6 +6,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { UploadService } from '../../../services/upload.service';
 import { ColumnDefenition } from '../models/column-defenition.model'
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-table',
@@ -17,6 +18,7 @@ import { ColumnDefenition } from '../models/column-defenition.model'
   .gradient-bg {background-image: url("./assets/gradient_bg.png"); background-repeat: repeat-x;}
   .title-icon {font-size: 40px; max-width: 40px; width: auto;}
   .lg-button {min-width: 100px; padding: 0;}
+  .mat-column-select {overflow: visible;}
     `],
   template: `
   <div [@pageAnim]>
@@ -32,7 +34,8 @@ import { ColumnDefenition } from '../models/column-defenition.model'
           </mat-form-field>
           <button mat-button fxFlexAlign="center" (click)="print()"><mat-icon>print</mat-icon></button>
           <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
-              <button class="lg-button" *ngIf="insertButton" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
+              <button class="lg-button" *ngIf="insertButton && !itemSelect" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
+              <button *ngIf="itemSelect && itemSelection.selected.length > 0" class="lg-button" mat-button (click)="click('acceptItemSelect','')"><mat-icon>playlist_add_check</mat-icon> Kies</button>
               <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon> Selectie</button>
           </div>
       </div>
@@ -44,6 +47,20 @@ import { ColumnDefenition } from '../models/column-defenition.model'
       <!-- table -->
       <div #printarea>
       <mat-table #table [dataSource]="dataSource" matSort style="max-height:50vh;">
+        <ng-container *ngIf="itemSelect" matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="itemSelection.hasValue() && isAllSelected()"
+                        [indeterminate]="itemSelection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? itemSelection.toggle(row) : null"
+                        [checked]="itemSelection.isSelected(row)">
+            </mat-checkbox>
+        </mat-cell>
+        </ng-container>
           <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.name">
               <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> {{col.header}} </mat-header-cell>
               <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)">
@@ -96,10 +113,14 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() insertButton = true
   @Input() selectionButton = false
   @Input() selectionActive = false
+  @Input() itemSelect = false
+  @Input() itemSelectEntity
+  @Input() itemSelectParent
   @Input() data = []
   @Input() columnDefs: ColumnDefenition[] = []
   @Input() parentPrintHeaderRef: ElementRef
   @Output() clicked = new EventEmitter();
+  itemSelection = new SelectionModel<Element>(true, [])
   displayedColumns = []
   mediaIsXs: boolean
   mediaLtMd: boolean
@@ -122,6 +143,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit() {
+    //   this.itemSelect = true // test purpose
     this.filterKeyUp
     .takeUntil(this.ngUnsubscribe)
     .debounceTime(400)
@@ -135,7 +157,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   setColumns() {
-    this.displayedColumns = []
+    this.displayedColumns = this.itemSelect ? ['select'] : []
     this.columnDefs.forEach(coldef => {
         if(!(this.media.isActive('xs') && coldef.hideXs)) {
             this.displayedColumns.push(coldef.name)
@@ -153,8 +175,26 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         })      
         return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) != -1;
       }
+    if(this.data != undefined){
+        let wasLoading = this.isLoading
+        this.isLoading = true
+        this.data.filter(rec => rec[this.itemSelectEntity] && rec[this.itemSelectEntity][this.itemSelectParent]).forEach(row => this.itemSelection.select(row))
+        this.isLoading = wasLoading    
+    }
   }
 
+  isAllSelected() {
+    const numSelected = this.itemSelection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+        this.itemSelection.clear() :
+        this.dataSource.data.forEach(row => this.itemSelection.select(row));
+  }
+  
   resolveObjPath(obj, path) {
     return path.split('.').reduce(function(prev, curr) {
         return prev ? prev[curr] : null
@@ -166,15 +206,8 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
       return colDef.imageSelect(rec)
   }
 
-//   getThumb(url) {
-//       return this.us.getThumb(url)
-//     // //   debugger
-//     // let filepath = this.us.getFilePath(url)
-//     // return 'https://storage.cloud.google.com/mendo-app.appspot.com/' + filepath + '_64_thumb.png'
-//   }
-  
   click(fld, rec) {
-    this.clicked.emit({fld: fld, rec:rec})
+    this.clicked.emit({fld: fld, rec:rec, itemSelection:this.itemSelection.selected})
   }
 
   applyFilter(filterValue: string) {

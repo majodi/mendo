@@ -18,6 +18,7 @@ import { FormImagedisplayComponent } from './components/form-imagedisplay.compon
 import { FormStringdisplayComponent } from './components/form-stringdisplay.component';
 import { FormCheckboxComponent } from './components/form-checkbox.component';
 import { CustomComponentsModule } from '../custom-components/custom-components.module';
+import { FormSelectChildrenComponent } from './components/form-selectchildren.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormImagedisplayComponent,
     FormStringdisplayComponent,
     FormCheckboxComponent,
+    FormSelectChildrenComponent,
   ],
   exports: [
     DynamicFormComponent,
@@ -58,6 +60,7 @@ import { CustomComponentsModule } from '../custom-components/custom-components.m
     FormImagedisplayComponent,
     FormStringdisplayComponent,
     FormCheckboxComponent,
+    FormSelectChildrenComponent,
   ]
 })
 export class DynamicFormModule {}

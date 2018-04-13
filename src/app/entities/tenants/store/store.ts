@@ -17,6 +17,7 @@ import { Property } from '../properties/property.model';
 import { CartComponent } from './cart';
 import { AuthService } from '../../../services/auth.service';
 import { Employee } from '../organisations/employees/employee.model';
+import { Organisation } from '../organisations/organisation.model';
 
 @Component({
   selector: 'app-store',
@@ -49,6 +50,7 @@ import { Employee } from '../organisations/employees/employee.model';
 export class StoreComponent implements OnInit, OnDestroy {
   categoryData: Tile[]
   articleData: Tile[]
+  articleBaseQuery: QueryItem[]
   ngUnsubscribe = new Subject<string>()
   articleSelect = new BehaviorSubject<string|null>(null)
   actionIcon = ''
@@ -62,7 +64,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   articleChanged = false
   currentImageId = ''
   currentSizesId = ''
-  currentColorsId = ''  
+  currentColorsId = ''
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
       const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
@@ -145,6 +147,24 @@ export class StoreComponent implements OnInit, OnDestroy {
     private as: AuthService,
   ) {
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    if(this.as.user.organisation != undefined){
+      this.db.getDoc(`${this.gs.entityBasePath}/organisations/${this.as.user.organisation}`).then((o: Organisation) => {
+        if(!o.packageSelection){
+          this.articleBaseQuery = []
+        } else {
+          this.articleBaseQuery = [{fld: 'packageSelection.'+this.as.user.organisation, operator: '==', value: true}]
+        }
+        this.initDataSubscribers()
+      }).catch(e => {
+        console.log('could not get organisation of user: ', this.as.user.uid)
+        this.articleBaseQuery = []
+        this.initDataSubscribers()
+      })
+    }
+  }
+
+  initDataSubscribers() {
+    let CategoryDataCleaned = false //not yet filtered out empty categories
     this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(categories => {
@@ -155,26 +175,35 @@ export class StoreComponent implements OnInit, OnDestroy {
           image: category.image_v
         }  
       })
-    })
-    this.ArticleSrv.colDef = [{name: 'image_v'}]
-    this.ArticleSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
-    this.articleSelect.switchMap(id => {
-      if(id){
-        return this.ArticleSrv.initEntity$([{fld: 'category', operator: '==', value: id}])
-      } else {
-        return this.ArticleSrv.initEntity$()
-      }
-    }).takeUntil(this.ngUnsubscribe)
-    .subscribe(articles => {
-      this.articleData = articles.map(article => {
-        return {
-          id: article.id,
-          title: article.description_s,
-          description: article.description_l,
-          image: article.image_v,
-          price: article.price
-        }  
+
+      this.ArticleSrv.colDef = [{name: 'image_v'}]
+      this.ArticleSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
+      this.articleSelect.switchMap(id => {
+        const articleQuery = this.articleBaseQuery.map(x => Object.assign({}, x))
+        if(id){
+          articleQuery.push({fld: 'category', operator: '==', value: id})
+        }
+        return this.ArticleSrv.initEntity$(articleQuery)
+      }).takeUntil(this.ngUnsubscribe)
+      .subscribe(articles => {
+        const categoriesWithArticles = []
+        this.articleData = articles.map(article => {
+          if(!categoriesWithArticles.includes(article['category'])){categoriesWithArticles.push(article['category'])}
+          return {
+            id: article.id,
+            title: article.description_s,
+            description: article.description_l,
+            image: article.image_v,
+            price: article.price
+          }  
+        })
+        if(!CategoryDataCleaned){
+          this.categoryData = this.categoryData.filter(cat => categoriesWithArticles.includes(cat.id))
+          CategoryDataCleaned = true  
+        }
       })
+  
+
     })
   }
 
