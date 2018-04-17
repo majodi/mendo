@@ -18,6 +18,15 @@ import { CartComponent } from './cart';
 import { AuthService } from '../../../services/auth.service';
 import { Employee } from '../organisations/employees/employee.model';
 import { Organisation } from '../organisations/organisation.model';
+import { Category } from '../categories/category.model';
+import { Article } from '../articles/article.model';
+
+interface CategoryItem {
+  id: string,
+  title: string,
+  image: string,
+  children: CategoryItem[]
+}
 
 @Component({
   selector: 'app-store',
@@ -25,8 +34,10 @@ import { Organisation } from '../organisations/organisation.model';
   <div style="width:100%">
   <app-grid
     [singleRow]="true"
-    [title]="'Categorieën'"
+    [title]="categoriesTitle"
     [data]="categoryData"
+    [highlightSelected]="true"
+    [backButton]="categoriesBackButton"
     (clicked)="onClickCategory($event)"
   ></app-grid>
   <hr>
@@ -49,7 +60,10 @@ import { Organisation } from '../organisations/organisation.model';
 })
 export class StoreComponent implements OnInit, OnDestroy {
   categoryData: Tile[]
+  categoriesTitle = 'Categorieën'
+  categoriesBackButton = false
   articleData: Tile[]
+  allArticleData: Tile[]
   articleBaseQuery: QueryItem[]
   ngUnsubscribe = new Subject<string>()
   articleSelect = new BehaviorSubject<string|null>(null)
@@ -65,6 +79,8 @@ export class StoreComponent implements OnInit, OnDestroy {
   currentImageId = ''
   currentSizesId = ''
   currentColorsId = ''
+  selectedCategory = ''
+  categoryTree: CategoryItem[] = []
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
       const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
@@ -164,20 +180,29 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   initDataSubscribers() {
-    let CategoryDataCleaned = false //not yet filtered out empty categories
     this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
-    this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(categories => {
-      this.categoryData = categories.map(category => {
-        return {
-          id: category.id,
-          title: category.description,
-          image: category.image_v
-        }  
-      })
+    this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe((categories: Category[]) => {
 
-      this.ArticleSrv.colDef = [{name: 'image_v'}]
-      this.ArticleSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
+      this.categoryTree = []
+
+      categories
+      .filter((cat: Category) => !cat.parentCategory) //top-level
+      .forEach((cat: Category) => {this.categoryTree
+        .push({id: cat.id, title: cat.description, image: cat['image_v'], children: []})})
+
+      categories
+      .filter((cat: Category) => cat.parentCategory) //sub-level
+      .forEach((child: Category) => this.categoryTree
+        .find((cat: CategoryItem) => cat.id == child.parentCategory).children
+        .push({id: child.id, title: child.description, image: child['image_v'], children: []}))
+
+      this.ArticleSrv.colDef = [
+        {name: 'image_v'},
+      ]
+      this.ArticleSrv.formConfig = [
+        {type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},
+      ]
       this.articleSelect.switchMap(id => {
         const articleQuery = this.articleBaseQuery.map(x => Object.assign({}, x))
         if(id){
@@ -185,25 +210,38 @@ export class StoreComponent implements OnInit, OnDestroy {
         }
         return this.ArticleSrv.initEntity$(articleQuery)
       }).takeUntil(this.ngUnsubscribe)
-      .subscribe(articles => {
+      .subscribe((articles: Article[]) => {
         const categoriesWithArticles = []
-        this.articleData = articles.map(article => {
-          if(!categoriesWithArticles.includes(article['category'])){categoriesWithArticles.push(article['category'])}
+        this.articleData = articles.map((article: Article) => {
+          if(!categoriesWithArticles.includes(article.category)){categoriesWithArticles.push(article.category)}
           return {
             id: article.id,
             title: article.description_s,
             description: article.description_l,
-            image: article.image_v,
-            price: article.price
+            image: article['image_v'],
+            price: article.price,
+            optionField: article.category
           }  
         })
-        if(!CategoryDataCleaned){
-          this.categoryData = this.categoryData.filter(cat => categoriesWithArticles.includes(cat.id))
-          CategoryDataCleaned = true  
+        this.allArticleData = this.articleData.map(x => Object.assign({}, x))
+        if(!this.categoriesBackButton){
+          this.categoryData = this.categoryTree.map((cat: CategoryItem) => { //top-level
+            return {
+              id: cat.id,
+              title: cat.title,
+              image: cat.image,
+              optionField: cat.children
+            }
+          })  
         }
+        this.categoryData = this.categoryData.filter(cat => {
+          if(categoriesWithArticles.includes(cat.id)) return true;
+          const children: CategoryItem[] = cat.optionField
+          if(children == undefined || children.length == 0) return false;
+          return children.some(child => {return categoriesWithArticles.includes(child.id)})
+        })
       })
   
-
     })
   }
 
@@ -244,8 +282,33 @@ export class StoreComponent implements OnInit, OnDestroy {
     })
   }
 
-  onClickCategory(e) {
-    this.articleSelect.next(e.id)
+  onClickCategory(tile: Tile) {
+    if(tile.id == 'back'){
+      this.categoriesBackButton = false
+      this.categoriesTitle = 'Categorieën'
+      this.articleSelect.next(null)
+      return
+    }
+    this.selectedCategory = tile.id
+    this.db.getDoc(`${this.CategorySrv.entityPath}/${tile.id}`)
+    .then((category: Category) => {
+      if(category.parentCategory == undefined || !category.parentCategory){ // top level
+        let categoryIds
+        const children = this.categoryTree.find((mainCategory: CategoryItem) => mainCategory.id == tile.id).children
+        if(children != undefined && children.length > 0){
+          this.categoryData = children          
+          this.categoriesBackButton = true
+          this.categoriesTitle = 'Categorieën - ' + tile.title
+          categoryIds = this.categoryData.map((tile: Tile) => tile.id)
+        } else {
+          categoryIds = [tile.id]
+        }
+        this.articleData = this.allArticleData.filter((tile: Tile) => {return categoryIds.includes(tile.optionField)})
+      } else { //sub-level
+        this.articleSelect.next(tile.id)
+      }
+    })
+    .catch(e => console.log('could not find category clicked on'))
   }
 
   onClickArticle(clickedOn, e) {

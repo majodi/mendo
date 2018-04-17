@@ -10,6 +10,8 @@ export interface lookupFld {
   overruleVirtual?: string  //normally fld will be used to set table/brw virtual, here an other field can be used (like an image...)
 }
 
+// overruleFunction?: Function //if available this function will be used to determine value. Input parameters are (record, field) where field is either fld or overruleVirtual
+
 export interface updateWithLookup {
   fld: string,
   lookupFld: string,

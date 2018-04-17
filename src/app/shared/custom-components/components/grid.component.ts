@@ -20,6 +20,7 @@ template: `
   <div fxLayout="row" fxLayoutAlign="start center" style="margin: 0 0.5% 1%">
     <mat-icon *ngIf="titleIcon" class="container-title-icon">{{titleIcon}}</mat-icon>
     <p class="mat-display-1 container-title-text">{{title}}</p>
+    <button *ngIf="backButton" mat-raised-button color="warn" style="margin-left: 15px" (click)="onClick('back')"><mat-icon>fast_rewind</mat-icon>Terug</button>
     <mat-form-field *ngIf="showFilter" fxFlex="40" style="margin-left:2vw">
       <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
     </mat-form-field>
@@ -29,7 +30,7 @@ template: `
     </div>
   </div>
   <div [ngClass]="{'outer': singleRow}">
-    <div *ngFor="let tile of tiles" class="inner" [ngStyle]="getItemStyle()">
+    <div *ngFor="let tile of tiles" class="inner" [ngStyle]="getItemStyle(tile)">
       <div fxLayout="column" fxLayoutAlign="start center" (click)="onClick(tile)">
         <div>
           <img src="{{tile.image}}" onerror="this.onerror=null;this.src='assets/image.svg'" [ngStyle]="getImageStyle()">
@@ -71,10 +72,13 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() actionButtonIcon: string
   @Input() actionButtonInfo: string
   @Input() divider: boolean
+  @Input() highlightSelected: boolean
+  @Input() backButton: boolean
   @Output() clicked = new EventEmitter();
   @Output() buttonClicked = new EventEmitter();
   @Output() actionButtonClicked = new EventEmitter();
   tiles: Tile[]
+  selected: Tile
 
   constructor() {}
 
@@ -106,10 +110,11 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
     })
   }
 
-  getItemStyle() {
+  getItemStyle(tile) {
     return {
       'width': '100%',
-      'max-width': this.maxItemWidth != undefined ? this.maxItemWidth + '%': '30%' // leave default at 30% for store module
+      'max-width': this.maxItemWidth != undefined ? this.maxItemWidth + '%': '30%', // leave default at 30% for store module
+      'border': this.highlightSelected && tile == this.selected ? '3px solid grey' : ''
     }
   }
 
@@ -120,8 +125,13 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  onClick(e) {
-    this.clicked.emit(e)
+  onClick(tile) {
+    if(tile == 'back') {
+      this.clicked.emit({id: 'back'})
+    } else {
+      this.selected = tile
+      this.clicked.emit(tile)  
+    }
   }
 
   onButtonClick(e, event?) {

@@ -22,6 +22,7 @@ export class CategoriesBrwComponent extends BrwBaseClass<Category[]> implements 
     private injectorService: Injector,
     private entityService: CategoryService,
     private propertySrv: PropertyService,
+    private categorySrv: CategoryService,
   ) {
     super(dialogRef, entityService, injectorService);
   }
@@ -35,6 +36,7 @@ export class CategoriesBrwComponent extends BrwBaseClass<Category[]> implements 
     super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'measurements', 'code', 'choices')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'colors', 'code', 'choices')
+    super.setPulldownItems(this.categorySrv.initEntity$(), 'parentCategory', 'code', 'description')
     super.ngOnInit() //volgorde van belang!
   }
 

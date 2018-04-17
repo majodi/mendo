@@ -58,6 +58,7 @@ export class EntityBaseClass {
   }
 
   objectValue(o, key) {
+    // console.log('o in entity: ', o)
     //also only two levels!!
     let keys = key.split('.')
     if(keys.length == 2) {
