@@ -12,10 +12,10 @@ export class PopupService {
   
     constructor(private dialog: MatDialog, private gs: GlobService) { }
 
-    buttonDialog(text, button1, button2?) {
+    buttonDialog(text, button1, button2?, field?) {
       let dialogRef = this.dialog.open(PopupDialog, {
         width: '250px',
-        data: { text: text, but1: button1, but2: button2 }
+        data: { text: text, but1: button1, but2: button2, field: field}
       });
   
       return dialogRef.afterClosed().toPromise().then(result => {

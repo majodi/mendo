@@ -10,6 +10,7 @@ import { ImagesBrwComponent } from '../images/images.brw';
 import { BrwBaseClass } from '../../../baseclasses/browse';
 import { MatDialogRef } from '@angular/material';
 import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
+import { OrganisationService } from '../organisations/organisation.service';
 
 @Component({
   selector: 'app-articles-brw',
@@ -52,6 +53,31 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
         }
       }
     }},
+    {type: 'beforeChgDialog', code: (rec, fld) => {
+      if(fld == 'price' && !this.selectMode){
+        const priceColDef = this.colDef.find(cd => cd.name == 'price')
+        if(priceColDef != undefined && priceColDef.headerSelectValue && rec['priceOverrule'] != undefined){
+          const headerSelectObj = priceColDef.headerSelect.find(hs => hs.value == priceColDef.headerSelectValue)
+          const headerSelectViewValue = headerSelectObj ? headerSelectObj.viewValue : 'not found'
+          const overrulePriceMessage = rec['priceOverrule'][priceColDef.headerSelectValue] ? rec['priceOverrule'][priceColDef.headerSelectValue] : 'Standaard Prijs'
+          const overrulePriceValue = rec['priceOverrule'][priceColDef.headerSelectValue] ? rec['priceOverrule'][priceColDef.headerSelectValue] : ''
+          const dialogText = `Standaard Artikelprijs:\r\n\r\n${rec['price']}\r\n\r\n${headerSelectViewValue}:\r\n\r\n${overrulePriceMessage}`
+          const field = {value: overrulePriceValue, placeholder: 'Hanteer Standaard Prijs', label: 'Nieuwe prijs'}
+          return this.ps.buttonDialog(dialogText, 'Bewaar', 'Annuleer', field).then(b => {
+            if(b == 1){
+              let priceOverruleFld: any = rec['priceOverrule'] != undefined ? rec['priceOverrule'] : {}
+              if(field.value){
+                priceOverruleFld[priceColDef.headerSelectValue] = field.value
+                this.db.setDoc({priceOverrule: priceOverruleFld}, `${this.entityService.entityPath}/${rec['id']}`, {merge: true})
+              }
+            }
+            return true
+          })
+        } else {
+          return false
+        }
+      }
+    }},
   ]
 
   constructor(
@@ -60,6 +86,7 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     private entityService: ArticleService,
     private categorySrv: CategoryService,
     private propertySrv: PropertyService,
+    private organisationSrv: OrganisationService,
   ) {
     super(dialogRef, entityService, injectorService);
   }
@@ -73,6 +100,16 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields
+    this.organisationSrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(organisations => {
+      const priceCol = this.colDef.find(cd => cd.name == 'price')
+      if(priceCol != undefined){
+        let hsArray = []
+        organisations.forEach(organisation => {
+          hsArray.push({value: organisation['id'], viewValue: 'Prijs - '+organisation['address']['name']})
+        })
+        priceCol.headerSelect = hsArray
+      }
+    })
     super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')
     super.setPulldownItems(this.categorySrv.initEntity$(), 'category', 'code', 'description')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'measurements', 'code', 'choices')

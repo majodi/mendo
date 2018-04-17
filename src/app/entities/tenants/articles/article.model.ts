@@ -27,9 +27,16 @@ export const defaultColDef = [
     {name: 'description_s',   header: 'Omschrijving kort', hideXs: true},
     {name: 'category_v',      header: 'Categorie', hideXs: true},
     {name: 'image_v',         header: 'Afbeelding', imageSelect: (rec) => rec.image_v, imageIdField: 'image'},
-    {name: 'price',           header: 'Prijs'},
-    {name: 'unit',            header: 'Maatvoering'},
+    {name: 'price',
+      header: 'Prijs algemeen (kies)',
+      headerSelect: [{value:'', viewValue:''}],
+      headerSelectValue: '',
+      format: (rec, colvalue) => rec['priceOverrule'] && colvalue ? rec['priceOverrule'][colvalue] ? rec['priceOverrule'][colvalue] : rec['price'] : rec['price']},
+    {name: 'unit',            header: 'Maatvoering', hideXs: true},
   ]
+
+  // headerSelect: [{value: 'fqKCpZkau10If0lHyFLG', viewValue: 'Asfalt Mannen'}, {value: 'xxxx fqKCpZkau10If0lHyFLG', viewValue: 'Geen Mannen'}],
+
 export const defaultFormConfig = [
     {type: 'input',                 label: 'Code',              name: 'code',                 placeholder: 'Code',              value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input',                 label: 'Omschrijving kort', name: 'description_s',        placeholder: 'Omschrijving kort', value: '', validation: [Validators.required, Validators.minLength(4)]},

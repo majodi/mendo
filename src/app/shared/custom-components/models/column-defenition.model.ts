@@ -1,3 +1,8 @@
+export interface headerSelectItem {
+    value: string;
+    viewValue: string;
+}
+
 export interface ColumnDefenition {
     name: string;
     header?: string;
@@ -7,6 +12,8 @@ export interface ColumnDefenition {
     icon?: string;
     iconSelect?: Function;
     imageSelect?: Function;
+    headerSelect?: headerSelectItem[];
+    headerSelectValue?: string;
     imageIdField?: string;
     flex?: string;
     format?: Function;

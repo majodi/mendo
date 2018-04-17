@@ -41,7 +41,7 @@ export class FormResultsBrwComponent extends BrwBaseClass<FormResult[]> implemen
     this.alternativeFormActionTitle = 'Invulformulier'
     this.colDef = []
     this.formConfig = []
-    this.formFieldSrv.initEntity$(this.gs.NavQueries)
+    this.formFieldSrv.initEntity$(this.gs.NavQueries).takeUntil(this.ngUnsubscribe)
     .map(flds => flds.sort(function(a,b) {return (a['order'] > b['order']) ? 1 : ((b['order'] > a['order']) ? -1 : 0);}))
     .subscribe(flds => flds.forEach(fld => {
       const fieldType = ['input', 'select', 'checkbox', 'stringdisplay', 'imagedisplay'][['invoer', 'keuze', 'vink', 'tekst', 'afbeelding'].findIndex(t => t == fld['type'])]

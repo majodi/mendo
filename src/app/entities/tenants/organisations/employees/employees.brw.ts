@@ -48,7 +48,6 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
   ngOnInit() {
     this.colDef = defaultColDef
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
-    // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields

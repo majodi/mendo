@@ -31,9 +31,7 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},
     {type: 'input', label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', inputValueTransform: forceCapitalize, validation: [Validators.required]},
     {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
-    {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},
     {type: 'input', label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
   ]
 //for selection button
@@ -41,4 +39,6 @@ export const defaultSelectionFields = [
   {name: 'organisation'},
 ]
 
-//     {type: 'input', label: 'Contact',       name: 'address.contact',      placeholder: 'Contact',       value: '', validation: [Validators.required]},
+
+// {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
+// {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},

@@ -142,7 +142,7 @@ export class BrwBaseClass<T> {
 
   clicked(brwClick: {fld: string, rec: {}, itemSelection: {}[]}) {
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
-    if(!['insert','selection','acceptItemSelect'].includes(brwClick.fld)){
+    if(!['insert','selection','acceptItemSelect','header'].includes(brwClick.fld)){
       if(this.selectMode){
         this.gs.entityId[this.entitySrv.entityName] = rec['id']
         this.selected.emit(brwClick)
@@ -212,6 +212,9 @@ export class BrwBaseClass<T> {
           })
         }
       })
+    }
+    if(brwClick.fld == 'header'){
+      console.log('header: ', rec['col'])
     }
   }
 

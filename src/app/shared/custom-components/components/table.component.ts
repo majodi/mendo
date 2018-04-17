@@ -59,10 +59,22 @@ import { SelectionModel } from '@angular/cdk/collections';
                         (change)="$event ? itemSelection.toggle(row) : null"
                         [checked]="itemSelection.isSelected(row)">
             </mat-checkbox>
-        </mat-cell>
+            </mat-cell>
         </ng-container>
           <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.name">
-              <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> {{col.header}} </mat-header-cell>
+              <ng-container *ngIf="col.headerSelect; then headerSelect_tpl else noHeaderSelect_tpl"></ng-container>
+              <ng-template #headerSelect_tpl>
+                <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> 
+                <mat-select [placeholder]="col.header" style="text-align: left; width: 80%" [(value)]="col.headerSelectValue">
+                <mat-option *ngFor="let hchoice of col.headerSelect" [value]="hchoice.value">
+                  {{ hchoice.viewValue }}
+                </mat-option>
+              </mat-select>
+                </mat-header-cell>
+              </ng-template>
+              <ng-template #noHeaderSelect_tpl>
+                <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> {{col.header}} </mat-header-cell>
+              </ng-template>
               <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)">
                   <ng-container *ngIf="col.imageSelect; then image_tpl else noImage_tpl"></ng-container>
                       <ng-template #image_tpl>
@@ -80,8 +92,8 @@ import { SelectionModel } from '@angular/cdk/collections';
                               </ng-template>
                               <ng-template #field_tpl>
                                   <ng-container *ngIf="col.format; then formatted_tpl else unformatted_tpl"></ng-container>
-                                      <ng-template #formatted_tpl>{{col.format(rec)}}</ng-template>
-                                      <ng-template #unformatted_tpl>{{resolveObjPath(rec, col.name)}}</ng-template>
+                                  <ng-template #formatted_tpl>{{col.format(rec, col.headerSelectValue)}}</ng-template>
+                                  <ng-template #unformatted_tpl>{{resolveObjPath(rec, col.name)}}</ng-template>
                               </ng-template>
                       </ng-template>
               </mat-cell>
@@ -96,6 +108,10 @@ import { SelectionModel } from '@angular/cdk/collections';
   </div>
     `
 })
+
+// <ng-template #formatted_tpl>
+// <input matInput (blur)="onBlurInp($event)" [placeholder]="'placeholdertje'">
+// </ng-template>
 
 export class TableComponent implements OnInit, OnDestroy, OnChanges {
   private ngUnsubscribe = new Subject<string>()
@@ -204,6 +220,10 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   getSetThumb(colDef, rec) {
       this.us.setThumb(rec[colDef.imageIdField])
       return colDef.imageSelect(rec)
+  }
+
+  onBlurInp(e) {
+    console.log('onblurinp: ', e)
   }
 
   click(fld, rec) {
