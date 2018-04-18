@@ -11,6 +11,7 @@ export interface ColumnDefenition {
     filter?: boolean;
     icon?: string;
     iconSelect?: Function;
+    iconColorSelect?: Function;
     imageSelect?: Function;
     headerSelect?: headerSelectItem[];
     headerSelectValue?: string;

@@ -34,6 +34,19 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
         }
       }
     }},
+    {type: 'beforeInsertDialog', code: (o) => {
+      const organisationConfig = this.formConfig.find(fc => fc.name == 'organisation')
+      if(this.gs.backButton && organisationConfig != undefined){
+        organisationConfig.doNotPopulate = true
+      }
+      return false
+    }},
+    {type: 'beforeSave', code: (action, o) => {
+      if(this.gs.backButton){
+        o['organisation'] = this.gs.NavQueries.find(q => q.fld == 'organisation').value
+      }
+      return Promise.resolve()
+    }},
   ]
 
   constructor(

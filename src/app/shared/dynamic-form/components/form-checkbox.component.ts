@@ -4,9 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../models/field.interface';
 import { FieldConfig } from '../models/field-config.interface';
 
-// <mat-checkbox name="fixedHeight" [(ngModel)]="cmsContainer.fixedHeight">Fixed Height</mat-checkbox>
-// <br><br>
-
 @Component({
   selector: 'form-checkbox',
   template: `

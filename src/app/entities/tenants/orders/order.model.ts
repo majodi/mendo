@@ -25,6 +25,8 @@ export const defaultColDef = [
         if(rec['status'] == 'processed') return 'done'
         if(rec['status'] == 'delivered') return 'done_all'
         if(rec['status'] == 'cancelled') return 'cancel'
+    }, iconColorSelect: rec => {
+        if(rec['status'] == 'new') {return 'warn'} else {return 'primary'}
     }},
     {name: 'date',              header: 'Datum', sort: true, hideXs: true},
     {name: 'organisation_v',    header: 'Organisatie', sort: true, hideXs: true},

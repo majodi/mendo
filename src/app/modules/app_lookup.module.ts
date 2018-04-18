@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
-import { MatDialogModule, MatButtonModule } from '@angular/material';
+import { MatDialogModule, MatButtonModule, MatCheckboxModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '../shared/shared.module';
 
@@ -27,7 +28,8 @@ import { UserService } from '../entities/tenants/users/user.service';
       CommonModule,
       SharedModule,
       FlexLayoutModule,
-      MatDialogModule, MatButtonModule,
+      FormsModule, ReactiveFormsModule,
+      MatDialogModule, MatButtonModule, MatCheckboxModule
     ],
   declarations: [
       ImagesBrwComponent,

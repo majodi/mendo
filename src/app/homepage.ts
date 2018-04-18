@@ -48,7 +48,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }}
   ]
 
-
   constructor(
     private BulletinSrv: BulletinService,
     private router: Router,
@@ -86,12 +85,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
       .then((pushSubscription: PushSubscription) => {
         return this._as.setSubscription(pushSubscription) //.then(v => {console.log('pushSubscription written: ', pushSubscription, v)})
       })
-  }
-
-  test() {
-    console.log('data: ', this.bulletinData)
-    const sorted = this.bulletinData.sort(function(a,b) {console.log('a-date, b-date, a-b-sticky: ', a['date'], b['date'], a['sticky'], b['sticky']) ;return (a['date'] > b['date'] || a['sticky']) ? -1 : ((b['date'] > a['date'] || b['sticky']) ? 1 : 0);})
-    console.log('sorted: ', sorted)
   }
 
   onButtonClicked(e) {

@@ -83,10 +83,10 @@ import { SelectionModel } from '@angular/cdk/collections';
                       <ng-template #noImage_tpl>
                           <ng-container *ngIf="col.icon || col.iconSelect; then icon_tpl else field_tpl"></ng-container>
                               <ng-template #icon_tpl>
-                                  <mat-icon *ngIf="col.icon" color="primary">
+                                  <mat-icon *ngIf="col.icon" [color]="col.iconColorSelect ? col.iconColorSelect(rec) : 'primary'">
                                       {{col.icon}}
                                   </mat-icon>
-                                  <mat-icon *ngIf="!col.icon && col.iconSelect" color="primary">
+                                  <mat-icon *ngIf="!col.icon && col.iconSelect" [color]="col.iconColorSelect ? col.iconColorSelect(rec) : 'primary'">
                                       {{col.iconSelect(rec)}}
                                   </mat-icon>
                               </ng-template>

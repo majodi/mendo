@@ -24,7 +24,12 @@ import { LoginModule } from './authentication/login.module';
   ],
   exports: [
     DynamicFormModule,
+    FormsModule, ReactiveFormsModule,
+    MatCheckboxModule,
     LoginModule,
   ],
 })
 export class SharedModule { }
+
+//matcheckbox wordt ook geexporteerd zodat de homepage een checkbox kan gebruiken (voor testdoeleinden)
+//homepage zit n.l in module app_user module en die importeert shared...
