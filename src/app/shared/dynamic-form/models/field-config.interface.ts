@@ -14,8 +14,9 @@ export interface lookupFld {
 
 export interface updateWithLookup {
   fld: string,
-  lookupFld: string,
-  onlyVirgin?: boolean
+  lookupFld?: string,
+  onlyVirgin?: boolean,
+  lookupFunction?: Function
 }
 
 export interface FieldConfig {
@@ -45,5 +46,6 @@ export interface FieldConfig {
   customFile?: File,
   customUpdateWithLookup?: updateWithLookup[],
   customSelectChildrenComponent?: Type<any>,
-  customSelectChildrenCurrentParent?: string
+  customSelectChildrenCurrentParent?: string,
+  imageStyle?: string
 }

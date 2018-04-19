@@ -2,6 +2,8 @@ import { Validators } from '@angular/forms';
 import { EntityMeta } from "../../../models/entity-meta.model";
 import { forceUppercase, forceCapitalize } from '../../../shared/dynamic-form/models/form-functions';
 import { ArticlesBrwComponent } from '../articles/articles.brw';
+import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
+import { GlobService } from '../../../services/glob.service';
 
 export interface OrderLine {
     id: string;
@@ -23,7 +25,8 @@ export const defaultColDef = [
     {name: 'number',            header: 'Aantal'},
     {name: 'amount',            header: 'Bedrag'},
   ]
-export const defaultFormConfig = [
+
+export const defaultFormConfig: FieldConfig[] = [
     {type: 'lookup',        label: 'Artikel',   name: 'article',    placeholder: 'Artikel',  value: '', doNotPopulate: false,
         inputValueTransform: forceUppercase,
         customLookupFld: {path: 'articles', tbl: 'article', fld: 'code'},
@@ -32,7 +35,9 @@ export const defaultFormConfig = [
         customUpdateWithLookup: [
             {fld: 'description_s', lookupFld: 'description_s'},
             {fld: 'description_l', lookupFld: 'description_l'},
-            {fld: 'price_unit', lookupFld: 'price'},
+            {fld: 'price_unit', lookupFunction: (rec, gs: GlobService) => {
+                return gs.activeUser.organisation && rec.priceOverrule && rec.priceOverrule[gs.activeUser.organisation] ? rec.priceOverrule[gs.activeUser.organisation] : rec.price
+            }},
             {fld: 'sizes', lookupFld: 'measurements'},
             {fld: 'overruleSizes', lookupFld: 'overruleMeasurements'},
             {fld: 'overruleSizesChoices', lookupFld: 'measurementsOverrule'},
@@ -43,7 +48,7 @@ export const defaultFormConfig = [
         ]
     },
     {type: 'stringdisplay', label: 'Afbeelding',    name: 'imageid',        placeholder: 'Afbeelding',  value: '', doNotPopulate: true},
-    {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: ''},
+    {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: '', imageStyle: 'width: 100%'},
     {type: 'stringdisplay', label: 'Artikel',       name: 'description_s',  placeholder: 'Artikel',     value: '', doNotPopulate: true},
     {type: 'stringdisplay', label: 'Omschrijving',  name: 'description_l',  placeholder: 'Omschrijving', value: '', doNotPopulate: true},
     {type: 'stringdisplay', label: 'Prijs',         name: 'price_unit',     placeholder: 'Prijs per eenheid',  value: '0'},

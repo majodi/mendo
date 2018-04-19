@@ -82,9 +82,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
     return this.swPush.requestSubscription({
       serverPublicKey: environment.vapidPublic
     })
-      .then((pushSubscription: PushSubscription) => {
-        return this._as.setSubscription(pushSubscription) //.then(v => {console.log('pushSubscription written: ', pushSubscription, v)})
-      })
+    .then((pushSubscription: PushSubscription) => {
+      return this._as.setSubscription(pushSubscription) //.then(v => {console.log('pushSubscription written: ', pushSubscription, v)})
+    })
+    .catch(e => {console.log('error request subscription: ', e)})
   }
 
   onButtonClicked(e) {

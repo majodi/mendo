@@ -24,15 +24,17 @@ export const defaultColDef = [
     {name: 'spent',             header: 'Verbruikt',  sort: true},
   ]
 export const defaultFormConfig = [
-    {type: 'pulldown', label: 'Organisatie', name: 'organisation',        placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
-    {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input', label: 'Omschrijving',  name: 'address.description',  placeholder: 'Omschrijving',  value: ''},
-    {type: 'input', label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input', label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},
-    {type: 'input', label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', inputValueTransform: forceCapitalize, validation: [Validators.required]},
-    {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
-    {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'input', label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
+    {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',         placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}, customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}]},
+    {type: 'stringdisplay', label: 'Filiaalkeuzes', name: 'branchChoices', placeholder: 'Filiaalkeuzes',    value: '', doNotPopulate: true},
+    {type: 'select',    label: 'Filiaal',       name: 'branch',               placeholder: 'Filiaal',       value: '', options: []},
+    {type: 'input',     label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input',     label: 'Omschrijving',  name: 'address.description',  placeholder: 'Omschrijving',  value: ''},
+    {type: 'input',     label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input',     label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},
+    {type: 'input',     label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', inputValueTransform: forceCapitalize, validation: [Validators.required]},
+    {type: 'input',     label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
+    {type: 'input',     label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
+    {type: 'input',     label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
   ]
 //for selection button
 export const defaultSelectionFields = [

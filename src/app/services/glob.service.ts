@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router';
 import { QueryItem } from '../models/query-item.interface';
+import { User } from '../models/user.model';
 
 @Injectable()
 export class GlobService {
@@ -19,6 +20,7 @@ export class GlobService {
     backButton = false
 
     activeOrder: string
+    activeUser: User
 
   constructor(private router: Router) {}
   

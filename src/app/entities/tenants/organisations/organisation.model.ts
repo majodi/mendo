@@ -11,6 +11,7 @@ export interface Organisation {
     logo?: string; // asset
     packageSelection: boolean;
     currency: string;
+    branches: string;
 }
 
 export const defaultTitle = 'Organisaties'
@@ -34,5 +35,6 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
     {type: 'input', label: 'Contact',       name: 'address.contact',      placeholder: 'Contact',       value: '', validation: [Validators.required]},
     {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},
-    {type: 'input', label: 'Valuta',        name: 'currency',             placeholder: 'Valuta',        value: ''}
+    {type: 'input', label: 'Valuta',        name: 'currency',             placeholder: 'Valuta',        value: ''},
+    {type: 'input', label: 'Filialen',      name: 'branches',             placeholder: 'Filialen',      value: ''}
   ]

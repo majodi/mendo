@@ -176,6 +176,10 @@ export class StoreComponent implements OnInit, OnDestroy {
         this.articleBaseQuery = []
         this.initDataSubscribers()
       })
+    } else {
+      console.log('no organisation for user: ', this.as.user.uid)
+      this.articleBaseQuery = []
+      this.initDataSubscribers()    
     }
   }
 
@@ -219,7 +223,7 @@ export class StoreComponent implements OnInit, OnDestroy {
             title: article.description_s,
             description: article.description_l,
             image: article['image_v'],
-            price: article.price,
+            price: this.as.user.organisation && article.priceOverrule && article.priceOverrule[this.as.user.organisation] ? article.priceOverrule[this.as.user.organisation] : article.price,
             optionField: article.category
           }  
         })

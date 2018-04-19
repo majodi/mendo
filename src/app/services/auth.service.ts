@@ -57,6 +57,7 @@ export class AuthService {
           return this.updateUserData(fb_user).then(x => {
             return this.getDoc(`users/${fb_user.uid}`).then((user: User) => {
               this.user = user;
+              this.gs.activeUser = user
               this.userLevel = user.level != undefined ? user.level : 0
               this.isLoggedIn = true
               this.setNavList()
