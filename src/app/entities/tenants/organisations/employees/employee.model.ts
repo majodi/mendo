@@ -11,6 +11,7 @@ export interface Employee {
     budget: number;
     bugetYear: number;
     spent: number;
+    propertiesAllowed: {};
 }
 
 export const defaultTitle = 'Medewerkers'
@@ -22,6 +23,7 @@ export const defaultColDef = [
     {name: 'address.city',      header: 'Woonplaats', sort: true},
     {name: 'budget',            header: 'Budget',     sort: true},
     {name: 'spent',             header: 'Verbruikt',  sort: true},
+    {name: 'propertiesAllowed', header: 'Keuzes', icon: 'playlist_add_check'},
   ]
 export const defaultFormConfig = [
     {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',         placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}, customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}]},

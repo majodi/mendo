@@ -45,6 +45,7 @@ export class CrudService {
             saveEmbedPromise = saveEmbed(1, frmResult.value)
           }
           saveEmbedPromise.then(() => {
+            this.setNullValues(frmResult.value)
             return this.db.updateDoc(this.fixSubProperties(frmResult.value), `${path}/${rec['id']}`)
           }).catch(e => this.ps.buttonDialog('Bewaren mislukt \r\n' + e, 'OK'))
         }
@@ -59,6 +60,12 @@ export class CrudService {
       })
     }
   
+    setNullValues(o) {
+      Object.keys(o).forEach(key => {
+        if(o[key] == undefined){o[key] = null}
+      })
+    }
+
     fixSubProperties(flatRec: {}) {
       // set flat result back to proper DB record, only two levels!
       let nestedRec = {}

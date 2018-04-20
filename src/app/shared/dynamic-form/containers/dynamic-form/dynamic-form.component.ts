@@ -98,7 +98,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   createGroup() {
     const group = this.fb.group({});
-    this.controls.forEach(control => group.addControl(control.name, this.createControl(control)));
+    this.controls.forEach(control => {group.addControl(control.name, this.createControl(control))});
     return group;
   }
 
@@ -159,6 +159,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   setValue(name: string, value: any) { //used by caller
+    // console.log('setval: ', name, value)
     this.setFormValue(name, value)
   }
 

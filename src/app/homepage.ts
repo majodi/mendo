@@ -14,6 +14,7 @@ import { Embed } from './shared/dynamic-form/models/embed.interface';
 import { AuthService } from './services/auth.service';
 import { SwPush } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +32,7 @@ import { environment } from '../environments/environment';
   ></app-grid>
   <div *ngIf="_as.userLevel==100">
     <button (click)="pushSubscribe()">subscribe</button>
+    <button (click)="pushSubscribeFB()">subscribe FB</button>
   </div>
   </div>
   `,
@@ -77,6 +79,37 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {}
+
+  pushSubscribeFB() {
+    navigator.serviceWorker.getRegistration().then(swreg => {
+      console.log('swreg with getregistration: ', swreg)
+      if(swreg){
+        firebase.messaging().useServiceWorker(swreg)
+        firebase.messaging().requestPermission().then(function() {
+          console.log('Notification permission granted.');
+          firebase.messaging().getToken().then(function(currentToken) {
+            if (currentToken) {
+              console.log('token: ', currentToken)
+              // sendTokenToServer(currentToken);
+              // updateUIForPushEnabled(currentToken);
+            } else {
+              // Show permission request.
+              console.log('No Instance ID token available. Request permission to generate one.');
+              // Show permission UI.
+              // updateUIForPushPermissionRequired();
+              // setTokenSentToServer(false);
+            }
+          }).catch(function(err) {
+            console.log('An error occurred while retrieving token. ', err);
+            // showToken('Error retrieving Instance ID token. ', err);
+            // setTokenSentToServer(false);
+          });
+        }).catch(function(err) {
+          console.log('Unable to get permission to notify.', err);
+        });
+      }
+    }).catch(err => console.log('could not get SW: ', err))
+  }
 
   pushSubscribe() {
     return this.swPush.requestSubscription({

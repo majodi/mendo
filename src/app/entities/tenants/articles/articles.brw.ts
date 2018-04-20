@@ -78,12 +78,11 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
         }
       }
     }},
-    // Dit hier is lastig omdat de choices pas worden gevuld als de maat/kleur selectie is bepaald (blur) 
-    // {type: 'beforeInsertDialog', code: (o) => {
-    //   this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleMeasurements')].value = true
-    //   this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value = true
-    //   return false
-    // }},
+    {type: 'beforeInsertDialog', code: (o) => {
+      o['overruleMeasurements'] = true
+      o['overruleColors'] = true
+      return false
+    }},
   ]
 
   constructor(
