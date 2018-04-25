@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatCheckboxModule, MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
+import { MatCheckboxModule, MatSnackBarModule, MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule } from '@angular/material';
 
 import { MediaMatcher } from '@angular/cdk/layout';
 
@@ -42,7 +42,7 @@ import { UsersBrwComponent } from './entities/tenants/users/users.brw';
     HttpClientModule,
     BrowserAnimationsModule,
     // FlexLayoutModule,
-    MatCheckboxModule, MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
+    MatCheckboxModule, MatSnackBarModule, MatMenuModule, MatDialogModule, MatButtonModule, MatIconModule, MatToolbarModule, MatSidenavModule, MatListModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, //.enablePersistence(),
     AngularFireAuthModule,

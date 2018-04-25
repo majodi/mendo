@@ -37,12 +37,12 @@ export const defaultColDef = [
   ]
 
 export const defaultFormConfig = [
-    {type: 'input',                 label: 'Code',              name: 'code',                 placeholder: 'Code',              value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(3)]},
+    {type: 'input',                 label: 'Artikelcode',       name: 'code',                 placeholder: 'Artikelcode',       value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(3)]},
     {type: 'input',                 label: 'Omschrijving kort', name: 'description_s',        placeholder: 'Omschrijving kort', value: '', validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input', inputLines: 5,  label: 'Omschrijving lang', name: 'description_l',        placeholder: 'Omschrijving lang', value: '',},
     {type: 'pulldown',              label: 'Categorie',         name: 'category',             placeholder: 'Categorie',         value: '', customLookupFld: {path: 'categories', tbl: 'category', fld: 'code'}, customUpdateWithLookup: [{fld: 'measurements', lookupFld: 'measurements', onlyVirgin: true}, {fld: 'colors', lookupFld: 'colors', onlyVirgin: true}]},
     {type: 'lookup',                label: 'Afbeelding',        name: 'image',                placeholder: 'Afbeelding',        value: '', inputValueTransform: forceUppercase, customLookupFld: {path: 'images', tbl: 'image', fld: 'code', overruleVirtual: 'thumbName'}, customUpdateWithLookup: [{fld: 'imagedisplay', lookupFld: 'name'}]},
-    {type: 'imagedisplay',          label: 'Afbeelding',        name: 'imagedisplay',         placeholder: 'Afbeelding',        value: '', imageStyle: 'width: 100%'},
+    {type: 'imagedisplay',          label: 'Afbeelding',        name: 'imagedisplay',         placeholder: 'Afbeelding',        value: '', imageStyle: {'width': '100%'}},
     {type: 'pulldown',              label: 'Maten',             name: 'measurements',         placeholder: 'Maten',             value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}, customUpdateWithLookup: [{fld: 'measurementsChoices', lookupFld: 'choices'}]},
     {type: 'checkbox',              label: 'Afwijkende maatmogelijkheden', name: 'overruleMeasurements', placeholder: 'Afwijkende maatmogelijkheden', value: true},
     {type: 'stringdisplay',         label: 'Maatkeuzes',        name: 'measurementsChoices',  placeholder: 'Maatkeuzes',        value: '', doNotPopulate: true},

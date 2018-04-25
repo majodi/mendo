@@ -29,6 +29,11 @@
             "host": "mendo.nickstick.nl",
             "multi_tenant": true,
             "tenantId": ""
+        },
+        {
+            "host": "sjj.nickstick.nl",
+            "multi_tenant": false,
+            "tenantId": "4cSsKIXusX6a40QhQ7Nc"
         }
     ]
 }

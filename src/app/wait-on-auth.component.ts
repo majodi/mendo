@@ -2,6 +2,7 @@ import { Component }        from '@angular/core';
 import { Router,
          NavigationExtras } from '@angular/router';
 import { AuthService }      from './services/auth.service';
+import { PopupService } from './services/popup.service';
 
 @Component({
   styles: [`
@@ -20,9 +21,10 @@ import { AuthService }      from './services/auth.service';
 export class WaitOnAuthComponent {
   message: string;
 
-  constructor(public as: AuthService, public router: Router) {
+  constructor(public as: AuthService, private ps: PopupService, public router: Router) {
     this.as.authReady$.subscribe(() => {
       if(this.as.isLoggedIn){
+        this.ps.buttonDialog('Welkom terug '+this.as.user.displayName+'!', 'OK')
         const redirectRoute = this.as.navList.find(item => item['link'] == this.as.redirectUrl)
         let redirect = redirectRoute != undefined ? redirectRoute['link'] : '/homepage'
         this.router.navigate([redirect])

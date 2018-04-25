@@ -33,7 +33,7 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'input', label: 'Contact',       name: 'address.contact',      placeholder: 'Contact',       value: '', validation: [Validators.required]},
+    {type: 'input', label: 'Contactpersoon',name: 'address.contact',      placeholder: 'Contactpersoon',value: '', validation: [Validators.required]},
     {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},
     {type: 'input', label: 'Valuta',        name: 'currency',             placeholder: 'Valuta',        value: ''},
     {type: 'input', label: 'Filialen',      name: 'branches',             placeholder: 'Filialen',      value: ''}

@@ -17,6 +17,9 @@ export class OrderService extends EntityBaseClass {
   constructor(
     private afService: AngularFirestore,
     private glob: GlobService
-  ) {super(afService)}
+  ) {
+    super(afService)
+    this.entityQueries = [{fld: 'organisation', operator: '==', value: 'fTq2haAUEZrFr2g5UlTZ'}]
+  }
 
 }

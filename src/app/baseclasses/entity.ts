@@ -12,6 +12,7 @@ export class EntityBaseClass {
   entityPath: string
   formConfig: FieldConfig[]
   colDef: ColumnDefenition[]
+  entityQueries: QueryItem[] = []
 
   constructor(
     private af: AngularFirestore,
@@ -20,11 +21,19 @@ export class EntityBaseClass {
   initEntity$(queries?: QueryItem[]) {
     let entity$ = this.af.collection(this.entityPath, ref => {
       let query : firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-      if (queries){
-        queries.forEach(q => {
+      console.log('queries - entq: ', this.entityQueries)
+      const entryQueries = queries ? queries.concat(this.entityQueries) : this.entityQueries.length > 0 ? this.entityQueries : []
+      console.log('tq: ', entryQueries)
+      if (entryQueries && entryQueries.length > 0){
+        entryQueries.forEach(q => {
           if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
         })
       }
+      // if (queries){
+      //   queries.forEach(q => {
+      //     if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
+      //   })
+      // }
       return query;
     })
     .snapshotChanges()

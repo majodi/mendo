@@ -148,6 +148,7 @@ export class BrwBaseClass<T> {
         this.selected.emit(brwClick)
         this.dialogRef.close(rec)
       } else {
+        this.formConfig.forEach(c => this.formConfigInitial.find(ic => ic.name == c.name).value = c.value) // retain original values (o.a. wanneer na-ijlende images in user defined forms)
         this.formConfig = this.formConfigInitial.map(x => Object.assign({}, x));
         this.setParentId(rec['id'])
         this.cs.changeDeleteDialog(this.formConfig, rec, this.entitySrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined, this.alternativeFormActionTitle).catch(err => console.log(err))
@@ -156,8 +157,10 @@ export class BrwBaseClass<T> {
     }    
     if(brwClick.fld == 'insert'){
       if(!this.userDefinedBrowse){
+        //normaal values empty bij insert maar niet bij userdefined
         this.formConfig.map(fld => fld.value = '')
       }
+      this.formConfig.forEach(c => this.formConfigInitial.find(ic => ic.name == c.name).value = c.value) // retain original values (o.a. wanneer na-ijlende images in user defined forms)
       this.formConfig = this.formConfigInitial.map(x => Object.assign({}, x));
       this.setParentId(rec['id'])
       if(this.resetDoNotPopulate){this.formConfig.forEach(c => c.doNotPopulate = false)}

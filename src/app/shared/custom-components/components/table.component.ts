@@ -109,10 +109,6 @@ import { SelectionModel } from '@angular/cdk/collections';
     `
 })
 
-// <ng-template #formatted_tpl>
-// <input matInput (blur)="onBlurInp($event)" [placeholder]="'placeholdertje'">
-// </ng-template>
-
 export class TableComponent implements OnInit, OnDestroy, OnChanges {
   private ngUnsubscribe = new Subject<string>()
   filterKeyUp = new Subject<string>()

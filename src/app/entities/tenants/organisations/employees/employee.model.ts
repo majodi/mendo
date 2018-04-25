@@ -24,18 +24,20 @@ export const defaultColDef = [
     {name: 'budget',            header: 'Budget',     sort: true},
     {name: 'spent',             header: 'Verbruikt',  sort: true},
     {name: 'propertiesAllowed', header: 'Keuzes', icon: 'playlist_add_check'},
+    {name: 'verificationCode',  header: 'Code', icon: 'verified_user'},
   ]
 export const defaultFormConfig = [
-    {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',         placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}, customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}]},
+    {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',         placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}, customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}, {fld: 'currency', lookupFld: 'currency'}]},
     {type: 'stringdisplay', label: 'Filiaalkeuzes', name: 'branchChoices', placeholder: 'Filiaalkeuzes',    value: '', doNotPopulate: true},
     {type: 'select',    label: 'Filiaal',       name: 'branch',               placeholder: 'Filiaal',       value: '', options: []},
     {type: 'input',     label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input',     label: 'Omschrijving',  name: 'address.description',  placeholder: 'Omschrijving',  value: ''},
+    {type: 'input',     label: 'Functie',       name: 'address.description',  placeholder: 'Functie',       value: ''},
     {type: 'input',     label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input',     label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},
     {type: 'input',     label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', inputValueTransform: forceCapitalize, validation: [Validators.required]},
     {type: 'input',     label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input',     label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
+    {type: 'stringdisplay', label: 'Valuta',    name: 'currency',             placeholder: 'Valuta',        value: ''},
     {type: 'input',     label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
   ]
 //for selection button

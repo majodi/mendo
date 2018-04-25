@@ -10,7 +10,7 @@ export const fullNavList = [
     // {module: 'app',   level: 50,  text: 'Formulierwaarden', icon: 'help_outline',  link: 'app-tenant/formresults'},
     {module: 'app',   level: 100, text: 'Tenants',          icon: 'store',         link: 'app-super/tenants'},
     {module: 'app',   level: 50,  text: 'Organisaties',     icon: 'business',      link: 'app-tenant/organisations'},
-    {module: 'app',   level: 50,  text: 'Medewerkers',      icon: 'person',        link: 'app-tenant/employees'},
+    {module: 'app',   level: 25,  text: 'Medewerkers',      icon: 'person',        link: 'app-tenant/employees'},
     {module: 'store', level: 50,  text: 'Categorieën',      icon: 'more',          link: 'store-tenant/categories'},
     {module: 'app',   level: 50,  text: 'Kenmerken',        icon: 'class',         link: 'app-tenant/properties'},
     {module: 'store', level: 50,  text: 'Artikelen',        icon: 'label_outline', link: 'store-tenant/articles'},

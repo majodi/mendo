@@ -10,8 +10,8 @@ import { Tile } from '../models/tile.model';
 styles: [`
 .container-title-text {margin-top:16px; margin-bottom:16px; font-size: calc(24px + 0.25vw)}
 .container-title-icon {font-size: 40px; max-width: 40px; width: auto; margin-right: 15px}
-.outer {white-space: nowrap; overflow-x:scroll;}
-.inner {margin: 0 0.5% 0.5%; display: inline-block;}
+.outer {white-space: nowrap; overflow-x:scroll; background-color: aliceblue}
+.inner {margin: 0.5% 0.5% 0.5%; display: inline-block;}
 .item-title {font-size: calc(16px + 0.25vw); line-height: calc(22px + 0.25vw); margin-bottom: 0}
 .badge {margin: 0px; padding: 2px 6px 0px; border: 1px solid black; color: white; border-radius: 20px 20px; background: red; width: 10px; height: 20px;}
 `],
@@ -40,7 +40,7 @@ template: `
         </div>
         <div>
           <p class="mat-body-2" style="line-height:18px; margin:0; white-space:pre-wrap;">{{tile.description}}</p>
-          <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} Punten</p>
+          <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
         </div>
         <div *ngIf="buttonText || tile.buttonText" fxFlex="20" fxFlexAlign="start">
           <button mat-button color="primary" (click)="onButtonClick(tile, $event)"><mat-icon>{{buttonIcon}}</mat-icon>{{tile.buttonText ? tile.buttonText : buttonText}}</button>

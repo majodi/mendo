@@ -8,8 +8,8 @@ import { FieldConfig } from '../models/field-config.interface';
   selector: 'form-imagedisplay',
   template: `
   <div *ngIf="!config.doNotPopulate">
-    <img src="{{config.value}}" onerror="this.onerror=null;this.src='assets/image.svg'" [style]="config.imageStyle">
-    <br><br>
+    <img src="{{config.value}}" onerror="this.onerror=null;this.src='assets/image.svg'" [ngStyle]="config.imageStyle">
+  <br><br>
   </div>
   `
 })

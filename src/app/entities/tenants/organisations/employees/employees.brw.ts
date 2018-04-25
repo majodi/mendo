@@ -12,6 +12,7 @@ import { Embed } from '../../../../shared/dynamic-form/models/embed.interface';
 import { Organisation } from '../organisation.model';
 import { Property } from '../../properties/property.model';
 import { FieldConfig } from '../../../../shared/dynamic-form/models/field-config.interface';
+import { MessageService } from '../../messages/message.service';
 
 @Component({
   selector: 'app-employees-brw',
@@ -44,9 +45,11 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
       }
     }},
     {type: 'beforeChgDialog', code: (rec, fld) => {
+      console.log('bef chg')
       return this.beforeForm(rec, fld)
     }},
     {type: 'beforeInsertDialog', code: (rec, fld) => {
+      console.log('bef ins')
       return this.beforeForm(rec, fld)
     }},
     {type: 'beforeSave', code: (action, o) => {
@@ -64,6 +67,7 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
     private entityService: EmployeeService,
     private organisationSrv: OrganisationService,
     private propertySrv: PropertyService,
+    private messageSrv: MessageService,
   ) {
     super(dialogRef, entityService, injectorService);
   }
@@ -78,9 +82,37 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
     super.ngOnInit() //volgorde van belang!
   }
 
-  beforeForm(rec, fld) {
+  beforeForm(rec: Employee, fld) {
     if(fld == 'propertiesAllowed'){
       this.allowedPropertiesForm(rec)
+      return true
+    }
+    if(fld == 'verificationCode'){
+      this.db.getFirst('users', [{fld:'email', operator:'==', value:rec.address.email}]).take(1).subscribe(user => {
+        const email = rec.address.email ? user['uid'] != undefined ? rec.address.email : rec.address.email + '(Geen account voor emailadres)' : '(Geen emailadres)'
+        this.ps.buttonDialog(`Medewerker:\r\n${rec.address.name}\r\n${email}\r\n\r\nVerificatiecode: ${rec.id}`, 'Sluit', rec.address.email ? 'Stuur email' : undefined, undefined, rec.id).then(b => {
+          console.log('b: ', b)
+          if(b == 2){
+            const link = user['uid'] != undefined && this.gs.tenantId != undefined && rec.id != undefined ? `https://us-central1-mendo-app.cloudfunctions.net/verifyemployee?user=${user['uid']}&tenant=${this.gs.tenantId}&code=${rec.id}` : 'Verificatiecode: '+rec.id
+            const usage = user['uid'] != undefined && this.gs.tenantId != undefined && rec.id != undefined ? 'Klik op onderstaande link om uw account te verifiëren:' : 'Voer onderstaande code in bij "Verificatie" in uw profiel (klik rechtsboven in de blauwe balk en kies Profiel):'
+            this.messageSrv.sendSystemMail('employee', rec.id, 'Verificatiecode '+this.gs.tenantName, `
+Beste ${rec.address.name},
+
+Hierbij ontvangt u de verificatiecode voor het bestelsysteem van ${this.gs.tenantName}. Deze code wordt gebruikt om uw account te koppelen aan het bedrijf waar u werkzaam bent zodat u bestellingen kunt plaatsen.
+
+${usage}
+
+${link}
+
+Met vriendelijke groet,
+
+${this.gs.tenantName}
+            `)
+            .then(() => {this.ps.buttonDialog('Mail verstuurd naar: '+email, 'OK')})
+            .catch(err => {this.ps.buttonDialog('Fout bij versturen:'+err, 'OK')})
+          }
+        })
+      })
       return true
     }
     this.emailOnEntry = ''
@@ -104,8 +136,9 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
       let formValues = {propertiesAllowed: rec.propertiesAllowed}
       this.APFormConfig = [{type: 'stringdisplay', label: 'Keuzes', name: 'header', placeholder: 'Keuzes', value: 'Definieer per categorie (waar wenselijk) een subselectie van toegestane keuzes'}]
       properties.forEach((property: Property) => {
-        this.APFormConfig.push({type: 'checkbox', label: 'Subselectie voor: '+property.code, name: 'propertiesAllowed.'+property.id, placeholder: 'Subselectie voor: '+property.code, value: rec.propertiesAllowed[property.id]})
-        this.APFormConfig.push({type: 'chiplist', label: 'Toegestaan', name: 'propertiesAllowed.'+property.id, placeholder: 'Toegestaan', value: rec.propertiesAllowed[property.id] ? rec.propertiesAllowed[property.id].split(',').reduce((result, item) => {result[item] = true; return result}, {}) : {}, options: property.choices.split(',').map(i => i.trim()), hidden: !rec.propertiesAllowed[property.id]})
+        this.APFormConfig.push({type: 'checkbox', label: 'Subselectie voor: '+property.code, name: 'propertiesAllowed.'+property.id, placeholder: 'Subselectie voor: '+property.code, value: rec.propertiesAllowed ? rec.propertiesAllowed[property.id] : false})
+        // this.APFormConfig.push({type: 'chiplist', label: 'Toegestaan', name: 'propertiesAllowed.'+property.id, placeholder: 'Toegestaan', value: rec.propertiesAllowed && rec.propertiesAllowed[property.id] ? rec.propertiesAllowed[property.id].split(',').reduce((result, item) => {result[item] = true; return result}, {}) : {}, options: property.choices.split(',').map(i => i.trim()), hidden: !rec.propertiesAllowed[property.id]})
+        this.APFormConfig.push({type: 'chiplist', label: 'Toegestaan', name: 'propertiesAllowed.'+property.id, placeholder: 'Toegestaan', value: rec.propertiesAllowed && rec.propertiesAllowed[property.id] ? rec.propertiesAllowed[property.id].split(',').reduce((result, item) => {result[item] = true; return result}, {}) : {}, options: property.choices.split(',').map(i => i.trim()), hidden: rec.propertiesAllowed ? !rec.propertiesAllowed[property.id] : true})
       })
       this.ps.formDialog(2, this.APFormConfig, formValues, (ctrl, value) => {this.formValChg(ctrl, value)}).then(res => {
         if(res && res['response'] == 'save'){

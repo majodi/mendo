@@ -72,6 +72,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   lineCount = 0
   employeeBudged = 0
   employeeSpent = 0
+  employeePropertiesAllowed = {}
   verified = false
   formConfig: FieldConfig[] = defaultFormConfig
   currentArticleId = ''
@@ -81,6 +82,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   currentColorsId = ''
   selectedCategory = ''
   categoryTree: CategoryItem[] = []
+  currency = ''
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
       const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
@@ -103,17 +105,25 @@ export class StoreComponent implements OnInit, OnDestroy {
           this.currentSizesId = sizesId
           const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
             if(property){
-              const defaultSizesChoices = property['choices'].split(',')
+              let defaultSizesChoices = property['choices'].split(',')
               const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
+              const allowedChoices: string[] = this.employeePropertiesAllowed ? this.employeePropertiesAllowed[property['id']].split(',') : []
+              const sizeConfig = this.formConfig[this.formConfig.findIndex(c => c.name == 'size')]
               if(overruleSizes){
                 const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
                 let overruleSizesChoicesArray: Array<string> = []
                 for (var key in overruleSizesChoices){
-                  if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key)}
-                }                  
-                return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = overruleSizesChoicesArray
+                  if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key.trim())}
+                }
+                overruleSizesChoicesArray = overruleSizesChoicesArray.filter(choice => allowedChoices.includes(choice))
+                if(overruleSizesChoicesArray.length == 0){this.ps.buttonDialog('Niet in uw (ingestelde) maat verkrijgbaar', 'OK')}
+                if(overruleSizesChoicesArray.length == 1){sizeConfig.value = overruleSizesChoicesArray[0]}
+                return sizeConfig.options = overruleSizesChoicesArray
               }
-              return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = defaultSizesChoices  
+              defaultSizesChoices = defaultSizesChoices.filter(choice => allowedChoices.includes(choice))
+              if(defaultSizesChoices.length == 0){this.ps.buttonDialog('Niet in uw (ingestelde) maat verkrijgbaar', 'OK')}
+              if(defaultSizesChoices.length == 1){sizeConfig.value = defaultSizesChoices[0]}
+              return sizeConfig.options = defaultSizesChoices
             }
           })
         }
@@ -165,6 +175,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
     if(this.as.user.organisation != undefined){
       this.db.getDoc(`${this.gs.entityBasePath}/organisations/${this.as.user.organisation}`).then((o: Organisation) => {
+        this.currency = o.currency
         if(!o.packageSelection){
           this.articleBaseQuery = []
         } else {
@@ -224,6 +235,7 @@ export class StoreComponent implements OnInit, OnDestroy {
             description: article.description_l,
             image: article['image_v'],
             price: this.as.user.organisation && article.priceOverrule && article.priceOverrule[this.as.user.organisation] ? article.priceOverrule[this.as.user.organisation] : article.price,
+            currency: this.currency,
             optionField: article.category
           }  
         })
@@ -255,6 +267,7 @@ export class StoreComponent implements OnInit, OnDestroy {
       this.verified = true
       this.employeeBudged = employee.budget
       this.employeeSpent = employee.spent
+      this.employeePropertiesAllowed = employee.propertiesAllowed
       this.refreshCart()
     })
     .catch(e => this.verified = false)

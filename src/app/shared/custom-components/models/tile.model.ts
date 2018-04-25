@@ -6,5 +6,6 @@ export interface Tile {
     buttonText?: string;
     buttonLink?: string;
     price?: number;
+    currency?: string;
     optionField?: any
 }
