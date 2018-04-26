@@ -100,8 +100,7 @@ export class AppComponent {
   }
 
   about() {
-    console.log(navigator)
-    this.ps.buttonDialog(`Mendo PWA-platform v0.26 (24/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.26 (25/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
   }
 
   ngOnDestroy(): void {

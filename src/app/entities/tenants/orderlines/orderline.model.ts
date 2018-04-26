@@ -14,7 +14,7 @@ export interface OrderLine {
     size: string;
     color: string;
     number: number;
-    amount: number;    
+    amount: number;
 }
 
 export const defaultTitle = 'Orderregels'

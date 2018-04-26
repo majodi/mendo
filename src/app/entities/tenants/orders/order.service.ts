@@ -19,7 +19,9 @@ export class OrderService extends EntityBaseClass {
     private glob: GlobService
   ) {
     super(afService)
-    this.entityQueries = [{fld: 'organisation', operator: '==', value: 'fTq2haAUEZrFr2g5UlTZ'}]
+    if(this.glob.activeUser.level <= 25){
+      this.entityQueries = [{fld: 'organisation', operator: '==', value: this.glob.activeUser.organisation}]
+    }
   }
 
 }

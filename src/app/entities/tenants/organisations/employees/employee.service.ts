@@ -15,6 +15,11 @@ export class EmployeeService extends EntityBaseClass {
   constructor(
     private afService: AngularFirestore,
     private glob: GlobService
-  ) {super(afService)}
+  ) {
+    super(afService)
+    if(this.glob.activeUser.level <= 25){
+      this.entityQueries = [{fld: 'organisation', operator: '==', value: this.glob.activeUser.organisation}]
+    }
+  }
 
 }

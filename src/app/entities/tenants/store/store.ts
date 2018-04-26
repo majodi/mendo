@@ -329,7 +329,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   onClickArticle(clickedOn, e) {
-    if(clickedOn == 'tile'){
+    // if(clickedOn == 'tile'){
       if(!this.verified){this.ps.buttonDialog('Account niet geverifieerd, bestelling plaatsen niet mogelijk', 'OK'); return}
       this.ps.buttonDialog(`${e['title']}\r\nToevoegen aan bestelling?`, 'OK', 'Annuleer').then(v => {
         if(v == 1){
@@ -343,7 +343,7 @@ export class StoreComponent implements OnInit, OnDestroy {
           this.cs.insertDialog(this.formConfig, {order: this.currentOrder, article: e['id']}, `${this.gs.entityBasePath}/orderlines`, this['embeds'] ? this['embeds'] : undefined).then(id => {this.refreshCart()}).catch(err => {console.log(err)})
         }
       })
-    }
+    // }
   }
   
   orderFulfilment(e) {

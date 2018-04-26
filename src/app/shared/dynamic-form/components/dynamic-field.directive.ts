@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { FormButtonComponent } from './form-button.component';
 import { FormInputComponent } from './form-input.component';
+import { FormDateComponent } from './form-date.component';
 import { FormSelectComponent } from './form-select.component';
 import { FormPulldownComponent } from './form-pulldown.component';
 import { FormLookupComponent } from './form-lookup.component';
@@ -20,6 +21,7 @@ import { FormSelectChildrenComponent } from './form-selectchildren.component';
 const components: {[type: string]: Type<Field>} = {
   button: FormButtonComponent,
   input: FormInputComponent,
+  datepicker: FormDateComponent,
   select: FormSelectComponent,
   chiplist: FormChiplistComponent,
   pulldown: FormPulldownComponent,

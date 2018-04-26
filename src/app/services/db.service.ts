@@ -61,6 +61,7 @@ export class DbService {
     return this.db.doc(path).update(data)
   }
 
+  //don't use... possible hanger
   updateWithQuery(data, collection: string, queries?: QueryItem[]) {
     this.db.collection(collection, ref => {
       let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;

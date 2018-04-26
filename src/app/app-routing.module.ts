@@ -3,19 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './auth-guard.service';
 
-// import { HomePageComponent } from './homepage';
-// import { TenantsBrwComponent } from './entities/tenants/tenants.brw';
-// import { StoreComponent } from './entities/tenants/store/store';
-// import { ArticlesBrwComponent } from './entities/tenants/articles/articles.brw';
-// import { PropertiesBrwComponent } from './entities/tenants/properties/properties.brw';
-// import { CategoriesBrwComponent } from './entities/tenants/categories/categories.brw';
-// import { OrganisationsBrwComponent } from './entities/tenants/organisations/organisation.brw';
-// import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
-// import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
-// import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
-// import { OrderLinesBrwComponent } from './entities/tenants/orderlines/orderlines.brw';
-// import { BulletinsBrwComponent } from './entities/tenants/bulletins/bulletins.brw';
-// import { SettingsBrwComponent } from './entities/tenants/settings/settings.brw';
 import { LoginComponent } from './shared/authentication/login.component';
 import { LoginEmailComponent } from './shared/authentication/login-email.component';
 import { SignUpComponent } from './shared/authentication/sign-up.component';

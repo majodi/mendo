@@ -27,6 +27,15 @@ import { PopupService } from '../../services/popup.service';
       <h3>{{displayName}}</h3>
       <h3>{{displayEmail}}</h3>
       <span *ngIf="error" style="margin: 0 auto; color:red">{{ error }}</span>
+      <form *ngIf="changeName" #formData='ngForm' (ngSubmit)="onSubmit(formData)" style="width:100%" fxLayout="column" fxLayoutAlign="center center">
+        <mat-form-field>
+          <input type="text" matInput placeholder="Naam" [(ngModel)]="name" name="name" required>
+        </mat-form-field>
+        <div fxLayout="row">
+          <button mat-raised-button type="button" (click)="cancelUpdateName()">Annuleer</button>
+          <button mat-raised-button type="submit" [disabled]="!formData.valid">Wijzig</button>
+        </div>
+      </form>
       <form *ngIf="changeEmail" #formData='ngForm' (ngSubmit)="onSubmit(formData)" style="width:100%" fxLayout="column" fxLayoutAlign="center center">
         <mat-form-field>
           <input type="text" matInput placeholder="Email adres" [(ngModel)]="email" name="email" required pattern="[^ @]*@[^ @]*">
@@ -46,6 +55,12 @@ import { PopupService } from '../../services/popup.service';
         </div>
       </form>
       <div *ngIf="!_as.user.isAnonymous">
+        <button *ngIf="!_as.user.providerLogin" color="primary" [disabled]="changeName" mat-raised-button (click)="updateName()">
+          <div fxLayoutAlign="start center" style="width:200px">
+            <mat-icon style="padding-right:10px">email</mat-icon>
+            <span>Wijzig Naam</span>
+          </div>
+        </button>
         <button *ngIf="!_as.user.providerLogin" color="primary" [disabled]="changeEmail" mat-raised-button (click)="updateEmail()">
           <div fxLayoutAlign="start center" style="width:200px">
             <mat-icon style="padding-right:10px">email</mat-icon>
@@ -72,12 +87,14 @@ import { PopupService } from '../../services/popup.service';
 })
 export class ProfileComponent implements OnInit {
   error: any
+  name = ''
   email = ''
   password = ''
   displayName = ''
   displayEmail = ''
   feedback = ''
   changeEmail = false
+  changeName = false
   resetSent = false
   changeVerification = false
   verificationCode = ''
@@ -96,6 +113,17 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmit(formData) {
+    if(this.changeName){
+      this._as.changeProfile(this.name, '')
+      .then(v => {
+        this._as.user.displayName = this.name
+        this.gs.activeUser = this._as.user
+        this.router.navigate(['/homepage'])
+      })
+      .catch(e => {this.error = e})
+      this.changeName = false
+      return
+    }
     if(this.changeEmail){
       this._as.sendUpdateEmail(this.email)
       .then(v => {
@@ -108,11 +136,14 @@ export class ProfileComponent implements OnInit {
     if(this.changeVerification){
       this.db.getUniqueValueId((`${this.gs.entityBasePath}/employees`), 'id', this.verificationCode).subscribe(employee => {
         if(employee['organisation']){
-          this.db.updateDoc({employee: employee['id'], organisation: employee['organisation']}, `users/${this._as.user.uid}`)
+          this.db.updateDoc({employee: employee['id'], organisation: employee['organisation'], displayName: employee['address']['name']}, `users/${this._as.user.uid}`)
           .then(v => {
             this._as.user.employee = employee['id']
             this._as.user.organisation = employee['organisation']
+            this._as.user.displayName = employee['address']['name']
+            this.gs.activeUser = this._as.user
             this.ps.buttonDialog('Verificatie geslaagd, u kunt bestellingen plaatsen', 'OK')
+            this._as.changeProfile(employee['address']['name'], '')
           })
           .catch(e => {
             this.ps.buttonDialog('Verificatie mislukt, u kunt GEEN bestellingen plaatsen', 'OK')
@@ -127,12 +158,21 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  updateName() {
+    this.changeName = true
+  }
+
   updateEmail() {
     this.changeEmail = true
   }
 
   updateVerification() {
     this.changeVerification = true
+  }
+
+  cancelUpdateName() {
+    this.name = ''
+    this.changeName = false
   }
 
   cancelUpdateEmail() {

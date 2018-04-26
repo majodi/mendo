@@ -105,7 +105,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
     const newCtrl = this.fb.control({ disabled, value }, validation);
-    if(!['button', 'input', 'select', 'checkbox'].includes(config.type)){ // does it need a custom value change
+    if(!['button', 'input', 'select', 'checkbox', 'datepicker'].includes(config.type)){ // does it need a custom value change
       config.customValueChg = (name: string, value: any) => { //for custom components
         this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
         this.setFormValue(name, config.type == 'lookup' ? value['id'] : value)
@@ -123,7 +123,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       event.stopPropagation();  
     }
     this.config.forEach(config => {
-      if(['chiplist', 'lookup', 'pulldown', 'stringdisplay', 'selectchildren'].includes(config.type)){
+      if(['datepicker', 'chiplist', 'lookup', 'pulldown', 'stringdisplay', 'selectchildren'].includes(config.type)){
         this.value[config.name] = config.value
       }
       if(config.type == 'filepick' && this.formAction == 1){ //only on insert!!
@@ -164,7 +164,9 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   setFormValue(name, value) {
+    // console.log('setformval: ', name. value)
     if(this.form.controls[name]){
+      // console.log('if setformval: ', name. value)
       this.form.controls[name].setValue(value, {emitEvent: true})
     }
     let configIndex = this.config.findIndex(c => c.name == name)

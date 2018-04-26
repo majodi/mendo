@@ -75,6 +75,14 @@ export class AuthService {
 
   setNavList() {this.navList = fullNavList.filter(item => (this.tenantModules.includes(item.module) && this.userLevel >= item.level))}
 
+  changeProfile(name, photo) {
+    let user = firebase.auth().currentUser;
+    return user.updateProfile({
+      displayName: name,
+      photoURL: photo
+    });
+  }
+
   sendVerification() {
     return this.afAuth.auth.currentUser.sendEmailVerification().then(() => console.log('verification mail sent'))
   }

@@ -22,6 +22,7 @@ import { CartComponent } from '../entities/tenants/store/cart';
 import { OrderLineService } from '../entities/tenants/orderlines/orderline.service';
 import { UsersBrwComponent } from '../entities/tenants/users/users.brw';
 import { UserService } from '../entities/tenants/users/user.service';
+import { MessageService } from '../entities/tenants/messages/message.service';
 
 @NgModule({
   imports: [
@@ -57,6 +58,7 @@ import { UserService } from '../entities/tenants/users/user.service';
       PropertyService,
       OrderLineService,
       UserService,
+      MessageService,
     ]
 })
 export class AppLookupModule { }

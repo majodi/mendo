@@ -54,7 +54,8 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
         if(l1){
           let fieldDef = config.find(c => c.name == l1)
           const isChiplist = fieldDef && (fieldDef['type'] == 'chiplist')
-          if(typeof obj[l1] == 'object' && obj[l1] != null && !isChiplist) {
+          const isDatepicker = fieldDef && (fieldDef['type'] == 'datepicker')
+          if(typeof obj[l1] == 'object' && obj[l1] != null && !isChiplist && !isDatepicker) {
             Object.keys(obj[l1]).map(l2 => {
               this.form.setValue(l1+'.'+l2, obj[l1][l2])
             })

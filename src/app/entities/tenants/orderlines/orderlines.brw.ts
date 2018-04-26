@@ -14,11 +14,12 @@ import { Employee } from '../organisations/employees/employee.model';
 import { GlobService } from '../../../services/glob.service';
 import { Property } from '../properties/property.model';
 import { Image } from '../images/image.model';
+import { PopupService } from '../../../services/popup.service';
 
 @Component({
   selector: 'app-orderlines-brw',
   styles: [`
-  .boxed {margin: 10px 10px; border: 3px solid #3f51b5; border-radius: 5px; width:65%; padding: 10px}
+  .boxed {margin: 10px 10px; border: 3px solid #3f51b5; border-radius: 5px; width:80%; padding: 10px}
   `],
   template: `
   <div style="width:100%">
@@ -48,10 +49,25 @@ import { Image } from '../images/image.model';
       [columnDefs]=columnDef
       [data]=orderLineData
       [isLoading]=isLoading
-      [insertButton]="selectedOrder"
+      [insertButton]="selectedOrder && !statusNr"
       [parentPrintHeaderRef]="printHeaderRef"
       (clicked)="clicked($event)"
     ></app-table>
+    <div class="boxed">
+      <p class="mat-title" (click)="showOrderHistory()">
+      <span>
+        Huidige Status:
+        <span style="color: blue">
+          <mat-icon style="vertical-align: sub; margin-right: 4px">
+            {{getStatusIcon()}}
+          </mat-icon>
+          {{getStatusText()}}
+        </span>
+      </span>
+      </p>
+      <button *ngIf="getNextStatusButtonText()" mat-raised-button (click)="promoteStatus()"><mat-icon style="margin-right: 4px; color: green">{{getNextStatusButtonIcon()}}</mat-icon><span>{{getNextStatusButtonText()}}</span></button>
+      <button *ngIf="gs.activeUser.level >= 50 || statusNr < 3" mat-raised-button (click)="cancelOrder()"><mat-icon style="margin-right: 4px; color: red">cancel</mat-icon>Annuleer Order</button>
+    </div>
   </div>
   `,
 })
@@ -151,6 +167,10 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   employeeRec: Employee
   organisationRec: Organisation
   selectedOrder: string
+  orderStatus: string
+  statusNr: number
+  orderHistory: string
+  
   @ViewChild('printheader') public printHeaderRef: ElementRef
 
   constructor(
@@ -158,6 +178,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     private cs: CrudService,
     private db: DbService,
     private gs: GlobService,
+    private ps: PopupService,
   ) {
       this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
       this.orderLineSrv.colDef = this.columnDef
@@ -187,13 +208,75 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
       if(orderQuery != undefined){
         this.orderLookup.value = ''+orderQuery.value
         this.db.getDoc(`${this.gs.entityBasePath}/orders/${orderQuery.value}`).then(rec => {
-          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation']})  
+          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation'], status: rec['status'], history: rec['history']})  
         })
       }
     }
   }
 
+
+  promoteStatus() {
+    let newStatus = ''
+    if(this.orderStatus == 'closed'){newStatus = 'approved'}
+    if(this.orderStatus == 'approved'){newStatus = 'processed'}
+    if(this.orderStatus == 'processed'){newStatus = 'delivered'}
+    const setData = {status: newStatus, history: this.setNewHistory(newStatus)}
+    this.db.setDoc(setData, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`, {merge: true}).then(() => this.setCurrentStatus(setData['status']))
+  }
+
+  getStatusText() {
+    const statusTexts = ['Nieuw', 'Afgesloten', 'Goedgekeurd', 'Verwerkt', 'Geleverd', 'Geannuleerd']
+    return(statusTexts[this.statusNr])
+  }
+
+  getStatusIcon() {
+    const statusIcons = ['fiber_new', 'lock_outline', 'thumb_up', 'done', 'done_all', 'cancel']
+    return(statusIcons[this.statusNr])
+  }
+
+  getNextStatusButtonText() {
+    if(this.statusNr > 1 && this.gs.activeUser.level < 50){return ''}
+    const nextStatusButtonTexts = ['', 'Goedkeuren', 'Verwerkt', 'Geleverd', '', '']
+    return nextStatusButtonTexts[this.statusNr]
+  }
+
+  getNextStatusButtonIcon() {
+    const nextStatusButtonIcons = ['', 'thumb_up', 'done', 'done_all', '', '']
+    return nextStatusButtonIcons[this.statusNr]
+  }
+
+  cancelOrder() {
+    if(this.statusNr > 2 && this.gs.activeUser.level < 50){return ''}
+    const field = {value: '', placeholder: 'Rede voor annuleren', label: 'Rede:'}
+    this.ps.buttonDialog('Order annuleren? Orderregels worden verwijderd!', 'NIET Annuleren', 'JA, Annuleer', field).then(b => {
+      if(b == 2){
+        if(!field.value){this.ps.buttonDialog('Geen rede opgegeven, Order werd NIET geannuleerd', 'OK'); return}
+        console.log('reason: ', field)
+        this.orderLineData.forEach(ol => {
+          console.log('ol: ', ol)
+          this.db.deleteDoc(`${this.gs.entityBasePath}/orderlines/${ol.id}`)
+        })
+        const setData = {status: 'cancelled', total: 0, line_count: 0, history: this.setNewHistory('Geannuleerd', field.value)}
+        this.db.setDoc(setData, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`, {merge: true}).then(() => this.setCurrentStatus('cancelled'))
+      }
+    })
+  }
+
+  setNewHistory(change, reason?) {
+    const now = new Date()
+    const newHistory = `${this.orderHistory ? this.orderHistory : ''}\r\n** ${change} - ${now} - Door: ${this.gs.activeUser.uid}${reason ? ' - Rede: '+reason : ''}`
+    console.log('new hist: ', newHistory)
+    this.orderHistory = newHistory
+    return newHistory
+  }
+
+  showOrderHistory() {
+    this.ps.buttonDialog('Orderhistorie:\r\n\r\n' + this.orderHistory, 'OK')
+  }
+
   orderChoosen(e) {
+    console.log('e: ', e)
+    if(this.gs.activeUser.level <= 25 && e['organisation'] != this.gs.activeUser.organisation) {this.orderSelect.next('0') ;return};
     this.db.getDoc(`${this.gs.entityBasePath}/employees/${e['employee']}`).then(rec => {
       this.employeeRec = rec as Employee
     })
@@ -201,10 +284,21 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
       this.organisationRec = rec as Organisation
     })
     this.selectedOrder = e['id']
+    this.orderHistory = e['history']
+    this.setCurrentStatus(e['status'])
     this.orderSelect.next(e['id'])
   }
 
+  setCurrentStatus(orderStatus) {
+    this.orderStatus = orderStatus
+    this.statusNr = ['new', 'closed', 'approved', 'processed', 'delivered', 'cancelled'].findIndex(s => s == this.orderStatus)
+  }
+
   clicked(brwClick: {fld: string, rec: {}}) {
+    if(this.statusNr > 0){
+      this.ps.buttonDialog('Order reeds afgesloten.', 'OK')
+      return
+    }
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
     if(!['insert','selection'].includes(brwClick.fld)){
       this.cs.changeDeleteDialog(this.formConfig, rec, this.orderLineSrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))

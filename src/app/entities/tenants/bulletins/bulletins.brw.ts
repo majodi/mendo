@@ -16,15 +16,33 @@ import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 })
 export class BulletinsBrwComponent extends BrwBaseClass<Bulletin[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
-    {type: 'beforeSave', code: (action, o) => {
-      if(action == 1){
-        const today = new Date()
-        o['date'] = today
-        if(!o['sticky']){
-          this.db.updateWithQuery({date: today}, this.entityService.entityPath, [{fld: 'sticky', operator: '==', value: true}])
+    {type: 'onValueChg', code: (ctrl, value, formAction?) => {
+      if(ctrl == 'sticky'){
+        let stickyDate: Date = new Date('01/01/2100')
+        stickyDate.setHours(6)
+        let todayDate: Date = new Date()
+        todayDate.setHours(6)
+        const dateConfig = this.formConfig[this.formConfig.findIndex(c => c.name == 'date')]
+        dateConfig.hidden = value ? value : false
+        let currentDate: Date = dateConfig.value ? dateConfig.value : todayDate
+        if(typeof currentDate == 'object'){
+          dateConfig.value = value ? stickyDate : currentDate.toDateString() == stickyDate.toDateString() ? todayDate : currentDate
         }
-        return Promise.resolve()
-      } else return Promise.resolve()
+      }
+    }},
+    {type: 'beforeInsertDialog', code: (rec, fld) => {
+      rec['date'] = new Date()
+      rec['date'].setHours(6)
+    }},
+    {type: 'beforeChgDialog', code: (rec, fld) => {
+      if(!rec['date']){
+        rec['date'] = new Date()
+        rec['date'].setHours(6)  
+      }
+    }},
+    {type: 'beforeSave', code: (action, o) => {
+      o['date'].setHours(6)
+      return Promise.resolve()
     }}
   ]
 

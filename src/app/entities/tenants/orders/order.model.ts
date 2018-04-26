@@ -12,6 +12,7 @@ export interface Order {
     total: number;
     line_count: number;
     status: string; // new (fiber_new), closed (lock_outline), approved (thumb_up), processed (done), delivered (done_all), cancelled (cancel)
+    history: string;
 }
 
 export const defaultTitle = 'Orders'
@@ -28,19 +29,23 @@ export const defaultColDef = [
     }, iconColorSelect: rec => {
         if(rec['status'] == 'new') {return 'warn'} else {return 'primary'}
     }},
-    {name: 'date',              header: 'Datum', sort: true, hideXs: true},
+    {name: 'date',              header: 'Datum', format: (rec) => rec.date && typeof rec.date == 'object' ? rec.date.toISOString().substring(0,10) : '', sort: true, hideXs: true},
     {name: 'organisation_v',    header: 'Organisatie', sort: true, hideXs: true},
     {name: 'employee_v',        header: 'Medewerker', sort: true},
     {name: 'total',             header: 'Totaal'},
     {name: 'lines',             header: 'Regels', icon: 'view_list'},
   ]
 export const defaultFormConfig = [
-    {type: 'input',     label: 'Order',         name: 'number',       placeholder: 'Ordernummer',  value: '', initWithCounter: 'orderNumber', disabled: true},
-    {type: 'lookup',    label: 'Medewerker',    name: 'employee',     placeholder: 'Medewerker',   value: '', inputValueTransform: forceCapitalize, customLookupFld: {path: 'employees', tbl: 'employee', fld: 'address.name'}},
-    {type: 'lookup',    label: 'Organisation',  name: 'organisation', placeholder: 'Organisation', value: '', doNotPopulate: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
+    {type: 'input',     label: 'Order',         name: 'number',       placeholder: 'Ordernummer',   value: '', initWithCounter: 'orderNumber', disabled: true},
+    {type: 'select',    label: 'Status',        name: 'status',       placeholder: 'Status',        value: '', options: ['new', 'closed', 'approved', 'delivered', 'cancelled']},
+    {type: 'lookup',    label: 'Medewerker',    name: 'employee',     placeholder: 'Medewerker',    value: '', inputValueTransform: forceCapitalize, customLookupFld: {path: 'employees', tbl: 'employee', fld: 'address.name'}},
+    {type: 'lookup',    label: 'Organisation',  name: 'organisation', placeholder: 'Organisation',  value: '', doNotPopulate: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
 ]
 // for selection button
 export const defaultSelectionFields = [         // status - date
   {name: 'organisation'},
   {name: 'employee'},
+  {name: 'status'}
 ]
+
+//organisatie wordt niet getoond in selectieform omdat notpopulated (denk ik)

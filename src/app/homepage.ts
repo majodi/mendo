@@ -158,8 +158,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next()
-    this.ngUnsubscribe.complete()    
+    console.log('push subscribe on destroy')
+    this.pushSubscribe().then(v => {
+      this.ngUnsubscribe.next()
+      this.ngUnsubscribe.complete()
+    })
   }
 
 }

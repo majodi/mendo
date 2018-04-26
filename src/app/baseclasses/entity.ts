@@ -21,19 +21,12 @@ export class EntityBaseClass {
   initEntity$(queries?: QueryItem[]) {
     let entity$ = this.af.collection(this.entityPath, ref => {
       let query : firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-      console.log('queries - entq: ', this.entityQueries)
       const entryQueries = queries ? queries.concat(this.entityQueries) : this.entityQueries.length > 0 ? this.entityQueries : []
-      console.log('tq: ', entryQueries)
       if (entryQueries && entryQueries.length > 0){
         entryQueries.forEach(q => {
           if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
         })
       }
-      // if (queries){
-      //   queries.forEach(q => {
-      //     if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
-      //   })
-      // }
       return query;
     })
     .snapshotChanges()
@@ -47,10 +40,11 @@ export class EntityBaseClass {
     if(this.formConfig){
       const virtualFields = this.colDef.map((item) => item.name);
       return this.formConfig.filter(c => (c.customLookupFld != undefined) && (virtualFields.includes(c.name+'_v'))).reduce((acc, val) => {
+        const adjustedBasePath = this.basePath ? this.basePath+'/' : '' //for root tables
         return acc.switchMap(actions => {
           let lookupDocObservables = actions.map((action) => {
             if(action[val.name]){
-              return this.af.doc(`${this.basePath}/${val.customLookupFld.path}/${action[val.name]}`).valueChanges().first()
+              return this.af.doc(`${adjustedBasePath}${val.customLookupFld.path}/${action[val.name]}`).valueChanges().first()
             } else {
               return Observable.of(null)
             }

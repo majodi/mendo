@@ -14,7 +14,7 @@ export class PopupService {
 
     buttonDialog(text, button1, button2?, field?, copyToClipboard?) {
       let dialogRef = this.dialog.open(PopupDialog, {
-        width: '250px',
+        width: '325px',
         data: { text: text, but1: button1, but2: button2, field: field, copyToClipboard: copyToClipboard}
       });
   
