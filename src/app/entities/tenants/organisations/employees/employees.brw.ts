@@ -56,7 +56,6 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
       if(this.gs.backButton){
         o['organisation'] = this.gs.NavQueries.find(q => q.fld == 'organisation').value
       }
-      console.log('o: ', o)
       return Promise.resolve()
     }},
   ]
@@ -91,7 +90,6 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
       this.db.getFirst('users', [{fld:'email', operator:'==', value:rec.address.email}]).take(1).subscribe(user => {
         const email = rec.address.email ? user['uid'] != undefined ? rec.address.email : rec.address.email + '(Geen account voor emailadres)' : '(Geen emailadres)'
         this.ps.buttonDialog(`Medewerker:\r\n${rec.address.name}\r\n${email}\r\n\r\nVerificatiecode: ${rec.id}`, 'Sluit', rec.address.email ? 'Stuur email' : undefined, undefined, rec.id).then(b => {
-          console.log('b: ', b)
           if(b == 2){
             const link = user['uid'] != undefined && this.gs.tenantId != undefined && rec.id != undefined ? `https://us-central1-mendo-app.cloudfunctions.net/verifyemployee?user=${user['uid']}&tenant=${this.gs.tenantId}&code=${rec.id}` : 'Verificatiecode: '+rec.id
             const usage = user['uid'] != undefined && this.gs.tenantId != undefined && rec.id != undefined ? 'Klik op onderstaande link om uw account te verifiëren:' : 'Voer onderstaande code in bij "Verificatie" in uw profiel (klik rechtsboven in de blauwe balk en kies Profiel):'
@@ -137,7 +135,6 @@ ${this.gs.tenantName}
       this.APFormConfig = [{type: 'stringdisplay', label: 'Keuzes', name: 'header', placeholder: 'Keuzes', value: 'Definieer per categorie (waar wenselijk) een subselectie van toegestane keuzes'}]
       properties.forEach((property: Property) => {
         this.APFormConfig.push({type: 'checkbox', label: 'Subselectie voor: '+property.code, name: 'propertiesAllowed.'+property.id, placeholder: 'Subselectie voor: '+property.code, value: rec.propertiesAllowed ? rec.propertiesAllowed[property.id] : false})
-        // this.APFormConfig.push({type: 'chiplist', label: 'Toegestaan', name: 'propertiesAllowed.'+property.id, placeholder: 'Toegestaan', value: rec.propertiesAllowed && rec.propertiesAllowed[property.id] ? rec.propertiesAllowed[property.id].split(',').reduce((result, item) => {result[item] = true; return result}, {}) : {}, options: property.choices.split(',').map(i => i.trim()), hidden: !rec.propertiesAllowed[property.id]})
         this.APFormConfig.push({type: 'chiplist', label: 'Toegestaan', name: 'propertiesAllowed.'+property.id, placeholder: 'Toegestaan', value: rec.propertiesAllowed && rec.propertiesAllowed[property.id] ? rec.propertiesAllowed[property.id].split(',').reduce((result, item) => {result[item] = true; return result}, {}) : {}, options: property.choices.split(',').map(i => i.trim()), hidden: rec.propertiesAllowed ? !rec.propertiesAllowed[property.id] : true})
       })
       this.ps.formDialog(2, this.APFormConfig, formValues, (ctrl, value) => {this.formValChg(ctrl, value)}).then(res => {
@@ -161,6 +158,7 @@ ${this.gs.tenantName}
     const chiplistConfig = this.APFormConfig.find(c => c.type == 'chiplist' && c.name == ctrl)
     if(typeof value == 'boolean'){
       chiplistConfig.hidden = !chiplistConfig.hidden
+      if(chiplistConfig.hidden)chiplistConfig.value = {};
     }
   }
 

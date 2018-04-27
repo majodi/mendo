@@ -134,6 +134,7 @@ export class BrwBaseClass<T> {
         if(formConfig != undefined){
           const matchingBaseQuery = this.baseQueries.find(bq => bq.fld == fld.name)
           formConfig.value = matchingBaseQuery != undefined ? matchingBaseQuery.value : ''
+          if(fld.disabled != undefined)formConfig.disabled = fld.disabled;
           this.selectionFieldConfig.push(formConfig)
         }
       })

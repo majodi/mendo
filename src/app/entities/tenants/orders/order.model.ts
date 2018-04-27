@@ -37,7 +37,7 @@ export const defaultColDef = [
   ]
 export const defaultFormConfig = [
     {type: 'input',     label: 'Order',         name: 'number',       placeholder: 'Ordernummer',   value: '', initWithCounter: 'orderNumber', disabled: true},
-    {type: 'select',    label: 'Status',        name: 'status',       placeholder: 'Status',        value: '', options: ['new', 'closed', 'approved', 'delivered', 'cancelled']},
+    {type: 'select',    label: 'Status',        name: 'status',       placeholder: 'Status',        value: '', options: ['new', 'closed', 'approved', 'delivered', 'cancelled'], disabled: true},
     {type: 'lookup',    label: 'Medewerker',    name: 'employee',     placeholder: 'Medewerker',    value: '', inputValueTransform: forceCapitalize, customLookupFld: {path: 'employees', tbl: 'employee', fld: 'address.name'}},
     {type: 'lookup',    label: 'Organisation',  name: 'organisation', placeholder: 'Organisation',  value: '', doNotPopulate: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
 ]
@@ -45,7 +45,7 @@ export const defaultFormConfig = [
 export const defaultSelectionFields = [         // status - date
   {name: 'organisation'},
   {name: 'employee'},
-  {name: 'status'}
+  {name: 'status', disabled: false}
 ]
 
 //organisatie wordt niet getoond in selectieform omdat notpopulated (denk ik)

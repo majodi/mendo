@@ -176,7 +176,20 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         }
         coldef.header = coldef.header || coldef.name
     })
+
     this.dataSource = new MatTableDataSource(this.data)
+
+    this.dataSource.sortingDataAccessor =(item, property) => {
+      return property.indexOf('.') == -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
+      // initial sort, add to table tag: matSortActive="address.name" matSortDirection="asc"
+      // console.log('item, property: ', item, property)
+      // if(property == 'address.name'){
+      //   return item['address']['name'] == 'Janus' ? ' ' : item['address']['name']
+      // } else {
+      //   return property.indexOf('.') == -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
+      // }
+    };
+
     this.dataSource.sort = this.sort;
     this.dataSource.filterPredicate = (data, filter: string):boolean => {
         let flatDataStr = ''
@@ -187,6 +200,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         })      
         return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) != -1;
       }
+
     if(this.data != undefined){
         let wasLoading = this.isLoading
         this.isLoading = true

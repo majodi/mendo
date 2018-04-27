@@ -23,7 +23,7 @@ export class MessageService extends EntityBaseClass {
     private db: DbService,
   ) {super(afService)}
 
-  sendSystemMail(recipientType, recipientId, subject, message) {
+  sendSystemMail(recipientType, recipientId, subject, message, messageHtml?, tenantBcc?) {
     let sm = {}
     return this.db.getUniqueValueId('tenants', 'id', this.glob.tenantId).take(1).map((tenant: Tenant) => {
       if(tenant && tenant.address.email){
@@ -31,14 +31,26 @@ export class MessageService extends EntityBaseClass {
         sm['fromName'] = tenant.address.name
         sm['status'] = 'new'
         sm['channel'] = 'email'
-        sm['recipientSource'] = recipientType == 'user' ? 'Gebruiker' : recipientType == 'organisation' ? 'Organisatie' : recipientType == 'employee' ? 'Medewerker' : ''
+        sm['recipientSource'] = recipientType == 'user' || recipientType == 'tenant' ? 'Gebruiker' : recipientType == 'organisation' ? 'Organisatie' : recipientType == 'employee' ? 'Medewerker' : ''
         sm['subject'] = subject
         sm['textContent'] = message
+        sm['htmlContent'] = messageHtml ? messageHtml : null
+        if(recipientType == 'tenant'){
+          this.db.getFirst('users', [{fld:'level', operator:'==', value: 50},{fld:'tenant', operator:'==', value:this.glob.tenantId}]).take(1).subscribe(user => {
+            sm['user'] = user['uid']
+            sm['recipientDesignation'] = `${tenant.address.name} <${tenant.address.email}>`
+            sm['toList'] = [{name: tenant.address.name, email: tenant.address.email}]
+            return this.db.addDoc(sm, `${this.basePath}/messages`)  
+          })
+        }
         if(recipientType == 'user' && recipientId){
           sm['user'] = recipientId
           return this.db.getDoc(`users/${recipientId}`).then((user: User) => {
             sm['recipientDesignation'] = `${user.displayName} <${user.email}>`
             sm['toList'] = [{name: user.displayName, email: user.email}]
+            if(tenantBcc != undefined && tenantBcc){
+              sm['bccList'] = [{name: tenant.address.name, email: tenant.address.email}]              
+            }
             return this.db.addDoc(sm, `${this.basePath}/messages`)
           }).catch(err => console.log('could not get user as email recipient', err))
         }
@@ -47,6 +59,9 @@ export class MessageService extends EntityBaseClass {
           return this.db.getDoc(`${this.basePath}/organisations/${recipientId}`).then((organisation: Organisation) => {
             sm['recipientDesignation'] = `${organisation.address.name} <${organisation.address.email}>`
             sm['toList'] = [{name: organisation.address.name, email: organisation.address.email}]
+            if(tenantBcc != undefined && tenantBcc){
+              sm['bccList'] = [{name: tenant.address.name, email: tenant.address.email}]              
+            }
             return this.db.addDoc(sm, `${this.basePath}/messages`)
           }).catch(err => console.log('could not get organisation as email recipient', err))
         }
@@ -55,6 +70,9 @@ export class MessageService extends EntityBaseClass {
           this.db.getDoc(`${this.basePath}/employees/${recipientId}`).then((employee: Employee) => {
             sm['recipientDesignation'] = `${employee.address.name} <${employee.address.email}>`
             sm['toList'] = [{name: employee.address.name, email: employee.address.email}]
+            if(tenantBcc != undefined && tenantBcc){
+              sm['bccList'] = [{name: tenant.address.name, email: tenant.address.email}]              
+            }
             return this.db.addDoc(sm, `${this.basePath}/messages`)
           }).catch(err => console.log('could not get employee as email recipient', err))
         }

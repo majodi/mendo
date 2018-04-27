@@ -27,3 +27,5 @@ export class UserService extends EntityBaseClass {
   }
 
 }
+
+//if user change and no reload, this code will not fire (!!)

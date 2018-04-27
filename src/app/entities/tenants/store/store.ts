@@ -103,11 +103,16 @@ export class StoreComponent implements OnInit, OnDestroy {
         const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
         if(this.articleChanged || (sizesId && sizesId != this.currentSizesId)) {
           this.currentSizesId = sizesId
+          console.log('sizesId: ', sizesId)
           const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
             if(property){
+              console.log('property: ', property)
               let defaultSizesChoices = property['choices'].split(',')
+              console.log('defaultSizes: ', defaultSizesChoices)
               const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
-              const allowedChoices: string[] = this.employeePropertiesAllowed ? this.employeePropertiesAllowed[property['id']].split(',') : []
+              console.log('overrule?: ', overruleSizes)
+              const allowedChoices: string[] = this.employeePropertiesAllowed ? this.employeePropertiesAllowed[property['id']] ? this.employeePropertiesAllowed[property['id']].split(',') : [] : []
+              console.log('allowed: ', allowedChoices)
               const sizeConfig = this.formConfig[this.formConfig.findIndex(c => c.name == 'size')]
               if(overruleSizes){
                 const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
@@ -116,13 +121,17 @@ export class StoreComponent implements OnInit, OnDestroy {
                   if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key.trim())}
                 }
                 overruleSizesChoicesArray = overruleSizesChoicesArray.filter(choice => allowedChoices.includes(choice))
+                console.log('overrule array na filter: ', overruleSizesChoicesArray)
                 if(overruleSizesChoicesArray.length == 0){this.ps.buttonDialog('Niet in uw (ingestelde) maat verkrijgbaar', 'OK')}
                 if(overruleSizesChoicesArray.length == 1){sizeConfig.value = overruleSizesChoicesArray[0]}
+                this.articleChanged = false
                 return sizeConfig.options = overruleSizesChoicesArray
               }
               defaultSizesChoices = defaultSizesChoices.filter(choice => allowedChoices.includes(choice))
+              console.log('default choices: ', defaultSizesChoices)
               if(defaultSizesChoices.length == 0){this.ps.buttonDialog('Niet in uw (ingestelde) maat verkrijgbaar', 'OK')}
               if(defaultSizesChoices.length == 1){sizeConfig.value = defaultSizesChoices[0]}
+              this.articleChanged = false
               return sizeConfig.options = defaultSizesChoices
             }
           })
@@ -140,8 +149,10 @@ export class StoreComponent implements OnInit, OnDestroy {
                 for (var key in overruleColorsChoices){
                   if(defaultColorsChoices.includes(key)){overruleColorsChoicesArray.push(key)}
                 }                  
+                this.articleChanged = false
                 return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = overruleColorsChoicesArray
               }
+              this.articleChanged = false
               return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = defaultColorsChoices  
             }
           })
@@ -333,6 +344,7 @@ export class StoreComponent implements OnInit, OnDestroy {
       if(!this.verified){this.ps.buttonDialog('Account niet geverifieerd, bestelling plaatsen niet mogelijk', 'OK'); return}
       this.ps.buttonDialog(`${e['title']}\r\nToevoegen aan bestelling?`, 'OK', 'Annuleer').then(v => {
         if(v == 1){
+          this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
           const articleFld = this.formConfig.find(c => c.name == 'article')
           articleFld['doNotPopulate'] = true
           articleFld['value'] = e['id']

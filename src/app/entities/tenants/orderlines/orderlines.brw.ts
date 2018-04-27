@@ -15,6 +15,7 @@ import { GlobService } from '../../../services/glob.service';
 import { Property } from '../properties/property.model';
 import { Image } from '../images/image.model';
 import { PopupService } from '../../../services/popup.service';
+import { MessageService } from '../messages/message.service';
 
 @Component({
   selector: 'app-orderlines-brw',
@@ -66,7 +67,7 @@ import { PopupService } from '../../../services/popup.service';
       </span>
       </p>
       <button *ngIf="getNextStatusButtonText()" mat-raised-button (click)="promoteStatus()"><mat-icon style="margin-right: 4px; color: green">{{getNextStatusButtonIcon()}}</mat-icon><span>{{getNextStatusButtonText()}}</span></button>
-      <button *ngIf="gs.activeUser.level >= 50 || statusNr < 3" mat-raised-button (click)="cancelOrder()"><mat-icon style="margin-right: 4px; color: red">cancel</mat-icon>Annuleer Order</button>
+      <button *ngIf="currentLevel >= 50 || statusNr < 3" mat-raised-button (click)="cancelOrder()"><mat-icon style="margin-right: 4px; color: red">cancel</mat-icon>Annuleer Order</button>
     </div>
   </div>
   `,
@@ -170,6 +171,8 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   orderStatus: string
   statusNr: number
   orderHistory: string
+  orderNumber: number
+  currentLevel: number = 0
   
   @ViewChild('printheader') public printHeaderRef: ElementRef
 
@@ -179,6 +182,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     private db: DbService,
     private gs: GlobService,
     private ps: PopupService,
+    private messageSrv: MessageService,
   ) {
       this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
       this.orderLineSrv.colDef = this.columnDef
@@ -208,7 +212,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
       if(orderQuery != undefined){
         this.orderLookup.value = ''+orderQuery.value
         this.db.getDoc(`${this.gs.entityBasePath}/orders/${orderQuery.value}`).then(rec => {
-          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation'], status: rec['status'], history: rec['history']})  
+          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation'], status: rec['status'], history: rec['history'], number: rec['number']})  
         })
       }
     }
@@ -221,7 +225,24 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     if(this.orderStatus == 'approved'){newStatus = 'processed'}
     if(this.orderStatus == 'processed'){newStatus = 'delivered'}
     const setData = {status: newStatus, history: this.setNewHistory(newStatus)}
-    this.db.setDoc(setData, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`, {merge: true}).then(() => this.setCurrentStatus(setData['status']))
+    this.db.setDoc(setData, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`, {merge: true})
+    .then(() => {
+      this.setCurrentStatus(setData['status'])
+      if(setData['status'] == 'approved'){
+        //send mail naar tenant
+        this.messageSrv.sendSystemMail('tenant', undefined, `Nieuwe goedkeuring (order ${this.orderNumber})`, `
+Beste ${this.gs.tenantName},
+
+Order ${this.orderNumber} voor ${this.organisationRec.address.name} is goedgekeurd. Het totaalbedrag bedraagt: ${this.total} ${this.organisationRec.currency}.
+
+Met vriendelijke groet,
+
+Mendo
+        `)
+        // .then(() => {this.ps.buttonDialog('Mail verstuurd naar: '+email, 'OK')})
+        // .catch(err => {this.ps.buttonDialog('Fout bij versturen:'+err, 'OK')})
+      }
+    })
   }
 
   getStatusText() {
@@ -285,6 +306,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     })
     this.selectedOrder = e['id']
     this.orderHistory = e['history']
+    this.orderNumber = e['number']
     this.setCurrentStatus(e['status'])
     this.orderSelect.next(e['id'])
   }
@@ -292,6 +314,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   setCurrentStatus(orderStatus) {
     this.orderStatus = orderStatus
     this.statusNr = ['new', 'closed', 'approved', 'processed', 'delivered', 'cancelled'].findIndex(s => s == this.orderStatus)
+    this.currentLevel = this.gs.activeUser.level //needed in HTML but gs is private, so not direct usable
   }
 
   clicked(brwClick: {fld: string, rec: {}}) {
