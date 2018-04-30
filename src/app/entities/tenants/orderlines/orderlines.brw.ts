@@ -323,6 +323,8 @@ Mendo
       return
     }
     let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
+    const pricefld = this.formConfig.find(c => c.name == 'price_unit')
+    if(pricefld) pricefld.label = `Prijs${this.organisationRec ? ' (' + this.organisationRec['currency'] + ')' : ''}`
     if(!['insert','selection'].includes(brwClick.fld)){
       this.cs.changeDeleteDialog(this.formConfig, rec, this.orderLineSrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
       return

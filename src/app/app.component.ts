@@ -30,7 +30,7 @@ template: `
       Terug
     </button>
     <ng-container *ngIf="!_gs.backButton">
-      <h1 class="app-name" (click)="about()">{{_as.tenantName}}</h1>
+      <h1 class="app-name" (click)="about()">{{formatTenantName(_as.tenantName)}}</h1>
     </ng-container>
     <span class="spacer"></span>
     <mat-menu #accountMenu="matMenu">
@@ -100,7 +100,11 @@ export class AppComponent {
   }
 
   about() {
-    this.ps.buttonDialog(`Mendo PWA-platform v0.26 (25/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.28 (30/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+  }
+
+  formatTenantName(fullName: string) {
+    return this.mobileQuery.matches && fullName.length > 20 ? fullName.substr(0,20).padEnd(25, '...  ') : fullName
   }
 
   ngOnDestroy(): void {

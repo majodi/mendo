@@ -22,6 +22,8 @@ export class GlobService {
     activeOrder: string
     activeUser: User
 
+    orderAs: User
+
   constructor(private router: Router) {}
   
   navigateWithQuery(link, fld, operator, value){

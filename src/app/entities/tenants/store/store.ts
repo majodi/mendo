@@ -20,6 +20,7 @@ import { Employee } from '../organisations/employees/employee.model';
 import { Organisation } from '../organisations/organisation.model';
 import { Category } from '../categories/category.model';
 import { Article } from '../articles/article.model';
+import { User } from '../../../models/user.model';
 
 interface CategoryItem {
   id: string,
@@ -68,6 +69,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   ngUnsubscribe = new Subject<string>()
   articleSelect = new BehaviorSubject<string|null>(null)
   actionIcon = ''
+  storeUser: User = new Object() as any
   currentOrder = ''
   lineCount = 0
   employeeBudged = 0
@@ -103,16 +105,16 @@ export class StoreComponent implements OnInit, OnDestroy {
         const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
         if(this.articleChanged || (sizesId && sizesId != this.currentSizesId)) {
           this.currentSizesId = sizesId
-          console.log('sizesId: ', sizesId)
+          // console.log('sizesId: ', sizesId)
           const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
             if(property){
-              console.log('property: ', property)
+              // console.log('property: ', property)
               let defaultSizesChoices = property['choices'].split(',')
-              console.log('defaultSizes: ', defaultSizesChoices)
+              // console.log('defaultSizes: ', defaultSizesChoices)
               const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
-              console.log('overrule?: ', overruleSizes)
+              // console.log('overrule?: ', overruleSizes)
               const allowedChoices: string[] = this.employeePropertiesAllowed ? this.employeePropertiesAllowed[property['id']] ? this.employeePropertiesAllowed[property['id']].split(',') : [] : []
-              console.log('allowed: ', allowedChoices)
+              // console.log('allowed: ', allowedChoices)
               const sizeConfig = this.formConfig[this.formConfig.findIndex(c => c.name == 'size')]
               if(overruleSizes){
                 const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
@@ -121,14 +123,14 @@ export class StoreComponent implements OnInit, OnDestroy {
                   if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key.trim())}
                 }
                 overruleSizesChoicesArray = overruleSizesChoicesArray.filter(choice => allowedChoices.includes(choice))
-                console.log('overrule array na filter: ', overruleSizesChoicesArray)
+                // console.log('overrule array na filter: ', overruleSizesChoicesArray)
                 if(overruleSizesChoicesArray.length == 0){this.ps.buttonDialog('Niet in uw (ingestelde) maat verkrijgbaar', 'OK')}
                 if(overruleSizesChoicesArray.length == 1){sizeConfig.value = overruleSizesChoicesArray[0]}
                 this.articleChanged = false
                 return sizeConfig.options = overruleSizesChoicesArray
               }
               defaultSizesChoices = defaultSizesChoices.filter(choice => allowedChoices.includes(choice))
-              console.log('default choices: ', defaultSizesChoices)
+              // console.log('default choices: ', defaultSizesChoices)
               if(defaultSizesChoices.length == 0){this.ps.buttonDialog('Niet in uw (ingestelde) maat verkrijgbaar', 'OK')}
               if(defaultSizesChoices.length == 1){sizeConfig.value = defaultSizesChoices[0]}
               this.articleChanged = false
@@ -184,22 +186,27 @@ export class StoreComponent implements OnInit, OnDestroy {
     private as: AuthService,
   ) {
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
-    if(this.as.user.organisation != undefined){
-      this.db.getDoc(`${this.gs.entityBasePath}/organisations/${this.as.user.organisation}`).then((o: Organisation) => {
+    this.storeUser = this.gs.orderAs ? this.gs.orderAs : this.as.user
+    this.getOrganisationData()
+  }
+
+  getOrganisationData() {
+    if(this.storeUser.organisation != undefined){
+      this.db.getDoc(`${this.gs.entityBasePath}/organisations/${this.storeUser.organisation}`).then((o: Organisation) => {
         this.currency = o.currency
         if(!o.packageSelection){
           this.articleBaseQuery = []
         } else {
-          this.articleBaseQuery = [{fld: 'packageSelection.'+this.as.user.organisation, operator: '==', value: true}]
+          this.articleBaseQuery = [{fld: 'packageSelection.'+this.storeUser.organisation, operator: '==', value: true}]
         }
         this.initDataSubscribers()
       }).catch(e => {
-        console.log('could not get organisation of user: ', this.as.user.uid)
+        console.log('could not get organisation of user: ', this.storeUser.uid)
         this.articleBaseQuery = []
         this.initDataSubscribers()
       })
     } else {
-      console.log('no organisation for user: ', this.as.user.uid)
+      console.log('no organisation for user: ', this.storeUser.uid)
       this.articleBaseQuery = []
       this.initDataSubscribers()    
     }
@@ -209,6 +216,7 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.CategorySrv.colDef = [{name: 'image_v'}]
     this.CategorySrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
     this.CategorySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe((categories: Category[]) => {
+      categories.sort((a,b) => {const ap = a.priority ? a.priority : '~'; const bp = b.priority ? b.priority : '~' ;return ap > bp ? 1 : ap < bp ? -1 : 0})
 
       this.categoryTree = []
 
@@ -223,7 +231,7 @@ export class StoreComponent implements OnInit, OnDestroy {
         .find((cat: CategoryItem) => cat.id == child.parentCategory).children
         .push({id: child.id, title: child.description, image: child['image_v'], children: []}))
 
-      this.ArticleSrv.colDef = [
+        this.ArticleSrv.colDef = [
         {name: 'image_v'},
       ]
       this.ArticleSrv.formConfig = [
@@ -237,6 +245,8 @@ export class StoreComponent implements OnInit, OnDestroy {
         return this.ArticleSrv.initEntity$(articleQuery)
       }).takeUntil(this.ngUnsubscribe)
       .subscribe((articles: Article[]) => {
+        // articles.sort((a, b) => a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0)
+        articles.sort((a, b) => {const ap = a.priority ? a.priority : '~'; const bp = b.priority ? b.priority : '~' ;return ap > bp ? 1 : ap < bp ? -1 : 0})
         const categoriesWithArticles = []
         this.articleData = articles.map((article: Article) => {
           if(!categoriesWithArticles.includes(article.category)){categoriesWithArticles.push(article.category)}
@@ -245,7 +255,7 @@ export class StoreComponent implements OnInit, OnDestroy {
             title: article.description_s,
             description: article.description_l,
             image: article['image_v'],
-            price: this.as.user.organisation && article.priceOverrule && article.priceOverrule[this.as.user.organisation] ? article.priceOverrule[this.as.user.organisation] : article.price,
+            price: this.storeUser.organisation && article.priceOverrule && article.priceOverrule[this.storeUser.organisation] ? article.priceOverrule[this.storeUser.organisation] : article.price,
             currency: this.currency,
             optionField: article.category
           }  
@@ -273,7 +283,11 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.db.getDoc(`${this.gs.entityBasePath}/employees/${this.as.user.employee}`)
+    this.storeUser = this.gs.orderAs ? this.gs.orderAs : this.as.user
+    this.gs.orderAs = undefined
+    // if(this.storeUser == undefined){this.storeUser = this.as.user}
+    console.log('shopping as: ', this.storeUser.displayName)
+    this.db.getDoc(`${this.gs.entityBasePath}/employees/${this.storeUser.employee}`)
     .then((employee: Employee) => {
       this.verified = true
       this.employeeBudged = employee.budget
@@ -287,14 +301,14 @@ export class StoreComponent implements OnInit, OnDestroy {
   refreshCart() {
     this.db.getFirst(`${this.gs.entityBasePath}/orders`, [
       {fld:'status', operator:'==', value:'new'},
-      {fld:'employee', operator:'==', value: this.as.user.employee}
+      {fld:'employee', operator:'==', value: this.storeUser.employee}
     ]).subscribe(o => {
       if(o['number']){
         this.currentOrder = o['id']
         this.refreshCartCount()
       } else {
         this.db.getIncrementedCounter('orderNumber').then(number => {
-          this.db.addDoc({number: number, date: new Date(), employee: this.as.user.employee, organisation: this.as.user.organisation, status: 'new'}, `${this.gs.entityBasePath}/orders`).then(ref => {
+          this.db.addDoc({number: number, date: new Date(), employee: this.storeUser.employee, organisation: this.storeUser.organisation, status: 'new'}, `${this.gs.entityBasePath}/orders`).then(ref => {
             this.currentOrder = ref.id
             this.refreshCartCount()
           })
@@ -345,6 +359,8 @@ export class StoreComponent implements OnInit, OnDestroy {
       this.ps.buttonDialog(`${e['title']}\r\nToevoegen aan bestelling?`, 'OK', 'Annuleer').then(v => {
         if(v == 1){
           this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+          const pricefld = this.formConfig.find(c => c.name == 'price_unit')
+          if(pricefld) pricefld.label = `Prijs${this.currency ? ' (' + this.currency + ')' : ''}`      
           const articleFld = this.formConfig.find(c => c.name == 'article')
           articleFld['doNotPopulate'] = true
           articleFld['value'] = e['id']

@@ -19,6 +19,7 @@ export interface Article {
     price: number;
     priceOverrule: {};
     unit: string;
+    priority: string;
 }
 
 export const defaultTitle = 'Artikelen'
@@ -53,6 +54,7 @@ export const defaultFormConfig = [
     {type: 'chiplist',              label: 'Kleuren selectie',  name: 'colorsOverrule',       placeholder: 'Kleuren selectie',  value: ''},
     {type: 'input',                 label: 'Prijs',             name: 'price',                placeholder: 'Prijs',             value: '', validation: [Validators.required]},
     {type: 'input',                 label: 'Eenheid',           name: 'unit',                 placeholder: 'Eenheid',           value: '', validation: [Validators.required]},
+    {type: 'input',                 label: 'Prioriteit',        name: 'priority',             placeholder: 'Prioriteit',        value: ''},
   ]
 // for selection button
 export const defaultSelectionFields = [

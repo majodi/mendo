@@ -22,6 +22,7 @@ import { AuthService } from '../../services/auth.service';
     <div fxLayout="column" fxLayoutAlign="center center">
       <a mat-button routerLink="/login">Ga terug</a>
       <h2>Aanmelden Met Email</h2>
+      <h5>U kunt zich aanmelden indien u reeds een account heeft (geregistreerd bent). Nog geen account (eerste keer hier)? Kies dan hieronder voor Registreren</h5>
       <span *ngIf="error" style="margin: 0 auto; color:red">{{ error }}</span>
       <form #formData='ngForm' (ngSubmit)="onSubmit(formData)" style="width:100%" fxLayout="column" fxLayoutAlign="center center">
         <mat-form-field>
@@ -32,7 +33,7 @@ import { AuthService } from '../../services/auth.service';
         </mat-form-field>
         <button mat-raised-button type="submit" [disabled]="!formData.valid">Aanmelden</button>
         <br>
-        <a mat-button routerLink="/sign-up">Nog geen account?</a>
+        <a mat-button routerLink="/sign-up">Nog geen account? <strong>Registreren.</strong></a>
       </form>
     </div>
   </mat-card>

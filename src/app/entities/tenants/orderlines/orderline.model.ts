@@ -48,7 +48,7 @@ export const defaultFormConfig: FieldConfig[] = [
         ]
     },
     {type: 'stringdisplay', label: 'Afbeelding',    name: 'imageid',        placeholder: 'Afbeelding',  value: '', doNotPopulate: true},
-    {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: '', imageStyle: {'width': '100%'}},
+    {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: '', imageStyle: {'width': '50%'}},
     {type: 'stringdisplay', label: 'Artikel',       name: 'description_s',  placeholder: 'Artikel',     value: '', doNotPopulate: true},
     {type: 'stringdisplay', label: 'Omschrijving',  name: 'description_l',  placeholder: 'Omschrijving', value: '', doNotPopulate: true},
     {type: 'stringdisplay', label: 'Prijs',         name: 'price_unit',     placeholder: 'Prijs per eenheid',  value: '0'},

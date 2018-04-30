@@ -13,6 +13,7 @@ export interface Category {
     colors: string; // property
     // colors_v: string // virtual
     parentCategory: string;
+    priority: string;
 }
 
 export const defaultTitle = 'Categorieën'
@@ -29,5 +30,6 @@ export const defaultFormConfig = [
     {type: 'pulldown',    label: 'Std. Maten',        name: 'measurements',   placeholder: 'Std. Maten',        value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}},
     {type: 'pulldown',    label: 'Std. Kleuren',      name: 'colors',         placeholder: 'Std. Kleuren',      value: '', customLookupFld: {path: 'properties', tbl: 'property', fld: 'code'}},
     {type: 'pulldown',    label: 'Subcategorie van',  name: 'parentCategory', placeholder: 'Subcategorie van',  value: '', customLookupFld: {path: 'categories', tbl: 'category', fld: 'code'}},
+    {type: 'input',       label: 'Prioriteit',        name: 'priority',       placeholder: 'Prioriteit',        value: ''},
   ]
 

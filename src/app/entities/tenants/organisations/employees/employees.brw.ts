@@ -13,6 +13,9 @@ import { Organisation } from '../organisation.model';
 import { Property } from '../../properties/property.model';
 import { FieldConfig } from '../../../../shared/dynamic-form/models/field-config.interface';
 import { MessageService } from '../../messages/message.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../../services/auth.service';
+import { User } from '../../../../models/user.model';
 
 @Component({
   selector: 'app-employees-brw',
@@ -45,11 +48,9 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
       }
     }},
     {type: 'beforeChgDialog', code: (rec, fld) => {
-      console.log('bef chg')
       return this.beforeForm(rec, fld)
     }},
     {type: 'beforeInsertDialog', code: (rec, fld) => {
-      console.log('bef ins')
       return this.beforeForm(rec, fld)
     }},
     {type: 'beforeSave', code: (action, o) => {
@@ -67,6 +68,8 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
     private organisationSrv: OrganisationService,
     private propertySrv: PropertyService,
     private messageSrv: MessageService,
+    private router: Router,
+    private as: AuthService,
   ) {
     super(dialogRef, entityService, injectorService);
   }
@@ -82,6 +85,22 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
   }
 
   beforeForm(rec: Employee, fld) {
+    if(fld == 'orderAs'){
+      //set glob orderAs
+      //navigate to store
+      //in store check if orderAs, take that employee + user and reset glob orderAs
+      const winkelNavItem = this.as.navList.find(nl => nl['text'] == 'Winkel')
+      if(winkelNavItem){
+        this.db.getFirst(`users`, [{fld: 'employee', operator: '==', value: rec['id']}]).subscribe((user: User) => {
+          this.gs.orderAs = user
+          this.router.navigate([winkelNavItem['link']])
+        })
+        return true
+      } else {
+        this.ps.buttonDialog('Winkelmodule niet actief', 'OK')  
+      }
+      return true
+    }
     if(fld == 'propertiesAllowed'){
       this.allowedPropertiesForm(rec)
       return true
@@ -117,6 +136,7 @@ ${this.gs.tenantName}
     this.nameOnEntry = ''
     const organisationConfig = this.formConfig.find(fc => fc.name == 'organisation')
     const branchConfig = this.formConfig.find(fc => fc.name == 'branch')
+    //TODO: if backbutton maar ook als entity query bevat org!! (ook before save vullen hierboven)
     if(this.gs.backButton && organisationConfig != undefined){
       organisationConfig.doNotPopulate = true
       const organisation = this.gs.NavQueries.find(q => q.fld == 'organisation').value
@@ -130,7 +150,7 @@ ${this.gs.tenantName}
   }
 
   allowedPropertiesForm(rec: Employee) {
-    this.propertySrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(properties => {
+    this.propertySrv.initEntity$().take(1).takeUntil(this.ngUnsubscribe).subscribe(properties => {
       let formValues = {propertiesAllowed: rec.propertiesAllowed}
       this.APFormConfig = [{type: 'stringdisplay', label: 'Keuzes', name: 'header', placeholder: 'Keuzes', value: 'Definieer per categorie (waar wenselijk) een subselectie van toegestane keuzes'}]
       properties.forEach((property: Property) => {
