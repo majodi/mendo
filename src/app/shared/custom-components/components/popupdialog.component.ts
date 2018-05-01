@@ -1,8 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
 
 @Component({
     template: `
+    <div #htmlcontent></div>
     <p class="mat-title" style="white-space: pre-line">{{data.text}}</p>
     <br><br>
     <p *ngIf="data.field != undefined" class="mat-title" style="white-space: pre-line">{{data.field.label}}</p>    
@@ -14,11 +15,19 @@ import {MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
     `,
   })
   export class PopupDialog {
+    @ViewChild('htmlcontent') private htmlAreaRef: ElementRef
+
     constructor(
       public dialogRef: MatDialogRef<PopupDialog>,
       @Inject(MAT_DIALOG_DATA) public data: any,
       public snackBar: MatSnackBar
     ) {}
+
+    ngOnInit() {
+      if(this.data.htmlContent){
+        this.htmlAreaRef.nativeElement.innerHTML = this.data.htmlContent
+      }
+    }
 
   copyToClipboard(toCopy) {
     let element = document.createElement('textarea')
@@ -32,4 +41,16 @@ import {MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
   }
 
 }
-  
+
+
+// template: `
+// <div></div>
+// <p class="mat-title" style="white-space: pre-line">{{data.text}}</p>
+// <br><br>
+// <p *ngIf="data.field != undefined" class="mat-title" style="white-space: pre-line">{{data.field.label}}</p>    
+// <input *ngIf="data.field != undefined" matInput [(ngModel)]="data.field.value" [placeholder]="data.field.placeholder">
+// <br><br>
+// <button mat-button (click)="dialogRef.close(1)">{{data.but1}}</button>
+// <button mat-button (click)="dialogRef.close(2)">{{data.but2}}</button>
+// <button *ngIf="data.copyToClipboard" mat-button (click)="copyToClipboard(data.copyToClipboard)">Kopieer naar klembord</button>
+// `,

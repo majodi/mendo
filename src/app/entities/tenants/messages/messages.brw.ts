@@ -155,6 +155,9 @@ embeds: Embed[] = [
     super.setLookupComponent(UsersBrwComponent, 'user', 'displayName', 'email')
     super.setLookupComponent(EmployeesBrwComponent, 'employee', 'address.name', 'address.city')
     super.setPulldownItems(this.organisationSrv.initEntity$(), 'organisation', 'address.name', 'address.city')
+    this.formConfig.find(c => c.name == 'html').buttonClick = (e) => {
+        this.ps.buttonDialog('', 'OK', undefined, undefined, undefined, this.formConfig.find(c => c.name == 'html').value['htmlContent'])
+    }
     super.ngOnInit() //volgorde van belang!
   }
 

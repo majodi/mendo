@@ -22,6 +22,7 @@ import { AppUserModule } from './modules/app_user.module';
 
 import { AppLookupModule } from './modules/app_lookup.module';
 import { ImagesBrwComponent } from './entities/tenants/images/images.brw';
+import { DocumentsBrwComponent } from './entities/tenants/documents/documents.brw';
 import { EmployeesBrwComponent } from './entities/tenants/organisations/employees/employees.brw';
 
 import { OrdersBrwComponent } from './entities/tenants/orders/orders.brw';
@@ -53,7 +54,7 @@ import { UsersBrwComponent } from './entities/tenants/users/users.brw';
     AppLookupModule,
     AppRoutingModule, // onderaan houden
   ],
-  entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, CartComponent, PopupDialog, UsersBrwComponent],
+  entryComponents: [DocumentsBrwComponent ,ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent, ArticlesBrwComponent, CartComponent, PopupDialog, UsersBrwComponent],
   providers: [MediaMatcher],
   bootstrap: [AppComponent]
 })

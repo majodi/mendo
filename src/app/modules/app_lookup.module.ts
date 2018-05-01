@@ -7,7 +7,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 
 import { ImagesBrwComponent } from '../entities/tenants/images/images.brw';
+import { DocumentsBrwComponent } from '../entities/tenants/documents/documents.brw';
 import { ImageService } from '../entities/tenants/images/image.service';
+import { DocumentService } from '../entities/tenants/documents/document.service';
 import { EmployeesBrwComponent } from '../entities/tenants/organisations/employees/employees.brw';
 import { EmployeeService } from '../entities/tenants/organisations/employees/employee.service';
 import { OrganisationService } from '../entities/tenants/organisations/organisation.service';
@@ -34,6 +36,7 @@ import { MessageService } from '../entities/tenants/messages/message.service';
     ],
   declarations: [
       ImagesBrwComponent,
+      DocumentsBrwComponent,
       EmployeesBrwComponent,
       OrdersBrwComponent,
       ArticlesBrwComponent,
@@ -42,6 +45,7 @@ import { MessageService } from '../entities/tenants/messages/message.service';
     ],
   exports: [
       ImagesBrwComponent,
+      DocumentsBrwComponent,
       EmployeesBrwComponent,
       OrdersBrwComponent,
       ArticlesBrwComponent,
@@ -50,6 +54,7 @@ import { MessageService } from '../entities/tenants/messages/message.service';
     ],
   providers: [
       ImageService,
+      DocumentService,
       EmployeeService,
       OrganisationService,
       OrderService,

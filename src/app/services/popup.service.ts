@@ -12,10 +12,10 @@ export class PopupService {
   
     constructor(private dialog: MatDialog, private gs: GlobService) { }
 
-    buttonDialog(text, button1, button2?, field?, copyToClipboard?) {
+    buttonDialog(text, button1, button2?, field?, copyToClipboard?, htmlContent?) {
       let dialogRef = this.dialog.open(PopupDialog, {
-        width: '325px',
-        data: { text: text, but1: button1, but2: button2, field: field, copyToClipboard: copyToClipboard}
+        width: '650px', //'325px',
+        data: { text: text, but1: button1, but2: button2, field: field, copyToClipboard: copyToClipboard, htmlContent: htmlContent}
       });
   
       return dialogRef.afterClosed().toPromise().then(result => {

@@ -63,7 +63,11 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
             this.form.setValue(l1, obj[l1])
           }
         }
-      })      
+      })
+      config.filter(c => c.type == 'button').forEach(c => {
+        // console.log('data: ', this.data)
+        c.value = this.data.formRecord
+      })
     }
   
     submit(e) {

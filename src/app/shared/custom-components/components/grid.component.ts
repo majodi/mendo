@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, trigger, transition, style, animate, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, trigger, transition, style, animate, ViewChild, ElementRef } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
 import { Tile } from '../models/tile.model';
+import { ObservableMedia } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-grid',
@@ -14,6 +15,8 @@ styles: [`
 .inner {margin: 0.5% 0.5% 0.5%; display: inline-block;}
 .item-title {font-size: calc(16px + 0.25vw); line-height: calc(22px + 0.25vw); margin-bottom: 0}
 .badge {margin: 0px; padding: 2px 6px 0px; border: 1px solid black; color: white; border-radius: 20px 20px; background: red; width: 10px; height: 20px;}
+.left {position: relative; top: -150px;}
+.right {position: relative; top: -150px; float: right;}
 `],
 template: `
 <div [@pageAnim] style="padding: 0px 5px; width:100%">
@@ -29,7 +32,7 @@ template: `
       <p fxFlexAlign="start" class="badge">{{actionButtonInfo}}</p>
     </div>
   </div>
-  <div [ngClass]="{'outer': singleRow}">
+  <div #scrollarea [ngClass]="{'outer': singleRow}">
     <div *ngFor="let tile of tiles" class="inner" [ngStyle]="getItemStyle(tile)">
       <div fxLayout="column" fxLayoutAlign="start center" (click)="onClick(tile)">
         <div>
@@ -53,11 +56,16 @@ template: `
       </div>
     </div>
   </div>
+  <button *ngIf="singleRow && !mediaIsXs" mat-fab color="primary" class="left" (click)="scrollLeft()"><mat-icon>chevron_left</mat-icon></button>
+  <button *ngIf="singleRow && !mediaIsXs" mat-fab color="primary" class="right" (click)="scrollRight()"><mat-icon>chevron_right</mat-icon></button>
 </div>
 `
 })
 
 export class GridComponent implements OnInit, OnDestroy, OnChanges {
+  @ViewChild('scrollarea') private scrollAreaRef: ElementRef
+  mediaIsXs: boolean
+  scrollWidth = 0
   private ngUnsubscribe = new Subject<string>()
   filterKeyUp = new Subject<string>()
   @Input() singleRow: boolean
@@ -80,9 +88,17 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   tiles: Tile[]
   selected: Tile
 
-  constructor() {}
+  constructor(
+    public media: ObservableMedia,
+  ) {
+    this.mediaIsXs = this.media.isActive('xs')
+    media.asObservable().takeUntil(this.ngUnsubscribe).subscribe((change) => {
+      this.mediaIsXs = this.media.isActive('xs')
+    })
+  }
 
   ngOnInit() {
+    this.scrollWidth = this.maxItemWidth != undefined ? parseInt(this.maxItemWidth)/100 : 0.3
     this.filterKeyUp
     .takeUntil(this.ngUnsubscribe)
     .debounceTime(400)
@@ -145,7 +161,44 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   onActionButtonClick(e) {
     this.actionButtonClicked.emit(e)
   }
-  
+
+  scrollRight() {
+    this.scrollTo(this.scrollAreaRef.nativeElement, this.scrollAreaRef.nativeElement.scrollLeft + this.scrollAreaRef.nativeElement.clientWidth*this.scrollWidth)
+  }
+
+  scrollLeft() {
+    this.scrollTo(this.scrollAreaRef.nativeElement, this.scrollAreaRef.nativeElement.scrollLeft - this.scrollAreaRef.nativeElement.clientWidth*this.scrollWidth)
+  }
+
+  scrollTo(element, to = 0, duration = 1000) {
+    const start = element.scrollLeft;
+    const change = to - start;
+    const increment = 20;
+    let currentTime = 0;
+
+    const animateScroll = (() => {
+
+      currentTime += increment;
+
+      const val = this.easeInOutQuad(currentTime, start, change, duration);
+
+      element.scrollLeft = val;
+
+      if (currentTime < duration) {
+        setTimeout(animateScroll, increment);
+      }
+    });
+
+    animateScroll();
+  };
+
+  easeInOutQuad(t, b, c, d) {
+    t /= d/2;
+    if (t < 1) return c/2*t*t + b;
+    t--;
+    return -c/2 * (t*(t-2) - 1) + b;
+  };
+
   setColumns() {}
 
   ngOnDestroy() {

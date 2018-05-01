@@ -46,4 +46,5 @@ export const defaultFormConfig = [
     {type: 'stringdisplay', label: 'Ontvanger',     name: 'recipientDesignation', placeholder: 'Ontvanger',     value: '', hidden: true},
     {type: 'input',         label: 'Onderwerp',     name: 'subject',            placeholder: 'Onderwerp',       value: ''},
     {type: 'input', inputLines: 5, label: 'Berichtinhoud', name: 'textContent', placeholder: 'Berichtinhoud', value: ''},
+    {type: 'button',        label: 'Toon HTML inhoud', name: 'html',            placeholder: 'Toon HTML inhoud', value: ''},
   ]

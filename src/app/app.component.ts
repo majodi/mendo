@@ -100,7 +100,7 @@ export class AppComponent {
   }
 
   about() {
-    this.ps.buttonDialog(`Mendo PWA-platform v0.28 (30/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.29 (30/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
   }
 
   formatTenantName(fullName: string) {

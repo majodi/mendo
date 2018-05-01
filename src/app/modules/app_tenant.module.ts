@@ -9,7 +9,9 @@ import { OrganisationService } from '../entities/tenants/organisations/organisat
 import { EmployeesBrwComponent } from '../entities/tenants/organisations/employees/employees.brw';
 import { EmployeeService } from '../entities/tenants/organisations/employees/employee.service';
 import { ImagesBrwComponent } from '../entities/tenants/images/images.brw';
+import { DocumentsBrwComponent } from '../entities/tenants/documents/documents.brw';
 import { ImageService } from '../entities/tenants/images/image.service';
+import { DocumentService } from '../entities/tenants/documents/document.service';
 import { SettingsBrwComponent } from '../entities/tenants/settings/settings.brw';
 import { SettingService } from '../entities/tenants/settings/setting.service';
 import { BulletinsBrwComponent } from '../entities/tenants/bulletins/bulletins.brw';
@@ -51,7 +53,7 @@ import { AppLookupModule } from './app_lookup.module';
       FormResultsBrwComponent,
       MessagesBrwComponent,
     ],
-    entryComponents: [ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent],
+    entryComponents: [DocumentsBrwComponent, ImagesBrwComponent, EmployeesBrwComponent, OrdersBrwComponent],
     providers: [
       PropertyService,
       // OrganisationService,

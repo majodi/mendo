@@ -6,6 +6,7 @@ import { PropertiesBrwComponent } from '../entities/tenants/properties/propertie
 import { OrganisationsBrwComponent } from '../entities/tenants/organisations/organisation.brw';
 import { EmployeesBrwComponent } from '../entities/tenants/organisations/employees/employees.brw';
 import { ImagesBrwComponent } from '../entities/tenants/images/images.brw';
+import { DocumentsBrwComponent } from '../entities/tenants/documents/documents.brw';
 import { BulletinsBrwComponent } from '../entities/tenants/bulletins/bulletins.brw';
 import { SettingsBrwComponent } from '../entities/tenants/settings/settings.brw';
 import { FormsBrwComponent } from '../entities/tenants/forms/forms.brw';
@@ -21,6 +22,7 @@ const app_tenantRoutes: Routes = [
       { path: 'organisations', component: OrganisationsBrwComponent },
       { path: 'employees', component: EmployeesBrwComponent },
       { path: 'images', component: ImagesBrwComponent },
+      { path: 'documents', component: DocumentsBrwComponent },
       { path: 'bulletins', component: BulletinsBrwComponent },
       { path: 'settings', component: SettingsBrwComponent },
       { path: 'forms', component: FormsBrwComponent },
