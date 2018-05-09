@@ -159,14 +159,11 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   setValue(name: string, value: any) { //used by caller
-    // console.log('setval: ', name, value)
     this.setFormValue(name, value)
   }
 
   setFormValue(name, value) {
-    // console.log('setformval: ', name. value)
     if(this.form.controls[name]){
-      // console.log('if setformval: ', name. value)
       this.form.controls[name].setValue(value, {emitEvent: true})
     }
     let configIndex = this.config.findIndex(c => c.name == name)
@@ -180,9 +177,11 @@ export class DynamicFormComponent implements OnChanges, OnInit {
               this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
                 if(rec){
                   if(customUpdate.lookupFunction){
-                    configToUpdate.value = customUpdate.lookupFunction(rec, this.gs)
+                    // check again due to async!
+                    configToUpdate.value = (!configToUpdate.value || (customUpdate.onlyVirgin == undefined || !customUpdate.onlyVirgin)) ? customUpdate.lookupFunction(rec, this.gs) : configToUpdate.value
                   } else {
-                    configToUpdate.value = rec[customUpdate.lookupFld]
+                    // check again due to async!
+                    configToUpdate.value = (!configToUpdate.value || (customUpdate.onlyVirgin == undefined || !customUpdate.onlyVirgin)) ? rec[customUpdate.lookupFld] : configToUpdate.value
                   }
                   if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
                   this.setToPopulate()

@@ -17,4 +17,5 @@ export interface User {
     organisation?: string; // organisation
     employee?: string; // employee
     pushSubscriptions?: PushSubscription[];
+    initialPW?: string;
 }

@@ -30,10 +30,6 @@ import * as firebase from 'firebase';
     [divider]="true"
     (buttonClicked)="onButtonClicked($event)"
   ></app-grid>
-  <div *ngIf="_as.userLevel==100">
-    <button (click)="pushSubscribe()">subscribe</button>
-    <button (click)="pushSubscribeFB()">subscribe FB</button>
-  </div>
   </div>
   `,
 })
@@ -166,3 +162,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
 }
+
+// <div *ngIf="_as.userLevel==100">
+// <button (click)="pushSubscribe()">subscribe</button>
+// <button (click)="pushSubscribeFB()">subscribe FB</button>
+// </div>

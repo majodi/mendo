@@ -359,6 +359,7 @@ export class StoreComponent implements OnInit, OnDestroy {
       this.ps.buttonDialog(`${e['title']}\r\nToevoegen aan bestelling?`, 'OK', 'Annuleer').then(v => {
         if(v == 1){
           this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+          this.articleChanged = true //even if same article, force embed logic
           const pricefld = this.formConfig.find(c => c.name == 'price_unit')
           if(pricefld) pricefld.label = `Prijs${this.currency ? ' (' + this.currency + ')' : ''}`      
           const articleFld = this.formConfig.find(c => c.name == 'article')

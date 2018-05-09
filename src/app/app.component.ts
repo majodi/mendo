@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { GlobService } from './services/glob.service';
 import { PopupService } from './services/popup.service';
+import { DbService } from './services/db.service';
 
 @Component({
   selector: 'app-root',
@@ -34,9 +35,15 @@ template: `
     </ng-container>
     <span class="spacer"></span>
     <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="legalSubMenu">Juridisch</button>
       <button mat-menu-item routerLink="/profile"> Profiel </button>
       <button mat-menu-item [disabled]="!_as.user?.isAnonymous" routerLink="/login"> Aanmelden </button>
       <button mat-menu-item [disabled]="_as.user?.isAnonymous" (click)="signOut()"> Afmelden </button>
+    </mat-menu>  
+    <mat-menu #legalSubMenu="matMenu">
+      <button mat-menu-item (click)="getLegal('Privacy_verklaring')"> Privacy verklaring </button>
+      <button mat-menu-item> Disclaimer </button>
+      <button mat-menu-item> Algemene voorwaarden </button>
     </mat-menu>  
     <img src="{{_as.user?.photoURL}}" class="avatar-img" alt="" [matMenuTriggerFor]="accountMenu">
   </mat-toolbar>
@@ -71,6 +78,7 @@ export class AppComponent {
     private location: Location,
     public _gs: GlobService,
     private ps: PopupService,
+    private db: DbService,
   ) {
     iconReg.addSvgIcon('google', sanitizer.bypassSecurityTrustResourceUrl('/assets/google.svg'))
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -100,11 +108,21 @@ export class AppComponent {
   }
 
   about() {
-    this.ps.buttonDialog(`Mendo PWA-platform v0.29 (30/04/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.31 (07/05/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
   }
 
   formatTenantName(fullName: string) {
     return this.mobileQuery.matches && fullName.length > 20 ? fullName.substr(0,20).padEnd(25, '...  ') : fullName
+  }
+
+  getLegal(doc) {
+    if(this._as.userLevel >= 50){
+      // this.db.getFirst(`tenants/${this._gs.mendo}/documents`, [{fld: 'tagList.'+doc, operator: '==', value: true}])
+      this.db.getFirst(`tenants/${this._gs.mendo}/documents`, [{fld: 'tagList', operator: '==', value: {'Privacy_verklaring': true}}])
+      .subscribe(v => console.log('v: ', v), e => console.log('e: ', e), () => console.log('complete: ', ))
+    } else {
+      // this.db.getFirst()
+    }
   }
 
   ngOnDestroy(): void {

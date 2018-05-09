@@ -6,7 +6,7 @@ import { User } from '../models/user.model';
 @Injectable()
 export class GlobService {
     userLevel = [{level:0, userLevel:'user'}, {level:100, userLevel:'super'}, {level:50, userLevel:'tenant'}, {level:25, userLevel:'organisation'}]
-    // this.userLevel = this.gs.userLevel.reduce((prev, curr) => user.level >= curr.level ? curr.level > prev.level ? curr : prev : prev, {level:0, userLevel:'user'}).userLevel
+    mendo = 'l9XCh71vsxXg3M3nJ7aw'
     tenantId = 'l9XCh71vsxXg3M3nJ7aw' // default Mendo
     tenantName = 'Mendo'
     entityBasePath = `tenants/${this.tenantId}`

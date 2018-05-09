@@ -18,14 +18,14 @@ export class UsersBrwComponent extends BrwBaseClass<User[]> implements OnInit, O
   embeds: Embed[] = [
     {type: 'beforeChgDialog', code: (rec, fld) => {
       if(rec.level == 0 && this.gs.activeUser.level > 25){
-        this.ps.buttonDialog('Gebruiker promoveren naar Organisatiebeheerder?', 'Annuleer', 'Promoveer').then(b => {
+        this.ps.buttonDialog(`${this.gs.activeUser.level == 100 ? 'Employee: ' + rec['employee'] + ' - User: ' + rec['id'] + '\r\n\r\n' : ''}Gebruiker promoveren naar Organisatiebeheerder?`, 'Annuleer', 'Promoveer').then(b => {
           if(b == 2){
             this.db.setDoc({level: 25}, `users/${rec['uid']}`, {merge: true})
           }
         })
       }
-      if(rec.level == 25 && this.gs.activeUser.level > 25){
-        this.ps.buttonDialog('Gebruiker degraderen naar normale gebruiker?', 'Annuleer', 'Degradeer').then(b => {
+      if(rec.level >= 25 && this.gs.activeUser.level > 25){
+        this.ps.buttonDialog(`${this.gs.activeUser.level == 100 ? 'Employee: ' + rec['employee'] + ' - User: ' + rec['id'] + '\r\n\r\n' : ''}Gebruiker degraderen naar normale gebruiker?`, 'Annuleer', 'Degradeer').then(b => {
           if(b == 2){
             this.db.setDoc({level: 0}, `users/${rec['uid']}`, {merge: true})
           }

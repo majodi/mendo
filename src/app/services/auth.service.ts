@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import * as firebase from 'firebase/app';
 
@@ -23,6 +23,7 @@ export class AuthService {
   isLoggedIn = false //anonymous or as real user
   redirectUrl = ''
   tenantQP = null
+  tenantId = ''
   tenantName = 'Mendo'
   tenantModules = ['app']
   authReady$ = new Subject()
@@ -43,6 +44,7 @@ export class AuthService {
       const tenantId = this.tenantQP != null ? this.tenantQP : hostTenant != undefined ? hostTenant['tenantId'] : tenants['defaultId']
       let registeredTenant = tenants['tenants'].find(o => o.id == tenantId)
       if(registeredTenant != undefined && registeredTenant.id != undefined){
+        this.tenantId = registeredTenant.id
         this.gs.tenantId = registeredTenant.id
         this.gs.entityBasePath = 'tenants/'+registeredTenant.id
         this.gs.tenantName = registeredTenant.name
@@ -81,6 +83,11 @@ export class AuthService {
       displayName: name,
       photoURL: photo
     });
+  }
+
+  createAndLinkAccount(employeeId: string) {
+    return this.http.get(`https://us-central1-mendo-app.cloudfunctions.net/createAndLinkAccount?creator=${this.user.uid}&tenant=${this.tenantId}&code=${employeeId}`, { responseType: 'text', observe: 'response' })
+    // return this.http.get(`http://localhost:4200/api/createAndLinkAccount?creator=${this.user.uid}&tenant=${this.tenantId}&code=${employeeId}`, { responseType: 'text', observe: 'response' })
   }
 
   sendVerification() {

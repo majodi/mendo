@@ -1,0 +1,7 @@
+  {   "/api": {
+      "target": "https://us-central1-mendo-app.cloudfunctions.net",
+      "secure": false,
+      "pathRewrite": {"^/api" : ""},
+      "changeOrigin": true
+     } 
+  }

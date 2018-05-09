@@ -23,7 +23,7 @@ export const defaultColDef = [
     {name: 'address.city',      header: 'Woonplaats', sort: true},
     {name: 'budget',            header: 'Budget',     sort: true},
     {name: 'spent',             header: 'Verbruikt',  sort: true},
-    {name: 'orderAs',           header: 'Bestel Als', icon: 'shopping_cart'},
+    {name: 'orderAs',           header: 'Bestel Namens', icon: 'shopping_cart'},
     {name: 'propertiesAllowed', header: 'Keuzes', icon: 'playlist_add_check'},
     {name: 'verificationCode',  header: 'Code', icon: 'verified_user'},
   ]

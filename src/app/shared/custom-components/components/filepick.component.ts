@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, OnChanges, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
+import { GlobService } from '../../../services/glob.service';
 
 @Component({
   selector: 'app-filepick',
@@ -20,7 +21,10 @@ import { FormControl } from '@angular/forms';
       <mat-icon>search</mat-icon>
   </label>
 </div>
-<img #preview src="{{value}}" width="250">
+<ng-container *ngIf="fileIsImg; then img_tpl else file_tpl"></ng-container>
+<ng-template #img_tpl><img #preview src="{{value}}" width="250"></ng-template>
+<ng-template #file_tpl><mat-icon *ngIf="value" style="font-size: 40px;">insert_drive_file</mat-icon><br>{{fileName}}</ng-template>
+<br><br>
 </div>
   `
 })
@@ -33,13 +37,37 @@ export class FilepickComponent implements OnInit, OnChanges {
   fileCtrl: FormControl
   error: string
   reader = new FileReader()
+  fileIsImg = false
+  fileName = ''
 
-  constructor() {
+  constructor(
+    private gs: GlobService,
+  ) {
     this.fileCtrl = new FormControl();
   }
 
   ngOnInit() {
     this.isDisabled = true
+  }
+
+  isImg(name: string) {
+    this.fileName = name
+    if(name.toUpperCase().startsWith('HTTPS://')){
+      this.fileName = this.getFilePath(name)
+    }
+    const parts = this.fileName ? this.fileName.split('.') : ['']
+    const ext = parts.length > 1 ? parts[parts.length-1].toUpperCase() : ''
+    const imgExt = ['JPG', 'JPEG', 'PNG', 'GIF', 'SVG']
+    return imgExt.includes(ext)
+  }
+
+  getFilePath(url, root?) {
+    if(root == undefined) {root = `${this.gs.entityBasePath}/`}
+    const fullPath = decodeURIComponent(url).split('?')[0]
+    const pathFromRoot = fullPath.slice(fullPath.indexOf(root))
+    const parts = pathFromRoot ? pathFromRoot.split('/') : ['']
+    const bareFileName = parts.length > 1 ? parts[parts.length-1] : ''
+    return bareFileName
   }
 
   selectFile(e) {
@@ -52,13 +80,17 @@ export class FilepickComponent implements OnInit, OnChanges {
       }
       this.fileCtrl.setValue(file.name)
       this.picked.emit(file)
-      this.reader.onload = (r) => {
-        this.previewRef.nativeElement.src = r.target['result']
-      };
-      this.reader.readAsDataURL(file)      
+      if(this.isImg(file.name)){
+        this.reader.onload = (r) => {
+          this.previewRef.nativeElement.src = r.target['result']
+        };
+        this.reader.readAsDataURL(file)        
+      }
     }
   }
 
-  ngOnChanges() {}
+  ngOnChanges() {
+    this.fileIsImg = this.isImg(this.value)
+  }
 
 }

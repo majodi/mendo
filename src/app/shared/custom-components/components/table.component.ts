@@ -32,11 +32,11 @@ import { SelectionModel } from '@angular/cdk/collections';
           <mat-form-field fxFlex="40">
               <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
           </mat-form-field>
-          <button mat-button fxFlexAlign="center" (click)="print()"><mat-icon>print</mat-icon></button>
+          <button mat-button fxFlex="10" fxFlexAlign="center" (click)="print()"><mat-icon>print</mat-icon></button>
           <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
-              <button class="lg-button" *ngIf="insertButton && !itemSelect" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon> Nieuw</button>
-              <button *ngIf="itemSelect && itemSelection.selected.length > 0" class="lg-button" mat-button (click)="click('acceptItemSelect','')"><mat-icon>playlist_add_check</mat-icon> Kies</button>
-              <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon> Selectie</button>
+              <button class="lg-button" *ngIf="insertButton && !itemSelect" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon>{{buttonText_Nieuw}}</button>
+              <button *ngIf="itemSelect && itemSelection.selected.length > 0" class="lg-button" mat-button (click)="click('acceptItemSelect','')"><mat-icon>playlist_add_check</mat-icon>{{buttonText_Kies}}</button>
+              <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon>{{buttonText_Selectie}}</button>
           </div>
       </div>
       <div *ngIf="soberMode" class="page-header" style="padding: 0px">
@@ -137,6 +137,9 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   mediaIsXs: boolean
   mediaLtMd: boolean
   selectionButtonColor = ''
+  buttonText_Nieuw = 'Nieuw'
+  buttonText_Kies = 'Kies'
+  buttonText_Selectie = 'Selectie'
 
   constructor(
     public media: ObservableMedia,
@@ -169,6 +172,15 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   setColumns() {
+    if(this.media.isActive('xs')){
+      this.buttonText_Nieuw = ''
+      this.buttonText_Kies = ''
+      this.buttonText_Selectie = ''  
+    } else {
+      this.buttonText_Nieuw = 'Nieuw'
+      this.buttonText_Kies = 'Kies'
+      this.buttonText_Selectie = 'Selectie'  
+    }
     this.displayedColumns = this.itemSelect ? ['select'] : []
     this.columnDefs.forEach(coldef => {
         if(!(this.media.isActive('xs') && coldef.hideXs)) {

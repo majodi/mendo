@@ -37,8 +37,8 @@ export class DocumentsBrwComponent extends BrwBaseClass<Document[]> implements O
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields
-    this.formConfig.find(c => c.name == 'test').buttonClick = (e) => {
-      window.location.href=this.formConfig.find(c => c.name == 'test').value['name'];
+    this.formConfig.find(c => c.name == 'download').buttonClick = (e) => {
+      window.location.href=this.formConfig.find(c => c.name == 'download').value['name'];
     }
     super.ngOnInit() //volgorde van belang!
   }

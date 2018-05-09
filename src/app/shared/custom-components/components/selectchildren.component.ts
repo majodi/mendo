@@ -7,7 +7,7 @@ import { PopupService } from '../../../services/popup.service';
 @Component({
   selector: 'app-selectchildren',
   template: `
-<div fxLayout="row" fxLayoutAlign="start center" style="width:100%">
+<div>
   <mat-checkbox
     fxFlex="20"
     [disabled]=isDisabled
@@ -15,6 +15,8 @@ import { PopupService } from '../../../services/popup.service';
     (change)="onCheckChange($event)">
     {{label}}
   </mat-checkbox>
+</div>
+<div fxLayout="row" fxLayoutAlign="start center" style="width:100%">
   <button
     type="button"
     style="margin:0px 20px"

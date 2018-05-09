@@ -56,11 +56,11 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     {type: 'beforeChgDialog', code: (rec, fld) => {
       if(fld == 'price' && !this.selectMode){
         const priceColDef = this.colDef.find(cd => cd.name == 'price')
-        if(priceColDef != undefined && priceColDef.headerSelectValue && rec['priceOverrule'] != undefined){
+        if(priceColDef != undefined && priceColDef.headerSelectValue){
           const headerSelectObj = priceColDef.headerSelect.find(hs => hs.value == priceColDef.headerSelectValue)
           const headerSelectViewValue = headerSelectObj ? headerSelectObj.viewValue : 'not found'
-          const overrulePriceMessage = rec['priceOverrule'][priceColDef.headerSelectValue] ? rec['priceOverrule'][priceColDef.headerSelectValue] : 'Standaard Prijs'
-          const overrulePriceValue = rec['priceOverrule'][priceColDef.headerSelectValue] ? rec['priceOverrule'][priceColDef.headerSelectValue] : ''
+          const overrulePriceMessage = (rec['priceOverrule'] != undefined && rec['priceOverrule'][priceColDef.headerSelectValue]) ? rec['priceOverrule'][priceColDef.headerSelectValue] : 'Standaard Prijs'
+          const overrulePriceValue = (rec['priceOverrule'] != undefined && rec['priceOverrule'][priceColDef.headerSelectValue]) ? rec['priceOverrule'][priceColDef.headerSelectValue] : ''
           const dialogText = `Standaard Artikelprijs:\r\n\r\n${rec['price']}\r\n\r\n${headerSelectViewValue}:\r\n\r\n${overrulePriceMessage}`
           const field = {value: overrulePriceValue, placeholder: 'Hanteer Standaard Prijs', label: 'Nieuwe prijs'}
           return this.ps.buttonDialog(dialogText, 'Bewaar', 'Annuleer', field).then(b => {

@@ -21,7 +21,7 @@ import { Organisation } from '../organisations/organisation.model';
   .boxed {margin: 10px 10px; border: 3px solid #3f51b5; border-radius: 5px; width:65%; padding: 10px}
   `],
   template: `
-  <div #printarea>
+  <div #printarea style="max-height:90vh;">
     <div fxLayout="column" class="boxed">
       <p class="mat-subheading-1">Budget: {{employeeBudget}}</p>
       <p class="mat-subheading-1">Uitgave incl. deze order: {{employeeSpent + total}}</p>
