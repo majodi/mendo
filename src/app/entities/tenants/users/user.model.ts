@@ -11,6 +11,7 @@ export const defaultColDef = [
     {name: 'email',           header: 'Email', sort: true},
     {name: 'employee_v',      header: 'Medewerker', hideXs: true},
     {name: 'organisation_v',  header: 'Organisatie', hideXs: true},
+    {name: 'initialPW',       header: 'Initieel WW', hideXs: true},
     {name: 'level',           header: 'Level', iconSelect: rec => {
       let levelIcon = rec['level']
       if(levelIcon == 0 && rec['employee'] != undefined) {levelIcon = 1}

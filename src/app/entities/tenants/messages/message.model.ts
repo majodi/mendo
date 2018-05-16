@@ -30,6 +30,7 @@ export const defaultTitle = 'Berichten'
 export const defaultTitleIcon = 'message'
 export const defaultColDef = [
     {name: 'status',                header: 'Status', iconSelect: rec => {return {new: 'fiber_new', send: 'send', sent: 'done', error: 'error'}[rec['status']]}, flex: '15'},
+    {name: 'meta.created',          header: 'Datum', format: (rec) => rec.meta.created ? rec.meta.created.substring(0,10) : '', sort: true, hideXs: true},
     {name: 'channel',               header: 'Kanaal', iconSelect: rec => {return {email: 'mail', push: 'chat'}[rec['channel']]}, flex: '15'},
     {name: 'fromName',              header: 'Van', sort: true, hideXs: true},
     {name: 'recipientDesignation',  header: 'Naar', sort: true},

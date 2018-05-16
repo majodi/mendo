@@ -103,14 +103,14 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
       return true
     }
     if(fld == 'verificationCode'){
-      this.db.getFirst('users', [{fld:'email', operator:'==', value:rec.address.email}]).take(1).toPromise().then(user => {
+      this.db.getFirst('users', [{fld:'email', operator:'==', value:rec.address.email}]).take(1).toPromise().then((user: User) => {
         if(user && user['uid'] != undefined){
-          // let email = rec.address.email ? user['uid'] != undefined ? rec.address.email : rec.address.email + '(Geen account voor emailadres)' : '(Geen emailadres ingevuld)'
-          let email = rec.address.email ? rec.address.email : '(Geen emailadres ingevuld)'
-          this.ps.buttonDialog(`Bestaand gekoppeld Account gevonden\r\n\r\nMedewerker:\r\n${rec.address.name}\r\n${email}\r\n\r\nVerificatiecode: ${rec.id}`, 'Sluit', rec.address.email ? 'Stuur email' : undefined, undefined, rec.id).then(b => {
+          const email = rec.address.email ? rec.address.email : '(Geen emailadres ingevuld)'
+          const dialogText = user.employee != undefined && user.employee == rec.id ? `Bestaand Account gevonden, koppeling met deze Medewerker reeds actief.` : `Bestaand Account gevonden, stuur verificatiecode om account te laten koppelen met deze medewerker.\r\n\r\nMedewerker:\r\n${rec.address.name}\r\n${email}\r\n\r\nVerificatiecode: ${rec.id}`
+          this.ps.buttonDialog(dialogText, 'Sluit', (user.employee == undefined || user.employee != rec.id) && rec.address.email ? 'Stuur email' : undefined, undefined, user.employee == undefined || user.employee != rec.id ? rec.id : undefined).then(b => {
             if(b == 2){
-              const link = user['uid'] != undefined && this.gs.tenantId != undefined && rec.id != undefined ? `https://us-central1-mendo-app.cloudfunctions.net/verifyemployee?user=${user['uid']}&tenant=${this.gs.tenantId}&code=${rec.id}` : 'Verificatiecode: '+rec.id
-              const usage = user['uid'] != undefined && this.gs.tenantId != undefined && rec.id != undefined ? 'Klik op onderstaande link om uw account te verifiëren:' : 'Voer onderstaande code in bij "Verificatie" in uw profiel (klik rechtsboven in de blauwe balk en kies Profiel):'
+              const link = this.gs.tenantId != undefined && rec.id != undefined ? `https://us-central1-mendo-app.cloudfunctions.net/verifyemployee?user=${user['uid']}&tenant=${this.gs.tenantId}&code=${rec.id}` : 'Verificatiecode: '+rec.id
+              const usage = this.gs.tenantId != undefined && rec.id != undefined ? 'Klik op onderstaande link om uw account te verifiëren:' : 'Voer onderstaande code in bij "Verificatie" in uw profiel (klik rechtsboven in de blauwe balk en kies Profiel):'
               this.messageSrv.sendSystemMail('employee', rec.id, 'Verificatiecode '+this.gs.tenantName, `
   Beste ${rec.address.name},
   
@@ -133,8 +133,7 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
           this.ps.buttonDialog(`Geen gekoppeld Account gevonden\r\n\r\nMedewerker:\r\n${rec.address.name}\r\n${email}\r\n\r\nAccount aanmaken en koppelen?`, 'Annuleer', rec.address.email ? 'Aanmaken' : undefined).then(b => {
             if(b == 2){
               //call backend
-              this.as.createAndLinkAccount(rec.id).toPromise()
-              .then(res => {
+              this.as.createAndLinkAccount(rec.id).subscribe(res => {
                 console.log('res: ', res.body)
                 this.ps.buttonDialog(`Account ${rec.address.name} succesvol gecreëerd\r\n\r\nInitieel wachtwoord:\r\n${res.body}`, 'Sluit', 'Stuur email', undefined, res.body).then(b => {
                   if(b == 2){
@@ -157,8 +156,7 @@ ${this.gs.tenantName}
                     .catch(err => {this.ps.buttonDialog('Fout bij versturen:'+ err, 'OK')})                      
                   }
                 })
-              })
-              .catch(e => {
+              }, e => {
                 console.log('error createAndLinkAccount: ', e.error)
                 this.ps.buttonDialog(`Fout bij aanmaak nieuw account:\r\n\r\n${e.error}`, 'OK')
               })

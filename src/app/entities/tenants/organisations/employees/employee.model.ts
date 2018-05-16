@@ -2,6 +2,7 @@ import { Validators } from '@angular/forms';
 import { forceCapitalize, forceUppercase } from '../../../../shared/dynamic-form/models/form-functions';
 import { EntityMeta } from '../../../../models/entity-meta.model';
 import { Address } from '../../../../models/address.model';
+import { SelectionField } from '../../../../shared/dynamic-form/models/selection-field.interface';
 
 export interface Employee {
     id: string;
@@ -42,8 +43,8 @@ export const defaultFormConfig = [
     {type: 'input',     label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
   ]
 //for selection button
-export const defaultSelectionFields = [
-  {name: 'organisation'},
+export const defaultSelectionFields: SelectionField[] = [
+  {name: 'organisation', minimumLevel: 50},
 ]
 
 

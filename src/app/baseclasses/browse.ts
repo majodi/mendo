@@ -128,16 +128,18 @@ export class BrwBaseClass<T> {
 
   setSelectionItems() {
     if(this.selectionFields.length > 0){
-      this.selectionButton = true
       this.selectionFields.forEach(fld => {
-        const formConfig = this.formConfig.find(fc => fc.name == fld.name)
-        if(formConfig != undefined){
-          const matchingBaseQuery = this.baseQueries.find(bq => bq.fld == fld.name)
-          formConfig.value = matchingBaseQuery != undefined ? matchingBaseQuery.value : ''
-          if(fld.disabled != undefined)formConfig.disabled = fld.disabled;
-          this.selectionFieldConfig.push(formConfig)
+        if(fld.minimumLevel == undefined || this.gs.activeUser.level >= fld.minimumLevel){
+          const formConfig = this.formConfig.find(fc => fc.name == fld.name)
+          if(formConfig != undefined){
+            const matchingBaseQuery = this.baseQueries.find(bq => bq.fld == fld.name)
+            formConfig.value = matchingBaseQuery != undefined ? matchingBaseQuery.value : ''
+            if(fld.disabled != undefined)formConfig.disabled = fld.disabled;
+            this.selectionFieldConfig.push(formConfig)
+          }  
         }
       })
+      this.selectionButton = this.selectionFieldConfig.length > 0 ? true : false
     }
   }
 

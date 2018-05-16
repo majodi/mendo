@@ -17,7 +17,7 @@ import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 export class UsersBrwComponent extends BrwBaseClass<User[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
     {type: 'beforeChgDialog', code: (rec, fld) => {
-      if(rec.level == 0 && this.gs.activeUser.level > 25){
+      if(rec.employee != undefined && rec.level == 0 && this.gs.activeUser.level > 25){
         this.ps.buttonDialog(`${this.gs.activeUser.level == 100 ? 'Employee: ' + rec['employee'] + ' - User: ' + rec['id'] + '\r\n\r\n' : ''}Gebruiker promoveren naar Organisatiebeheerder?`, 'Annuleer', 'Promoveer').then(b => {
           if(b == 2){
             this.db.setDoc({level: 25}, `users/${rec['uid']}`, {merge: true})

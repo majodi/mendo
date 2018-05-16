@@ -121,5 +121,5 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     super.setPulldownItems(this.propertySrv.initEntity$(), 'colors', 'code', 'choices')
     super.ngOnInit() //volgorde van belang!
   }
-
+  
 }

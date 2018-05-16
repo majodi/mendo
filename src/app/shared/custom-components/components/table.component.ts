@@ -167,6 +167,9 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges() {
+      this.columnDefs.forEach(cd =>{
+        if(cd.headerSelectValue) cd.headerSelectValue = ''
+      })
       this.setColumns()
       this.selectionButtonColor = this.selectionActive ? 'warn' : ''
   }
