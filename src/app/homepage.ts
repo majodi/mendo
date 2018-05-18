@@ -15,6 +15,7 @@ import { AuthService } from './services/auth.service';
 import { SwPush } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import * as firebase from 'firebase';
+import { PopupService } from './services/popup.service';
 
 @Component({
   selector: 'app-home',
@@ -52,6 +53,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     private db: DbService,
     private gs: GlobService,
     private cs: CrudService,
+    private ps: PopupService,
     public _as: AuthService,
     private swPush: SwPush,
     private formFieldSrv: FormFieldService,
@@ -128,6 +130,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   openUserForm(formCode) {
     this.db.getFirst(`${this.gs.entityBasePath}/forms`, [{fld: 'code', operator: '==', value: formCode}]).subscribe(form => {
       this.formId = form['id']
+      const postMessage = form['postMessage']
       const formConfig = []
       this.formFieldSrv.initEntity$([{fld: 'form', operator: '==', value: form['id']}])
       .map(flds => flds.sort(function(a,b) {return (a['order'] > b['order']) ? 1 : ((b['order'] > a['order']) ? -1 : 0);}))
@@ -148,7 +151,13 @@ export class HomePageComponent implements OnInit, OnDestroy {
           const optionsStr: string = fld['options']; const options = optionsStr ? optionsStr.split(',') : []
           formConfig.push({type: fieldType, label: fld['label'], name: fld['name'], placeholder: fld['label'], value: fld['value'], options: options, validation: validation, inputValueTransform: transform})
         })
-        this.cs.insertDialog(formConfig, {}, `${this.gs.entityBasePath}/formresults`, this['embeds'] ? this['embeds'] : undefined, 'Invulformulier').then(id => {this.pushSubscribe()}).catch(err => {console.log(err)})
+        this.cs.insertDialog(formConfig, {}, `${this.gs.entityBasePath}/formresults`, this['embeds'] ? this['embeds'] : undefined, 'Invulformulier')
+        .then(id => {
+          if(postMessage){
+            this.ps.buttonDialog(postMessage, 'OK')
+          }
+          this.pushSubscribe()
+        }).catch(err => {console.log(err)})
       })
     })
   }

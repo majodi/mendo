@@ -20,10 +20,13 @@ export class CrudService {
           let saveEmbed = this.getEmbed(embeds, 'beforeSave')
           if(saveEmbed != undefined){
             saveEmbedPromise = saveEmbed(1, frmResult.value)
+            console.log('saveEmbedPromise: ', saveEmbedPromise)
           }
-          saveEmbedPromise.then(() => {
+          saveEmbedPromise
+          .then(() => {
             return this.db.addDoc(this.fixSubProperties(frmResult.value), path)
-          }).catch(e => this.ps.buttonDialog('Bewaren mislukt \r\n' + e, 'OK'))
+          })
+          .catch(e => this.ps.buttonDialog('Bewaren mislukt \r\n' + e, 'OK'))
         }
       })
     }

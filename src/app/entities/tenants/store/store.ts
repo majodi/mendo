@@ -163,17 +163,33 @@ export class StoreComponent implements OnInit, OnDestroy {
       }
     }},
     {type: 'beforeSave', code: (action, o) => {
-      if(action == 1){
-        o['order'] = this.currentOrder
-        o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
-        for (var key in o){
-          if(o[key] == undefined) {
-            o[key] = null
+      return this.db.getDoc(`${this.gs.entityBasePath}/articles/${o['article']}`)
+      .then((article: Article) => {
+        return this.db.getDoc(`${this.gs.entityBasePath}/images/${article.image}`)
+        .then((image: Image) => {
+          o['thumbNameOnSave'] = image.thumbName
+          o['order'] = this.currentOrder
+          if(o['number'] == undefined) {o['number'] = 1}
+          o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
+          if(action == 1){
+            for (var key in o){
+              if(o[key] == undefined) {
+                o[key] = null
+              }
+            }                
           }
-        }
-        return Promise.resolve()
-      } else return Promise.resolve()  
-    }}    
+          // return Promise.resolve()
+        })
+        .catch(e => {
+          console.log('getting article-image before save orderline: ', e)
+          return Promise.reject('getting article-image before save orderline: ' + e)
+        })
+      })
+      .catch(e => {
+        console.log('getting article before save orderline: ', e)
+        return Promise.reject('getting article before save orderline: ' + e)
+      })
+    }}
   ]
 
   constructor(
@@ -369,7 +385,9 @@ export class StoreComponent implements OnInit, OnDestroy {
           description_s['doNotPopulate'] = false
           const description_l = this.formConfig.find(c => c.name == 'description_l')
           description_l['doNotPopulate'] = false
-          this.cs.insertDialog(this.formConfig, {order: this.currentOrder, article: e['id']}, `${this.gs.entityBasePath}/orderlines`, this['embeds'] ? this['embeds'] : undefined).then(id => {this.refreshCart()}).catch(err => {console.log(err)})
+          this.cs.insertDialog(this.formConfig, {order: this.currentOrder, article: e['id'], number: 1}, `${this.gs.entityBasePath}/orderlines`, this['embeds'] ? this['embeds'] : undefined)
+          .then(id => {this.refreshCart()})
+          .catch(err => {console.log(err)})
         }
       })
     // }

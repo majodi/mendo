@@ -15,12 +15,14 @@ export interface OrderLine {
     color: string;
     number: number;
     amount: number;
+    thumbNameOnSave: string; //article image on last save (is how the user ordered it...)
 }
 
 export const defaultTitle = 'Orderregels'
 export const defaultTitleIcon = 'view_list'
 export const defaultColDef = [
     {name: 'article_v',         header: 'Artikel', sort: true},
+    {name: 'thumbNameOnSave',   header: 'Afbeelding', imageSelect: (rec) => rec.thumbNameOnSave, imageIdField: 'image'},
     {name: 'price_unit',        header: 'Prijs'},
     {name: 'number',            header: 'Aantal'},
     {name: 'amount',            header: 'Bedrag'},
@@ -29,7 +31,7 @@ export const defaultColDef = [
 export const defaultFormConfig: FieldConfig[] = [
     {type: 'lookup',        label: 'Artikel',   name: 'article',    placeholder: 'Artikel',  value: '', doNotPopulate: false,
         inputValueTransform: forceUppercase,
-        customLookupFld: {path: 'articles', tbl: 'article', fld: 'code'},
+        customLookupFld: {path: 'articles', tbl: 'article', fld: 'description_s'},
         customLookupComponent: ArticlesBrwComponent,
         customLookupItem: {id: '', display: 'code', subDisplay: 'description_s', addSearch: 'description_l'},
         customUpdateWithLookup: [
@@ -62,4 +64,5 @@ export const defaultFormConfig: FieldConfig[] = [
     {type: 'select',        label: 'Kleur',         name: 'color',          placeholder: 'Kleur',       value: '', options: []},
     {type: 'input',         label: 'Aantal',        name: 'number',         placeholder: 'Aantal',      value: '0'},
     {type: 'stringdisplay', label: 'Bedrag',        name: 'amount',         placeholder: 'Bedrag',      value: '0'},
+    {type: 'stringdisplay', label: 'thumbNameOnSave', name: 'thumbNameOnSave', placeholder: 'thumbNameOnSave', value: '', hidden: true},
 ]

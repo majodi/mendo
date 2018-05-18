@@ -195,7 +195,7 @@ ${tenant.address.name}
   orderHTML(tenant:Tenant) {
     let lines = ''
     this.data.forEach(l => {
-      console.log('l: ', l)
+    //   console.log('l: ', l)
       lines += `
   <tr class="item">
       <td>

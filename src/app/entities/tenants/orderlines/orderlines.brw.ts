@@ -16,6 +16,7 @@ import { Property } from '../properties/property.model';
 import { Image } from '../images/image.model';
 import { PopupService } from '../../../services/popup.service';
 import { MessageService } from '../messages/message.service';
+import { Article } from '../articles/article.model';
 
 @Component({
   selector: 'app-orderlines-brw',
@@ -146,16 +147,29 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
       }
     }},
     {type: 'beforeSave', code: (action, o) => {
-      if(action == 1){
-        o['order'] = this.selectedOrder
-        o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
-        for (var key in o){
-          if(o[key] == undefined) {
-            o[key] = null
+      return this.db.getDoc(`${this.gs.entityBasePath}/articles/${o['article']}`)
+      .then((article: Article) => {
+        return this.db.getDoc(`${this.gs.entityBasePath}/images/${article.image}`)
+        .then((image: Image) => {
+          o['thumbNameOnSave'] = image.thumbName
+          o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
+          if(action == 1){
+            o['order'] = this.selectedOrder
+            for (var key in o){
+              if(o[key] == undefined) {
+                o[key] = null
+              }
+            }                
           }
-        }
-        return Promise.resolve()
-      } else return Promise.resolve()  
+          return
+        })
+        .catch(e => {
+          console.log('getting article-image before save orderline: ', e)          
+        })
+      })
+      .catch(e => {
+        console.log('getting article before save orderline: ', e)
+      })
     }}
   ]
   orderLookup = {
@@ -272,9 +286,7 @@ Mendo
     this.ps.buttonDialog('Order annuleren? Orderregels worden verwijderd!', 'NIET Annuleren', 'JA, Annuleer', field).then(b => {
       if(b == 2){
         if(!field.value){this.ps.buttonDialog('Geen rede opgegeven, Order werd NIET geannuleerd', 'OK'); return}
-        console.log('reason: ', field)
         this.orderLineData.forEach(ol => {
-          console.log('ol: ', ol)
           this.db.deleteDoc(`${this.gs.entityBasePath}/orderlines/${ol.id}`)
         })
         const setData = {status: 'cancelled', total: 0, line_count: 0, history: this.setNewHistory('Geannuleerd', field.value)}
@@ -286,7 +298,6 @@ Mendo
   setNewHistory(change, reason?) {
     const now = new Date()
     const newHistory = `${this.orderHistory ? this.orderHistory : ''}\r\n** ${change} - ${now} - Door: ${this.gs.activeUser.uid}${reason ? ' - Rede: '+reason : ''}`
-    console.log('new hist: ', newHistory)
     this.orderHistory = newHistory
     return newHistory
   }
@@ -296,7 +307,7 @@ Mendo
   }
 
   orderChoosen(e) {
-    console.log('e: ', e)
+    // console.log('e: ', e)
     if(this.gs.activeUser.level <= 25 && e['organisation'] != this.gs.activeUser.organisation) {this.orderSelect.next('0') ;return};
     this.db.getDoc(`${this.gs.entityBasePath}/employees/${e['employee']}`).then(rec => {
       this.employeeRec = rec as Employee

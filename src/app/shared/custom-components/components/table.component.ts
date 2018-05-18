@@ -191,7 +191,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         }
         coldef.header = coldef.header || coldef.name
     })
-
+    console.log('this.data: ', this.data)
     this.dataSource = new MatTableDataSource(this.data)
 
     this.dataSource.sortingDataAccessor =(item, property) => {
@@ -243,7 +243,8 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   getSetThumb(colDef, rec) {
-      this.us.setThumb(rec[colDef.imageIdField])
+      this.us.setThumb(rec[colDef.imageIdField]) // kan weg...
+      // console.log('image: ', rec)
       return colDef.imageSelect(rec)
   }
 

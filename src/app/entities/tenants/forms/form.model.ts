@@ -7,6 +7,7 @@ export interface Form {
     meta: EntityMeta;
     code: string;
     description: string;
+    postMessage: string;
 }
 
 export const defaultTitle = 'Formulieren'
@@ -18,7 +19,8 @@ export const defaultColDef = [
     {name: 'results',     header: 'Data', icon: 'inbox'},
   ]
 export const defaultFormConfig = [
-    {type: 'input', label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'input', label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
+    {type: 'input', label: 'Code',              name: 'code',         placeholder: 'Code',              value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
+    {type: 'input', label: 'Omschrijving',      name: 'description',  placeholder: 'Omschrijving',      value: '', validation: [Validators.required]},
+    {type: 'input', label: 'Melding na bewaar', name: 'postMessage',  placeholder: 'Melding na bewaar', value: ''},
   ]
 
