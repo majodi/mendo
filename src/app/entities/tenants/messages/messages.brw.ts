@@ -132,6 +132,10 @@ embeds: Embed[] = [
                 } else {return false}
             })
         } else {
+            if(fld == 'orderRef'){
+                this.gs.navigateWithQuery('store-tenant/orderlines', 'order', '==', rec['orderRef'])
+                return true
+            }
             return false
         }
     }},    
@@ -152,6 +156,7 @@ embeds: Embed[] = [
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
+    this.initialSortOrder = {fld: 'meta.created', sortOrder: 'asc'}
     super.setLookupComponent(UsersBrwComponent, 'user', 'displayName', 'email')
     super.setLookupComponent(EmployeesBrwComponent, 'employee', 'address.name', 'address.city')
     super.setPulldownItems(this.organisationSrv.initEntity$(), 'organisation', 'address.name', 'address.city')

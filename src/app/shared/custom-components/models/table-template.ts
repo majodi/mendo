@@ -12,6 +12,7 @@ export const defaultTableTemplate = `
   [itemSelectParent]="itemSelectParent"
   [insertButton]="insertButton"
   [data]="data"
+  [initialSortOrder]="initialSortOrder"
   [columnDefs]="colDef"
   (clicked)="clicked($event)"
 ></app-table>  

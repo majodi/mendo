@@ -119,6 +119,7 @@ export class ArticlesBrwComponent extends BrwBaseClass<Article[]> implements OnI
     super.setPulldownItems(this.categorySrv.initEntity$(), 'category', 'code', 'description')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'measurements', 'code', 'choices')
     super.setPulldownItems(this.propertySrv.initEntity$(), 'colors', 'code', 'choices')
+    super.setPulldownItems(this.organisationSrv.initEntity$(), 'packageSelectionFor', 'address.name', 'address.city')
     super.ngOnInit() //volgorde van belang!
   }
   

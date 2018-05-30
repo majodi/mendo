@@ -14,6 +14,7 @@ export interface Message {
     user: string; // user
     organisation: string; // organisation
     employee: string; // employee
+    orderRef: string; // orders
     recipientDesignation: string;
     toList: EmailDestination[];
     ccList: EmailDestination[];
@@ -29,8 +30,9 @@ export interface Message {
 export const defaultTitle = 'Berichten'
 export const defaultTitleIcon = 'message'
 export const defaultColDef = [
-    {name: 'status',                header: 'Status', iconSelect: rec => {return {new: 'fiber_new', send: 'send', sent: 'done', error: 'error'}[rec['status']]}, flex: '15'},
+    {name: 'status',                header: 'Status', iconSelect: rec => {return {new: 'fiber_new', send: 'send', sent: 'done', error: 'error'}[rec['status']]}, fldStyleSelect: rec => {return {new: {'color': 'red'}, send: {'color': '#3f51b5'}, sent: {'color': 'green'}, error: {'color': 'red'}}[rec['status']]}, flex: '15'},
     {name: 'meta.created',          header: 'Datum', format: (rec) => rec.meta.created ? rec.meta.created.substring(0,10) : '', sort: true, hideXs: true},
+    {name: 'orderRef',              header: 'Order', iconSelect: (rec: Message) => {if(rec.orderRef != undefined) return 'view_list'}, sort: true, hideXs: true},
     {name: 'channel',               header: 'Kanaal', iconSelect: rec => {return {email: 'mail', push: 'chat'}[rec['channel']]}, flex: '15'},
     {name: 'fromName',              header: 'Van', sort: true, hideXs: true},
     {name: 'recipientDesignation',  header: 'Naar', sort: true},

@@ -7,6 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { UploadService } from '../../../services/upload.service';
 import { ColumnDefenition } from '../models/column-defenition.model'
 import { SelectionModel } from '@angular/cdk/collections';
+import { SortOrder } from '../models/sort-order.model';
 
 @Component({
   selector: 'app-table',
@@ -75,7 +76,7 @@ import { SelectionModel } from '@angular/cdk/collections';
               <ng-template #noHeaderSelect_tpl>
                 <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> {{col.header}} </mat-header-cell>
               </ng-template>
-              <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)">
+              <mat-cell [fxFlex]="col.flex" *matCellDef="let rec" (click)="click(col.name, rec)" [ngStyle]="col.fldStyleSelect ? col.fldStyleSelect(rec) : {}">
                   <ng-container *ngIf="col.imageSelect; then image_tpl else noImage_tpl"></ng-container>
                       <ng-template #image_tpl>
                           <img src="{{getSetThumb(col, rec)}}" onerror="this.onerror=null;this.src='assets/image.svg'" width="64">
@@ -83,10 +84,10 @@ import { SelectionModel } from '@angular/cdk/collections';
                       <ng-template #noImage_tpl>
                           <ng-container *ngIf="col.icon || col.iconSelect; then icon_tpl else field_tpl"></ng-container>
                               <ng-template #icon_tpl>
-                                  <mat-icon *ngIf="col.icon" [color]="col.iconColorSelect ? col.iconColorSelect(rec) : 'primary'">
+                                  <mat-icon *ngIf="col.icon" [ngStyle]="col.fldStyleSelect ? col.fldStyleSelect(rec) : {'color': '#3f51b5'}">
                                       {{col.icon}}
                                   </mat-icon>
-                                  <mat-icon *ngIf="!col.icon && col.iconSelect" [color]="col.iconColorSelect ? col.iconColorSelect(rec) : 'primary'">
+                                  <mat-icon *ngIf="!col.icon && col.iconSelect" [ngStyle]="col.fldStyleSelect ? col.fldStyleSelect(rec) : {'color': '#3f51b5'}">
                                       {{col.iconSelect(rec)}}
                                   </mat-icon>
                               </ng-template>
@@ -130,6 +131,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() itemSelectParent
   @Input() data = []
   @Input() columnDefs: ColumnDefenition[] = []
+  @Input() initialSortOrder: SortOrder //= {fld: undefined, sortOrder: undefined}
   @Input() parentPrintHeaderRef: ElementRef
   @Output() clicked = new EventEmitter();
   itemSelection = new SelectionModel<Element>(true, [])
@@ -191,7 +193,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         }
         coldef.header = coldef.header || coldef.name
     })
-    console.log('this.data: ', this.data)
+    // console.log('this.data: ', this.data)
     this.dataSource = new MatTableDataSource(this.data)
 
     this.dataSource.sortingDataAccessor =(item, property) => {
@@ -204,7 +206,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
       //   return property.indexOf('.') == -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
       // }
     };
-
+    this.sort.sort({id: this.initialSortOrder != undefined ? this.initialSortOrder.fld : '', start: this.initialSortOrder != undefined && ['asc', 'desc'].indexOf(this.initialSortOrder.sortOrder) >= 0 ? this.initialSortOrder.sortOrder : 'asc', disableClear: false});
     this.dataSource.sort = this.sort;
     this.dataSource.filterPredicate = (data, filter: string):boolean => {
         let flatDataStr = ''

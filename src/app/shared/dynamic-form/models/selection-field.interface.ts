@@ -1,5 +1,7 @@
 export interface SelectionField {
   name: string;
   disabled?: boolean;
-  minimumLevel?: number
+  minimumLevel?: number;
+  valueIsPk?: boolean;
+  foreignkeyObject?: string;
 }

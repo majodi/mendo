@@ -26,14 +26,21 @@ export const defaultColDef = [
         if(rec['status'] == 'processed') return 'done'
         if(rec['status'] == 'delivered') return 'done_all'
         if(rec['status'] == 'cancelled') return 'cancel'
-    }, iconColorSelect: rec => {
-        if(rec['status'] == 'new') {return 'warn'} else {return 'primary'}
+    }, fldStyleSelect: rec => {
+        if(rec['status'] == 'new'){
+            return {'color': 'red'}
+        } else {
+            if(rec['status'] == 'approved'){
+                return {'color': 'green'}
+            }
+            return {'color': '#3f51b5'}
+        }
     }},
+    {name: 'lines',             header: 'Regels', icon: 'view_list'},
     {name: 'date',              header: 'Datum', format: (rec) => rec.date && typeof rec.date == 'object' ? rec.date.toISOString().substring(0,10) : '', sort: true, hideXs: true},
     {name: 'organisation_v',    header: 'Organisatie', sort: true, hideXs: true},
     {name: 'employee_v',        header: 'Medewerker', sort: true},
     {name: 'total',             header: 'Totaal'},
-    {name: 'lines',             header: 'Regels', icon: 'view_list'},
   ]
 export const defaultFormConfig = [
     {type: 'input',     label: 'Order',         name: 'number',       placeholder: 'Ordernummer',   value: '', initWithCounter: 'orderNumber', disabled: true},

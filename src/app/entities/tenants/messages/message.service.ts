@@ -23,7 +23,7 @@ export class MessageService extends EntityBaseClass {
     private db: DbService,
   ) {super(afService)}
 
-  sendSystemMail(recipientType, recipientId, subject, message, messageHtml?, tenantBcc?) {
+  sendSystemMail(recipientType, recipientId, subject, message, messageHtml?, tenantBcc?, orderRef?) {
     let sm = {}
     return this.db.getUniqueValueId('tenants', 'id', this.glob.tenantId).take(1).map((tenant: Tenant) => {
       if(tenant && tenant.address.email){
@@ -35,6 +35,7 @@ export class MessageService extends EntityBaseClass {
         sm['subject'] = subject
         sm['textContent'] = message
         sm['htmlContent'] = messageHtml ? messageHtml : null
+        sm['orderRef'] = orderRef ? orderRef : null
         if(recipientType == 'tenant'){
           this.db.getFirst('users', [{fld:'level', operator:'==', value: 50},{fld:'tenant', operator:'==', value:this.glob.tenantId}]).take(1).subscribe(user => {
             sm['user'] = user['uid']

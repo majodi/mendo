@@ -156,7 +156,7 @@ export class AuthService {
   updateUserData(user) {
     let now = new Date()
     let noAvatar = user.isAnonymous ? './assets/noavatar.svg' : './assets/blancavatar.svg'
-    let noName = user.isAnonymous ? 'Annoniem' : 'Alleen Email bekend'
+    let noName = user.isAnonymous ? 'Anoniem' : 'Alleen Email bekend'
     let userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     return this.getDoc(`users/${user.uid}`).then((existingUser: User) => {
       let data = {

@@ -24,8 +24,10 @@ export class WaitOnAuthComponent {
   constructor(public as: AuthService, private ps: PopupService, public router: Router) {
     this.as.authReady$.subscribe(() => {
       if(this.as.isLoggedIn){
-        const name = this.as.user.displayName == 'Alleen Email bekend' ? this.as.user.email : this.as.user.displayName
-        this.ps.buttonDialog('Welkom terug '+name+'!', 'OK')
+        // const name = this.as.user.displayName == 'Alleen Email bekend' || this.as.user.displayName == 'Anoniem' || this.as.user.displayName == 'Annoniem' ? this.as.user.email : this.as.user.displayName
+        if(this.as.user.displayName != 'Alleen Email bekend' && this.as.user.displayName != 'Anoniem' && this.as.user.displayName != 'Annoniem'){
+          this.ps.buttonDialog('Welkom terug '+this.as.user.displayName+'!', 'OK')
+        }
         const redirectRoute = this.as.navList.find(item => item['link'] == this.as.redirectUrl)
         let redirect = redirectRoute != undefined ? redirectRoute['link'] : '/homepage'
         this.router.navigate([redirect])

@@ -169,7 +169,7 @@ ${tenant.address.name}
 <br><br>
 <br><br>
       ` + this.orderHTML(tenant)
-      this.messageSrv.sendSystemMail('employee', this.employeeId, `Bestelling (${this.orderNumber}) ${this.gs.tenantName}`, '(Deze mail is opgesteld in HTML formaat)', HTMLContent, true)
+      this.messageSrv.sendSystemMail('employee', this.employeeId, `Bestelling (${this.orderNumber}) ${this.gs.tenantName}`, '(Deze mail is opgesteld in HTML formaat)', HTMLContent, true, this.order)
 
       //mail naar organisation
       const link = `https://us-central1-mendo-app.cloudfunctions.net/approveorder?tenant=${this.gs.tenantId}&code=${this.order}`
@@ -188,7 +188,7 @@ ${tenant.address.name}
 <br><br>
 <br><br>
       ` + this.orderHTML(tenant)
-      this.messageSrv.sendSystemMail('organisation', this.organisationId, `Bestelling (${this.orderNumber}) ${this.gs.tenantName}`, '(Deze mail is opgesteld in HTML formaat)', HTMLContent, false)
+      this.messageSrv.sendSystemMail('organisation', this.organisationId, `Bestelling (${this.orderNumber}) ${this.gs.tenantName}`, '(Deze mail is opgesteld in HTML formaat)', HTMLContent, false, this.order)
     })
   }
 

@@ -26,6 +26,7 @@ export const defaultColDef = [
     {name: 'price_unit',        header: 'Prijs'},
     {name: 'number',            header: 'Aantal'},
     {name: 'amount',            header: 'Bedrag'},
+    {name: 'meta_modifier_v',   header: 'Besteller'},
   ]
 
 export const defaultFormConfig: FieldConfig[] = [
@@ -49,6 +50,7 @@ export const defaultFormConfig: FieldConfig[] = [
             {fld: 'imageid', lookupFld: 'image'}
         ]
     },
+    {type: 'lookup',        label: 'Besteller',     name: 'meta.modifier',  placeholder: 'Besteller',   value: '', doNotPopulate: false, customLookupFld: {path: 'users', tbl: 'user', fld: 'displayName'}},
     {type: 'stringdisplay', label: 'Afbeelding',    name: 'imageid',        placeholder: 'Afbeelding',  value: '', doNotPopulate: true},
     {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: '', imageStyle: {'width': '50%'}},
     {type: 'stringdisplay', label: 'Artikel',       name: 'description_s',  placeholder: 'Artikel',     value: '', doNotPopulate: true},

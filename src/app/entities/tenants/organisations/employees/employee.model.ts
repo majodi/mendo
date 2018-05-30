@@ -8,6 +8,8 @@ export interface Employee {
     id: string;
     meta: EntityMeta;
     organisation: string;
+    branch: string;
+    employeeNumber: number;
     address: Address;
     budget: number;
     bugetYear: number;
@@ -24,14 +26,16 @@ export const defaultColDef = [
     {name: 'address.city',      header: 'Woonplaats', sort: true},
     {name: 'budget',            header: 'Budget',     sort: true},
     {name: 'spent',             header: 'Verbruikt',  sort: true},
-    {name: 'orderAs',           header: 'Bestel Namens', icon: 'shopping_cart'},
+    {name: 'left',              header: 'Restant',    format: (rec) => isNaN(rec['budget']) || isNaN(rec['spent']) ? '' : rec['budget'] - rec['spent'], fldStyleSelect: (rec) => !isNaN(rec['budget']) && !isNaN(rec['spent']) && rec['spent'] >= rec['budget'] ? {'color': 'red'} : {}, sort: true},
+    {name: 'orderAs',           header: 'Bestel Namens', icon: 'shopping_cart', iconColorSelect: (rec) => !isNaN(rec['budget']) && !isNaN(rec['spent']) && rec['spent'] >= rec['budget'] ? 'warn' : 'primary'},
     {name: 'propertiesAllowed', header: 'Keuzes', icon: 'playlist_add_check'},
     {name: 'verificationCode',  header: 'Code', icon: 'verified_user'},
   ]
 export const defaultFormConfig = [
     {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',         placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}, customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}, {fld: 'currency', lookupFld: 'currency'}]},
-    {type: 'stringdisplay', label: 'Filiaalkeuzes', name: 'branchChoices', placeholder: 'Filiaalkeuzes',    value: '', doNotPopulate: true},
+    {type: 'stringdisplay', label: 'Filiaalkeuzes', name: 'branchChoices',    placeholder: 'Filiaalkeuzes',    value: '', doNotPopulate: true},
     {type: 'select',    label: 'Filiaal',       name: 'branch',               placeholder: 'Filiaal',       value: '', options: []},
+    {type: 'input',     label: 'Personeelsnummer', name: 'employeeNumber',    placeholder: 'Personeelsnummer', value: ''},
     {type: 'input',     label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input',     label: 'Functie',       name: 'address.description',  placeholder: 'Functie',       value: ''},
     {type: 'input',     label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},

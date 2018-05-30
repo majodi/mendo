@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { EntityMeta } from "../../../models/entity-meta.model";
 import { forceUppercase, forceCapitalize } from '../../../shared/dynamic-form/models/form-functions';
+import { SelectionField } from '../../../shared/dynamic-form/models/selection-field.interface';
 
 export interface Article {
     id: string;
@@ -55,8 +56,10 @@ export const defaultFormConfig = [
     {type: 'input',                 label: 'Prijs',             name: 'price',                placeholder: 'Prijs',             value: '', validation: [Validators.required]},
     {type: 'input',                 label: 'Eenheid',           name: 'unit',                 placeholder: 'Eenheid',           value: '', validation: [Validators.required]},
     {type: 'input',                 label: 'Prioriteit',        name: 'priority',             placeholder: 'Prioriteit',        value: ''},
+    {type: 'pulldown',              label: 'In Pakketselectie voor',  name: 'packageSelectionFor', placeholder: 'In Pakketselectie voor',  value: '', doNotPopulate: true, inputValueTransform: forceCapitalize, customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}},
   ]
 // for selection button
-export const defaultSelectionFields = [
+export const defaultSelectionFields: SelectionField[] = [
   {name: 'category'},
+  {name: 'packageSelectionFor', valueIsPk: true, foreignkeyObject: 'packageSelection'}
 ]

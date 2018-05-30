@@ -3,5 +3,6 @@ export interface LookupItem {
     display: string;
     subDisplay: string;
     addSearch: string;
+    subDisplayFunction?: Function;
 }
   

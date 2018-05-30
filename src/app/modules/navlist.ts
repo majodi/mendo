@@ -3,7 +3,7 @@ export const fullNavList = [
     {module: 'app',   level: 50,  text: 'Bulletins',        icon: 'event_note',    link: 'app-tenant/bulletins'},
     {module: 'store', level: 0,   text: 'Winkel',           icon: 'store',         link: 'store-user/store'},
     {module: 'store', level: 25,  text: 'Orders',           icon: 'list',          link: 'store-tenant/orders'},
-    {module: 'store', level: 50,  text: 'Orderregels',      icon: 'view_list',     link: 'store-tenant/orderlines'},
+    // {module: 'store', level: 50,  text: 'Orderregels',      icon: 'view_list',     link: 'store-tenant/orderlines'},
     {module: 'app',   level: 50,  text: 'Settings',         icon: 'settings',      link: 'app-tenant/settings'},
     {module: 'app',   level: 50,  text: 'Formulieren',      icon: 'art_track',     link: 'app-tenant/forms'},
     // {module: 'app',   level: 50,  text: 'Formuliervelden',  icon: 'drag_handle',   link: 'app-tenant/formfields'},

@@ -41,8 +41,10 @@ import { Article } from '../articles/article.model';
       </div>
       <div #printheader fxFlex fxFlexAlign="end" class="boxed">
         <p class="mat-title">{{employeeRec?.address.name}}</p>
-        <p class="mat-title">{{organisationRec?.address.name}}</p>
-        <p class="mat-title">Totaal: {{total}}</p>
+        <p class="mat-title">{{organisationRec?.address.name}} {{employeeRec?.branch}}</p>
+        <p class="mat-body-2">Budget medewerker      : {{employeeRec?.budget}}</p>
+        <p class="mat-body-2">Totaal deze bestelling : {{total}}</p>
+        <p class="mat-body-2">Restant na bestelling  : {{employeeRec?.budget - total}}</p>
       </div>
     </div>
     <app-table
@@ -177,7 +179,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     value: '0',
     customLookupFld: {path: 'orders', tbl: 'order', fld: 'number'},
     customLookupComponent: OrdersBrwComponent,
-    customLookupItem: {id: '', display: 'number', subDisplay: 'date', addSearch: ''},
+    customLookupItem: {id: '', display: 'number', subDisplay: 'date', addSearch: '', subDisplayFunction: (orderDate: Date) => `${orderDate.toISOString().substr(0,10)}   (${orderDate.toISOString().substr(11,5)})`},
   }
   employeeRec: Employee
   organisationRec: Organisation
@@ -252,7 +254,7 @@ Order ${this.orderNumber} voor ${this.organisationRec.address.name} is goedgekeu
 Met vriendelijke groet,
 
 Mendo
-        `)
+        `, undefined, undefined, this.selectedOrder)
         // .then(() => {this.ps.buttonDialog('Mail verstuurd naar: '+email, 'OK')})
         // .catch(err => {this.ps.buttonDialog('Fout bij versturen:'+err, 'OK')})
       }

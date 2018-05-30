@@ -12,6 +12,7 @@ export interface ColumnDefenition {
     icon?: string;
     iconSelect?: Function;
     iconColorSelect?: Function;
+    fldStyleSelect?: Function;
     imageSelect?: Function;
     headerSelect?: headerSelectItem[];
     headerSelectValue?: string;

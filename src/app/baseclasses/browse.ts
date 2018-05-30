@@ -15,6 +15,7 @@ import { UploadService } from '../services/upload.service';
 import { CrudService } from '../services/crud.service';
 
 import { EntityService } from '../models/entity-service.interface';
+import { SortOrder } from '../shared/custom-components/models/sort-order.model';
 
 export class BrwBaseClass<T> {
   @Input() select: boolean
@@ -22,6 +23,7 @@ export class BrwBaseClass<T> {
   @Input() itemSelect: boolean
   @Output() selected = new EventEmitter()
   data: T[]
+  initialSortOrder: SortOrder
   ngUnsubscribe = new Subject<string>()
   dataLoaded = new Subject()
   userDefinedBrowse = false
@@ -132,6 +134,7 @@ export class BrwBaseClass<T> {
         if(fld.minimumLevel == undefined || this.gs.activeUser.level >= fld.minimumLevel){
           const formConfig = this.formConfig.find(fc => fc.name == fld.name)
           if(formConfig != undefined){
+            formConfig.doNotPopulate = false //!!!!!!
             const matchingBaseQuery = this.baseQueries.find(bq => bq.fld == fld.name)
             formConfig.value = matchingBaseQuery != undefined ? matchingBaseQuery.value : ''
             if(fld.disabled != undefined)formConfig.disabled = fld.disabled;
@@ -176,7 +179,7 @@ export class BrwBaseClass<T> {
         if(frmResult && (frmResult.response == 'save')){
           let addQs: QueryItem[] = []
           Object.keys(frmResult.value).forEach(frmFld => {
-            addQs.push({fld: frmFld, operator: '==', value: frmResult.value[frmFld]})
+            addQs.push({fld: frmFld, operator: '==', value: frmResult.value[frmFld], valueIsPk: this.selectionFields.find(sf => sf.name == frmFld).valueIsPk, foreignkeyObject: this.selectionFields.find(sf => sf.name == frmFld).foreignkeyObject})
           })
           this.initDataSource(addQs)
         }

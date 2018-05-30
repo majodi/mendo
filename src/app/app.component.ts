@@ -18,6 +18,7 @@ styles: [`
 .is-mobile .sidenav-container {flex: 1 0 auto;}
 .is-mobile .main-toolbar {position: fixed; z-index: 2;}
 h1.app-name {margin-left: 8px;}
+h1.user-name {margin-right: 8px;}
 .sidenav-container {flex: 1;}
 .mat-list-item {font-size:12px;}
 .mat-list-item mat-icon {margin-right:10px;}
@@ -34,6 +35,7 @@ template: `
       <h1 class="app-name" (click)="about()">{{formatTenantName(_as.tenantName)}}</h1>
     </ng-container>
     <span class="spacer"></span>
+    <h1 *ngIf="!mobileQuery.matches" class="user-name">{{_as.user?.displayName}}</h1>    
     <mat-menu #accountMenu="matMenu">
       <button mat-menu-item [matMenuTriggerFor]="legalSubMenu">Juridisch</button>
       <button mat-menu-item routerLink="/profile"> Profiel </button>
