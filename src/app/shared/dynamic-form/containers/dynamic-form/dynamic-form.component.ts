@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
+import { FormGroup, FormBuilder } from '@angular/forms'
 
-import { UploadService } from '../../../../services/upload.service';
-import { GlobService } from '../../../../services/glob.service';
-import { DbService } from '../../../../services/db.service';
+import { UploadService } from '../../../../services/upload.service'
+import { GlobService } from '../../../../services/glob.service'
+import { DbService } from '../../../../services/db.service'
 
-import { FieldConfig } from '../../models/field-config.interface';
+import { FieldConfig } from '../../models/field-config.interface'
 
 @Component({
   exportAs: 'dynamicForm',
+  // tslint:disable-next-line:component-selector
   selector: 'dynamic-form',
   styleUrls: ['dynamic-form.component.scss'],
   template: `
@@ -39,25 +40,25 @@ import { FieldConfig } from '../../models/field-config.interface';
           <button mat-button type="button" (click)="handleSubmit('delete')" color="warn">Verwijder</button>
           <button mat-button type="button" (click)="handleSubmit('cancel')" color="primary">Annuleer</button>
         </mat-dialog-actions>
-      </div>        
+      </div>
     </form>
   `
 })
 export class DynamicFormComponent implements OnChanges, OnInit {
-  @Input() config: FieldConfig[] = [];
-  @Input() formAction: number = 0;
-  @Input() onValueChg: Function;
-  @Output() submit: EventEmitter<any> = new EventEmitter<any>();
-  form: FormGroup;
-  toPopulate: FieldConfig[] = [];
+  @Input() config: FieldConfig[] = []
+  @Input() formAction = 0
+  @Input() onValueChg: Function
+  @Output() submit: EventEmitter<any> = new EventEmitter<any>()
+  form: FormGroup
+  toPopulate: FieldConfig[] = []
   deleteState = false
   waitOnUpload = false
   info = ''
 
-  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)); } //filter controls that have no custom ctrl
-  get changes() { return this.form.valueChanges; }
-  get valid() { return this.form.valid; }
-  get value() { return this.form.value; }
+  get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)) } // filter controls that have no custom ctrl
+  get changes() { return this.form.valueChanges }
+  get valid() { return this.form.valid }
+  get value() { return this.form.value }
 
   constructor(
     private fb: FormBuilder,
@@ -68,48 +69,48 @@ export class DynamicFormComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     this.info = ''
-    if(this.formAction != 0){
+    if (this.formAction !== 0) {
       this.setToPopulate()
     } else {this.toPopulate = this.config}
-    this.form = this.createGroup();
+    this.form = this.createGroup()
   }
 
   ngOnChanges() {
-    if(this.formAction != 0){
+    if (this.formAction !== 0) {
       this.setToPopulate()
     } else {this.toPopulate = this.config}
     if (this.form) {
-      const controls = Object.keys(this.form.controls);
-      const configControls = this.controls.map((item) => item.name);
+      const controls = Object.keys(this.form.controls)
+      const configControls = this.controls.map((item) => item.name)
 
       controls
         .filter((control) => !configControls.includes(control))
-        .forEach((control) => this.form.removeControl(control));
+        .forEach((control) => this.form.removeControl(control))
 
       configControls
         .filter((control) => !controls.includes(control))
         .forEach((name) => {
-          const config = this.config.find((control) => control.name === name);
-          this.form.addControl(name, this.createControl(config));
-        });
+          const config = this.config.find((control) => control.name === name)
+          this.form.addControl(name, this.createControl(config))
+        })
 
     }
   }
 
   createGroup() {
-    const group = this.fb.group({});
-    this.controls.forEach(control => {group.addControl(control.name, this.createControl(control))});
-    return group;
+    const group = this.fb.group({})
+    this.controls.forEach(control => {group.addControl(control.name, this.createControl(control))})
+    return group
   }
 
   createControl(config: FieldConfig) {
-    const { disabled, validation, value } = config;
-    const newCtrl = this.fb.control({ disabled, value }, validation);
-    if(!['button', 'input', 'select', 'checkbox', 'datepicker'].includes(config.type)){ // does it need a custom value change
-      config.customValueChg = (name: string, value: any) => { //for custom components
-        this.info = (this.formAction == 0 && config.type == 'chiplist' && Object.keys(value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
-        this.setFormValue(name, config.type == 'lookup' ? value['id'] : value)
-        if((config.customValidator != undefined) && !config.customValidator(config.type == 'lookup' ? value['id'] : value)){
+    const { disabled, validation, value } = config
+    const newCtrl = this.fb.control({ disabled, value }, validation)
+    if (!['button', 'input', 'select', 'checkbox', 'datepicker'].includes(config.type)) { // does it need a custom value change
+      config.customValueChg = (name: string, _value: any) => { // for custom components
+        this.info = (this.formAction === 0 && config.type === 'chiplist' && Object.keys(_value).length > 1) ? 'Tags: alleen eerste waarde wordt gebruikt!' : ''
+        this.setFormValue(name, config.type === 'lookup' ? _value['id'] : _value)
+        if ((config.customValidator !== undefined) && !config.customValidator(config.type === 'lookup' ? _value['id'] : _value)) {
           this.form.controls[name].setErrors({'invalid': true}, {emitEvent: true})
         }
       }
@@ -118,15 +119,15 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   handleSubmit(action: string, event?: Event) {
-    if(event != undefined){
-      event.preventDefault();
-      event.stopPropagation();  
+    if (event !== undefined) {
+      event.preventDefault()
+      event.stopPropagation()
     }
     this.config.forEach(config => {
-      if(['datepicker', 'chiplist', 'lookup', 'pulldown', 'stringdisplay', 'selectchildren'].includes(config.type)){
+      if (['datepicker', 'chiplist', 'lookup', 'pulldown', 'stringdisplay', 'selectchildren'].includes(config.type)) {
         this.value[config.name] = config.value
       }
-      if(config.type == 'filepick' && this.formAction == 1){ //only on insert!!
+      if (config.type === 'filepick' && this.formAction === 1) { // only on insert!!
         this.waitOnUpload = true
         this.us.pushUpload(config.customFile).subscribe(url => {
           this.waitOnUpload = false
@@ -136,87 +137,87 @@ export class DynamicFormComponent implements OnChanges, OnInit {
           this.submit.emit({response: action, value: this.value})
         })
       }
-      if(config.type == 'input' && config.inputValueTransform != undefined){
+      if (config.type === 'input' && config.inputValueTransform !== undefined) {
         this.value[config.name] = config.inputValueTransform(config.value)
       }
     })
-    if(!this.waitOnUpload){
-      this.submit.emit({response: action, value: this.value});    
+    if (!this.waitOnUpload) {
+      this.submit.emit({response: action, value: this.value})
     }
   }
 
   setDisabled(name: string, disable: boolean) {
     if (this.form.controls[name]) {
-      const method = disable ? 'disable': 'enable';
-      this.form.controls[name][method]();
+      const method = disable ? 'disable' : 'enable'
+      this.form.controls[name][method]()
     }
     this.config = this.config.map((item) => {
       if (item.name === name) {
-        item.disabled = disable;
+        item.disabled = disable
       }
-      return item;
-    });
+      return item
+    })
   }
 
-  setValue(name: string, value: any) { //used by caller
+  setValue(name: string, value: any) { // used by caller
     this.setFormValue(name, value)
   }
 
   setFormValue(name, value) {
-    if(this.form.controls[name]){
+    if (this.form.controls[name]) {
       this.form.controls[name].setValue(value, {emitEvent: true})
     }
-    let configIndex = this.config.findIndex(c => c.name == name)
-    if(configIndex != -1){
+    const configIndex = this.config.findIndex(c => c.name === name)
+    if (configIndex !== -1) {
       this.config[configIndex].value = value
-      if(this.config[configIndex].customUpdateWithLookup){
+      if (this.config[configIndex].customUpdateWithLookup) {
         this.config[configIndex].customUpdateWithLookup.forEach(customUpdate => {
-          let configToUpdate = this.config.find((control) => control.name === customUpdate.fld)
-          if((configToUpdate != undefined) && (!configToUpdate.value || (customUpdate.onlyVirgin == undefined || !customUpdate.onlyVirgin))){
-            if(this.config[configIndex].type == 'lookup' || this.config[configIndex].type == 'pulldown'){
+          const configToUpdate = this.config.find((control) => control.name === customUpdate.fld)
+          if ((configToUpdate !== undefined) && (!configToUpdate.value || (customUpdate.onlyVirgin === undefined || !customUpdate.onlyVirgin))) {
+            if (this.config[configIndex].type === 'lookup' || this.config[configIndex].type === 'pulldown') {
               this.db.getUniqueValueId(`${this.gs.entityBasePath}/${this.config[configIndex].customLookupFld.path}`, 'id', value).subscribe(rec => {
-                if(rec){
-                  if(customUpdate.lookupFunction){
+                if (rec) {
+                  if (customUpdate.lookupFunction) {
                     // check again due to async!
-                    configToUpdate.value = (!configToUpdate.value || (customUpdate.onlyVirgin == undefined || !customUpdate.onlyVirgin)) ? customUpdate.lookupFunction(rec, this.gs) : configToUpdate.value
+                    configToUpdate.value = (!configToUpdate.value || (customUpdate.onlyVirgin === undefined || !customUpdate.onlyVirgin)) ? customUpdate.lookupFunction(rec, this.gs) : configToUpdate.value
                   } else {
                     // check again due to async!
-                    configToUpdate.value = (!configToUpdate.value || (customUpdate.onlyVirgin == undefined || !customUpdate.onlyVirgin)) ? rec[customUpdate.lookupFld] : configToUpdate.value
+                    configToUpdate.value = (!configToUpdate.value || (customUpdate.onlyVirgin === undefined || !customUpdate.onlyVirgin)) ? rec[customUpdate.lookupFld] : configToUpdate.value
                   }
-                  if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
+                  if (this.onValueChg !== undefined) { this.onValueChg(name, value, this.formAction) }
                   this.setToPopulate()
-                  if(this.form.controls[configToUpdate.name]){
+                  if (this.form.controls[configToUpdate.name]) {
                     this.form.controls[configToUpdate.name].setValue(configToUpdate.value, {emitEvent: true})
-                  }          
+                  }
                 }
-              })          
+              })
             } else {
               configToUpdate.value = value
-              if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
+              if (this.onValueChg !== undefined) { this.onValueChg(name, value, this.formAction) }
               this.setToPopulate()
-            }  
+            }
           }
         })
       } else {
-        if(this.onValueChg != undefined) this.onValueChg(name, value, this.formAction);
+        if (this.onValueChg !== undefined) { this.onValueChg(name, value, this.formAction) }
         this.setToPopulate()
       }
-    } 
+    }
   }
 
   setToPopulate() {
     this.toPopulate = this.config
     .filter(c => {
-      return !(c.doNotPopulate != undefined && c.doNotPopulate)
+      return !(c.doNotPopulate !== undefined && c.doNotPopulate)
     })
   }
 
   objectValue(o, key) {
-    //also only two levels!!
-    let keys = key.split('.')
-    if(keys.length == 2) {
+    // also only two levels!!
+    const keys = key.split('.')
+    if (keys.length === 2) {
       return o[keys[0]][keys[1]]
-    } else return o[key]
+    } else { return o[key] }
   }
-  
+
 }

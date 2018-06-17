@@ -1,21 +1,21 @@
-import { Validators } from '@angular/forms';
-import { EntityMeta } from "../../../models/entity-meta.model";
-import { forceUppercase, forceCapitalize } from '../../../shared/dynamic-form/models/form-functions';
-import { ArticlesBrwComponent } from '../articles/articles.brw';
-import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
-import { GlobService } from '../../../services/glob.service';
+import { Validators } from '@angular/forms'
+import { EntityMeta } from '../../../models/entity-meta.model'
+import { forceUppercase, forceCapitalize } from '../../../shared/dynamic-form/models/form-functions'
+import { ArticlesBrwComponent } from '../articles/articles.brw'
+import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface'
+import { GlobService } from '../../../services/glob.service'
 
 export interface OrderLine {
-    id: string;
-    meta: EntityMeta;
-    order: string; // order
-    article: string; // article
-    price_unit: number;
-    size: string;
-    color: string;
-    number: number;
-    amount: number;
-    thumbNameOnSave: string; //article image on last save (is how the user ordered it...)
+    id: string
+    meta: EntityMeta
+    order: string // order
+    article: string // article
+    price_unit: number
+    size: string
+    color: string
+    number: number
+    amount: number
+    thumbNameOnSave: string // article image on last save (is how the user ordered it...)
 }
 
 export const defaultTitle = 'Orderregels'

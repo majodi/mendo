@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component } from '@angular/core'
+import { FormGroup } from '@angular/forms'
 
-import { Field } from '../models/field.interface';
-import { FieldConfig } from '../models/field-config.interface';
+import { Field } from '../models/field.interface'
+import { FieldConfig } from '../models/field-config.interface'
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'form-date',
   template: `
     <mat-form-field *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group" [floatLabel]="config.label">
@@ -15,13 +16,13 @@ import { FieldConfig } from '../models/field-config.interface';
   `
 })
 export class FormDateComponent implements Field {
-  config: FieldConfig;
-  group: FormGroup;
-  onValueChg: Function;
+  config: FieldConfig
+  group: FormGroup
+  onValueChg: Function
 
-  onChange(e) { //input not included in customValueChg, so after blur
-    this.config.value = typeof e.target.value == 'string' ? new Date(e.target.value) : e.target.value
-    if(this.onValueChg != undefined) this.onValueChg(this.config.name, this.config.value);
+  onChange(e) { // input not included in customValueChg, so after blur
+    this.config.value = typeof e.target.value === 'string' ? new Date(e.target.value) : e.target.value
+    if (this.onValueChg !== undefined) { this.onValueChg(this.config.name, this.config.value) }
   }
 
 }

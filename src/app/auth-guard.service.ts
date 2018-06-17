@@ -1,4 +1,4 @@
-import { Injectable }       from '@angular/core';
+import { Injectable } from '@angular/core'
 import {
   CanActivate, Router,
   ActivatedRouteSnapshot,
@@ -7,8 +7,8 @@ import {
   CanActivateChild,
   NavigationExtras,
   CanLoad, Route
-}                           from '@angular/router';
-import { AuthService } from './services/auth.service';
+} from '@angular/router'
+import { AuthService } from './services/auth.service'
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
@@ -16,24 +16,24 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
   constructor(private as: AuthService, private router: Router, private activeRoute: ActivatedRoute) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    let url: string = state.url;
+    const url: string = state.url
     this.as.tenantQP = route.queryParamMap.get('tenant')
-    return this.checkLogin(url);
+    return this.checkLogin(url)
   }
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.canActivate(route, state);
+    return this.canActivate(route, state)
   }
 
   canLoad(route: Route): boolean {
-    let url = `/${route.path}`;
-    return this.checkLogin(url);
+    const url = `/${route.path}`
+    return this.checkLogin(url)
   }
 
   checkLogin(url: string): boolean {
-    if (this.as.isLoggedIn) {return true};
-    this.as.redirectUrl = url;
-    this.router.navigate(['/waitOnAuth']);
-    return false;
+    if (this.as.isLoggedIn) {return true}
+    this.as.redirectUrl = url
+    this.router.navigate(['/waitOnAuth'])
+    return false
   }
 }

@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnChanges, Type } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Component, Input, Output, EventEmitter, OnChanges, Type } from '@angular/core'
+import { FormControl } from '@angular/forms'
+import { Observable } from 'rxjs'
 import { DbService } from '../../../services/db.service'
-import { PopupService } from '../../../services/popup.service';
+import { PopupService } from '../../../services/popup.service'
 
 @Component({
   selector: 'app-selectchildren',
@@ -33,14 +33,14 @@ import { PopupService } from '../../../services/popup.service';
 </div>
   `
 })
-export class SelectChildrenComponent {
-  @Input() label: string;
-  @Input() checked: boolean;
-  @Input() isDisabled = false;
+export class SelectChildrenComponent implements OnChanges {
+  @Input() label: string
+  @Input() checked: boolean
+  @Input() isDisabled = false
   @Input() selectionComponent: Type<any>
   @Input() selectionParent: string
   @Input() formControlName: string
-  @Output() checkChange = new EventEmitter();
+  @Output() checkChange = new EventEmitter()
   display = '(Selectie aanpassen)'
   selectButton = false
   check = false
@@ -52,7 +52,7 @@ export class SelectChildrenComponent {
 
   ngOnChanges() {
     this.check = this.checked
-    if(this.check && !this.isDisabled) {this.selectButton = true} else {this.selectButton = false}
+    if (this.check && !this.isDisabled) {this.selectButton = true} else {this.selectButton = false}
   }
 
   onCheckChange(e) {
@@ -61,7 +61,7 @@ export class SelectChildrenComponent {
 
   buttonClick() {
     this.ps.BrowseDialog(this.selectionComponent, false, false, undefined, true, this.selectionParent, this.formControlName).then(v => {
-      if(v == undefined) v = 0;
+      if (v === undefined) { v = 0 }
       this.display = v + ' items aangepast'
     })
     //    BrowseDialog(brwComponent: Type<any>, selectMode?: boolean, soberMode?: boolean, query?: QueryItem[], itemSelect?: boolean)

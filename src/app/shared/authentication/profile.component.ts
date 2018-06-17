@@ -1,10 +1,11 @@
-import { Component, OnInit, trigger, transition, style, animate } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { trigger, transition, style, animate } from '@angular/animations'
+import { Router } from '@angular/router'
 
-import { AuthService } from '../../services/auth.service';
-import { DbService } from '../../services/db.service';
-import { GlobService } from '../../services/glob.service';
-import { PopupService } from '../../services/popup.service';
+import { AuthService } from '../../services/auth.service'
+import { DbService } from '../../services/db.service'
+import { GlobService } from '../../services/glob.service'
+import { PopupService } from '../../services/popup.service'
 
 @Component({
   selector: 'app-profile',
@@ -15,13 +16,13 @@ import { PopupService } from '../../services/popup.service';
   img {display: block; margin: 0px auto 10px;}
   .spacer {-webkit-box-flex: 1; -ms-flex: 1 1 auto; flex: 1 1 auto;}
     `],
-  template: 
+  template:
   `
 <div [@pageAnim] fxLayout="row" fxLayoutAlign="center center" style="margin-top:100px">
   <mat-card style="width:250px; background-color:aliceblue">
     <mat-card-header>
         <span class="spacer"></span><button mat-button style="margin:0; padding:0; min-width:auto"><mat-icon routerLink="/homepage">close</mat-icon></button>
-    </mat-card-header>    
+    </mat-card-header>
     <div fxLayout="column" fxLayoutAlign="center center">
       <img width="100" src="{{_as.user?.photoURL}}">
       <h3>{{displayName}}</h3>
@@ -113,7 +114,7 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmit(formData) {
-    if(this.changeName){
+    if (this.changeName) {
       this._as.changeProfile(this.name, '')
       .then(v => {
         this._as.user.displayName = this.name
@@ -124,18 +125,18 @@ export class ProfileComponent implements OnInit {
       this.changeName = false
       return
     }
-    if(this.changeEmail){
+    if (this.changeEmail) {
       this._as.sendUpdateEmail(this.email)
       .then(v => {
         this.router.navigate(['/homepage'])
       })
       .catch(e => {this.error = e})
       this.changeEmail = false
-      return  
+      return
     }
-    if(this.changeVerification){
+    if (this.changeVerification) {
       this.db.getUniqueValueId((`${this.gs.entityBasePath}/employees`), 'id', this.verificationCode).subscribe(employee => {
-        if(employee['organisation']){
+        if (employee['organisation']) {
           this.db.updateDoc({employee: employee['id'], organisation: employee['organisation'], displayName: employee['address']['name']}, `users/${this._as.user.uid}`)
           .then(v => {
             this._as.user.employee = employee['id']
@@ -149,12 +150,12 @@ export class ProfileComponent implements OnInit {
             this.ps.buttonDialog('Verificatie mislukt, u kunt GEEN bestellingen plaatsen', 'OK')
           })
         } else {
-          this.ps.buttonDialog('Verificatie mislukt, u kunt GEEN bestellingen plaatsen', 'OK')          
+          this.ps.buttonDialog('Verificatie mislukt, u kunt GEEN bestellingen plaatsen', 'OK')
         }
       })
       this.changeVerification = false
       this.verificationCode = ''
-      return  
+      return
     }
   }
 
@@ -188,6 +189,6 @@ export class ProfileComponent implements OnInit {
   requestPasswordReset() {
     this._as.sendPasswordReset().catch(e => {this.error = e})
     this.resetSent = true
-  }  
-  
+  }
+
 }

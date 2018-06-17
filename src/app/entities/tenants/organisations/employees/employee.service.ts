@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore'
 
-import { Employee } from './employee.model';
-import { GlobService } from '../../../../services/glob.service';
-import { EntityBaseClass } from '../../../../baseclasses/entity';
+import { Employee } from './employee.model'
+import { GlobService } from '../../../../services/glob.service'
+import { EntityBaseClass } from '../../../../baseclasses/entity'
 
 @Injectable()
 export class EmployeeService extends EntityBaseClass {
@@ -17,7 +17,7 @@ export class EmployeeService extends EntityBaseClass {
     private glob: GlobService
   ) {
     super(afService)
-    if(this.glob.activeUser.level <= 25){
+    if (this.glob.activeUser.level <= 25) {
       this.entityQueries = [{fld: 'organisation', operator: '==', value: this.glob.activeUser.organisation}]
     }
   }

@@ -20,7 +20,7 @@
 //     [data]="data"
 //     [columnDefs]="colDef"
 //     (clicked)="clicked($event)"
-//   ></app-table>  
+//   ></app-table>
 //   `,
 //   styles: [``]
 // })

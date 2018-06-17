@@ -1,22 +1,25 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 
-import { OrderLine, defaultColDef, defaultFormConfig, defaultTitle, defaultTitleIcon } from './orderline.model';
-import { OrderLineService } from './orderline.service';
-import { CrudService } from '../../../services/crud.service';
-import { DbService } from '../../../services/db.service';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { QueryItem } from '../../../models/query-item.interface';
-import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
-import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface';
-import { OrdersBrwComponent } from '../orders/orders.brw';
-import { Organisation } from '../organisations/organisation.model';
-import { Employee } from '../organisations/employees/employee.model';
-import { GlobService } from '../../../services/glob.service';
-import { Property } from '../properties/property.model';
-import { Image } from '../images/image.model';
-import { PopupService } from '../../../services/popup.service';
-import { MessageService } from '../messages/message.service';
-import { Article } from '../articles/article.model';
+import {of as observableOf,  Subject, BehaviorSubject, Observable } from 'rxjs'
+
+import {takeUntil, switchMap} from 'rxjs/operators'
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core'
+
+import { OrderLine, defaultColDef, defaultFormConfig, defaultTitle, defaultTitleIcon } from './orderline.model'
+import { OrderLineService } from './orderline.service'
+import { CrudService } from '../../../services/crud.service'
+import { DbService } from '../../../services/db.service'
+import { QueryItem } from '../../../models/query-item.interface'
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface'
+import { FieldConfig } from '../../../shared/dynamic-form/models/field-config.interface'
+import { OrdersBrwComponent } from '../orders/orders.brw'
+import { Organisation } from '../organisations/organisation.model'
+import { Employee } from '../organisations/employees/employee.model'
+import { GlobService } from '../../../services/glob.service'
+import { Property } from '../properties/property.model'
+import { Image } from '../images/image.model'
+import { PopupService } from '../../../services/popup.service'
+import { MessageService } from '../messages/message.service'
+import { Article } from '../articles/article.model'
 
 @Component({
   selector: 'app-orderlines-brw',
@@ -92,56 +95,56 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   currentColorsId = ''
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value) => {
-      const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name == 'price_unit')].value
-      const number = this.formConfig[this.formConfig.findIndex(c => c.name == 'number')].value
-      if(price_unit && number){
-        this.formConfig[this.formConfig.findIndex(c => c.name == 'amount')].value = (Number(price_unit) * Number(number)).toString()
+      const price_unit = this.formConfig[this.formConfig.findIndex(c => c.name === 'price_unit')].value
+      const number = this.formConfig[this.formConfig.findIndex(c => c.name === 'number')].value
+      if (price_unit && number) {
+        this.formConfig[this.formConfig.findIndex(c => c.name === 'amount')].value = (Number(price_unit) * Number(number)).toString()
       }
-      if(ctrl == 'article'){
-        const articleId = this.formConfig[this.formConfig.findIndex(c => c.name == 'article')].value
-        if(articleId != this.currentArticleId) {this.articleChanged = true; this.currentArticleId = articleId}
-        const imageId = this.formConfig[this.formConfig.findIndex(c => c.name == 'imageid')].value
-        if(imageId && imageId != this.currentImageId){
+      if (ctrl === 'article') {
+        const articleId = this.formConfig[this.formConfig.findIndex(c => c.name === 'article')].value
+        if (articleId !== this.currentArticleId) {this.articleChanged = true; this.currentArticleId = articleId}
+        const imageId = this.formConfig[this.formConfig.findIndex(c => c.name === 'imageid')].value
+        if (imageId && imageId !== this.currentImageId) {
           this.currentImageId = imageId
-          const image = this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', imageId).subscribe((image: Image) => {
-            return this.formConfig[this.formConfig.findIndex(c => c.name == 'imagedisplay')].value = image['name']
+          const image = this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', imageId).subscribe((foundImage: Image) => {
+            return this.formConfig[this.formConfig.findIndex(c => c.name === 'imagedisplay')].value = foundImage.name
           })
         }
-        const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name == 'sizes')].value
-        if(this.articleChanged || (sizesId && sizesId != this.currentSizesId)) {
+        const sizesId = this.formConfig[this.formConfig.findIndex(c => c.name === 'sizes')].value
+        if (this.articleChanged || (sizesId && sizesId !== this.currentSizesId)) {
           this.currentSizesId = sizesId
           const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
-            if(property){
+            if (property) {
               const defaultSizesChoices = property['choices'].split(',')
-              const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizes')].value
-              if(overruleSizes){
-                const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleSizesChoices')].value
-                let overruleSizesChoicesArray: Array<string> = []
-                for (var key in overruleSizesChoices){
-                  if(defaultSizesChoices.includes(key)){overruleSizesChoicesArray.push(key)}
-                }                  
-                return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = overruleSizesChoicesArray
+              const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleSizes')].value
+              if (overruleSizes) {
+                const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleSizesChoices')].value
+                const overruleSizesChoicesArray: Array<string> = []
+                for (const key in overruleSizesChoices) {
+                  if (defaultSizesChoices.includes(key)) {overruleSizesChoicesArray.push(key)}
+                }
+                return this.formConfig[this.formConfig.findIndex(c => c.name === 'size')].options = overruleSizesChoicesArray
               }
-              return this.formConfig[this.formConfig.findIndex(c => c.name == 'size')].options = defaultSizesChoices  
+              return this.formConfig[this.formConfig.findIndex(c => c.name === 'size')].options = defaultSizesChoices
             }
           })
         }
-        const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name == 'colors')].value
-        if(this.articleChanged || (colorsId && colorsId != this.currentColorsId)){
+        const colorsId = this.formConfig[this.formConfig.findIndex(c => c.name === 'colors')].value
+        if (this.articleChanged || (colorsId && colorsId !== this.currentColorsId)) {
           this.currentColorsId = colorsId
           const colors = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', colorsId).subscribe((property: Property) => {
-            if(property){
+            if (property) {
               const defaultColorsChoices = property['choices'].split(',')
-              const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColors')].value
-              if(overruleColors){
-                const overruleColorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name == 'overruleColorsChoices')].value
-                let overruleColorsChoicesArray: Array<string> = []
-                for (var key in overruleColorsChoices){
-                  if(defaultColorsChoices.includes(key)){overruleColorsChoicesArray.push(key)}
-                }                  
-                return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = overruleColorsChoicesArray
+              const overruleColors = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleColors')].value
+              if (overruleColors) {
+                const overruleColorsChoices = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleColorsChoices')].value
+                const overruleColorsChoicesArray: Array<string> = []
+                for (const key in overruleColorsChoices) {
+                  if (defaultColorsChoices.includes(key)) {overruleColorsChoicesArray.push(key)}
+                }
+                return this.formConfig[this.formConfig.findIndex(c => c.name === 'color')].options = overruleColorsChoicesArray
               }
-              return this.formConfig[this.formConfig.findIndex(c => c.name == 'color')].options = defaultColorsChoices  
+              return this.formConfig[this.formConfig.findIndex(c => c.name === 'color')].options = defaultColorsChoices
             }
           })
         }
@@ -154,19 +157,19 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
         return this.db.getDoc(`${this.gs.entityBasePath}/images/${article.image}`)
         .then((image: Image) => {
           o['thumbNameOnSave'] = image.thumbName
-          o['amount'] = o['number'] * o['price_unit'] //last update for if user pressed enter
-          if(action == 1){
+          o['amount'] = o['number'] * o['price_unit'] // last update for if user pressed enter
+          if (action === 1) {
             o['order'] = this.selectedOrder
-            for (var key in o){
-              if(o[key] == undefined) {
+            for (const key in o) {
+              if (o[key] === undefined) {
                 o[key] = null
               }
-            }                
+            }
           }
           return
         })
         .catch(e => {
-          console.log('getting article-image before save orderline: ', e)          
+          console.log('getting article-image before save orderline: ', e)
         })
       })
       .catch(e => {
@@ -179,7 +182,12 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     value: '0',
     customLookupFld: {path: 'orders', tbl: 'order', fld: 'number'},
     customLookupComponent: OrdersBrwComponent,
-    customLookupItem: {id: '', display: 'number', subDisplay: 'date', addSearch: '', subDisplayFunction: (orderDate: Date) => `${orderDate.toISOString().substr(0,10)}   (${orderDate.toISOString().substr(11,5)})`},
+    customLookupItem: {
+      id: '',
+      display: 'number',
+      subDisplay: 'date',
+      addSearch: '',
+      subDisplayFunction: (orderDate: Date) => `${orderDate.toISOString().substr(0, 10)}   (${orderDate.toISOString().substr(11, 5)})`},
   }
   employeeRec: Employee
   organisationRec: Organisation
@@ -188,8 +196,8 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
   statusNr: number
   orderHistory: string
   orderNumber: number
-  currentLevel: number = 0
-  
+  currentLevel = 0
+
   @ViewChild('printheader') public printHeaderRef: ElementRef
 
   constructor(
@@ -200,35 +208,35 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
     private ps: PopupService,
     private messageSrv: MessageService,
   ) {
-      this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+      this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
       this.orderLineSrv.colDef = this.columnDef
       this.orderLineSrv.formConfig = this.formConfig
-      this.orderSelect.switchMap(id => {
+      this.orderSelect.pipe(switchMap(id => {
         this.isLoading = true
-        if(id){
+        if (id) {
           return this.orderLineSrv.initEntity$([{fld: 'order', operator: '==', value: id}])
         } else {
-          return Observable.of(null)
+          return observableOf(null)
           // return this.orderLineSrv.initEntity$()
         }
-      }).takeUntil(this.ngUnsubscribe).subscribe(orderlines => {
-        if(orderlines != null){
+      }), takeUntil(this.ngUnsubscribe), ).subscribe(orderlines => {
+        if (orderlines != null) {
           this.orderLineData = orderlines
           this.total = orderlines.reduce((a, b) => a + Number(b['amount']), 0)
           this.db.updateDoc({total: this.total}, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`)
         }
-        this.isLoading = false  
+        this.isLoading = false
       })
     }
 
   ngOnInit() {
-    if(this.gs.NavQueries && this.gs.NavQueries.length > 0 && !this.gs.NavQueriesRead){
+    if (this.gs.NavQueries && this.gs.NavQueries.length > 0 && !this.gs.NavQueriesRead) {
       this.gs.NavQueriesRead = true
-      const orderQuery = this.gs.NavQueries.find(nq => nq.fld == 'order' && nq.operator == '==')
-      if(orderQuery != undefined){
-        this.orderLookup.value = ''+orderQuery.value
+      const orderQuery = this.gs.NavQueries.find(nq => nq.fld === 'order' && nq.operator === '==')
+      if (orderQuery !== undefined) {
+        this.orderLookup.value = '' + orderQuery.value
         this.db.getDoc(`${this.gs.entityBasePath}/orders/${orderQuery.value}`).then(rec => {
-          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation'], status: rec['status'], history: rec['history'], number: rec['number']})  
+          this.orderChoosen({id: orderQuery.value, employee: rec['employee'], organisation: rec['organisation'], status: rec['status'], history: rec['history'], number: rec['number']})
         })
       }
     }
@@ -237,15 +245,15 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
 
   promoteStatus() {
     let newStatus = ''
-    if(this.orderStatus == 'closed'){newStatus = 'approved'}
-    if(this.orderStatus == 'approved'){newStatus = 'processed'}
-    if(this.orderStatus == 'processed'){newStatus = 'delivered'}
+    if (this.orderStatus === 'closed') {newStatus = 'approved'}
+    if (this.orderStatus === 'approved') {newStatus = 'processed'}
+    if (this.orderStatus === 'processed') {newStatus = 'delivered'}
     const setData = {status: newStatus, history: this.setNewHistory(newStatus)}
     this.db.setDoc(setData, `${this.gs.entityBasePath}/orders/${this.selectedOrder}`, {merge: true})
     .then(() => {
       this.setCurrentStatus(setData['status'])
-      if(setData['status'] == 'approved'){
-        //send mail naar tenant
+      if (setData['status'] === 'approved') {
+        // send mail naar tenant
         this.messageSrv.sendSystemMail('tenant', undefined, `Nieuwe goedkeuring (order ${this.orderNumber})`, `
 Beste ${this.gs.tenantName},
 
@@ -272,7 +280,7 @@ Mendo
   }
 
   getNextStatusButtonText() {
-    if(this.statusNr > 1 && this.gs.activeUser.level < 50){return ''}
+    if (this.statusNr > 1 && this.gs.activeUser.level < 50) {return ''}
     const nextStatusButtonTexts = ['', 'Goedkeuren', 'Verwerkt', 'Geleverd', '', '']
     return nextStatusButtonTexts[this.statusNr]
   }
@@ -283,11 +291,11 @@ Mendo
   }
 
   cancelOrder() {
-    if(this.statusNr > 2 && this.gs.activeUser.level < 50){return ''}
+    if (this.statusNr > 2 && this.gs.activeUser.level < 50) {return ''}
     const field = {value: '', placeholder: 'Rede voor annuleren', label: 'Rede:'}
     this.ps.buttonDialog('Order annuleren? Orderregels worden verwijderd!', 'NIET Annuleren', 'JA, Annuleer', field).then(b => {
-      if(b == 2){
-        if(!field.value){this.ps.buttonDialog('Geen rede opgegeven, Order werd NIET geannuleerd', 'OK'); return}
+      if (b === 2) {
+        if (!field.value) {this.ps.buttonDialog('Geen rede opgegeven, Order werd NIET geannuleerd', 'OK'); return}
         this.orderLineData.forEach(ol => {
           this.db.deleteDoc(`${this.gs.entityBasePath}/orderlines/${ol.id}`)
         })
@@ -299,7 +307,7 @@ Mendo
 
   setNewHistory(change, reason?) {
     const now = new Date()
-    const newHistory = `${this.orderHistory ? this.orderHistory : ''}\r\n** ${change} - ${now} - Door: ${this.gs.activeUser.uid}${reason ? ' - Rede: '+reason : ''}`
+    const newHistory = `${this.orderHistory ? this.orderHistory : ''}\r\n** ${change} - ${now} - Door: ${this.gs.activeUser.uid}${reason ? ' - Rede: ' + reason : ''}`
     this.orderHistory = newHistory
     return newHistory
   }
@@ -310,7 +318,7 @@ Mendo
 
   orderChoosen(e) {
     // console.log('e: ', e)
-    if(this.gs.activeUser.level <= 25 && e['organisation'] != this.gs.activeUser.organisation) {this.orderSelect.next('0') ;return};
+    if (this.gs.activeUser.level <= 25 && e['organisation'] !== this.gs.activeUser.organisation) {this.orderSelect.next('0') ; return}
     this.db.getDoc(`${this.gs.entityBasePath}/employees/${e['employee']}`).then(rec => {
       this.employeeRec = rec as Employee
     })
@@ -326,33 +334,33 @@ Mendo
 
   setCurrentStatus(orderStatus) {
     this.orderStatus = orderStatus
-    this.statusNr = ['new', 'closed', 'approved', 'processed', 'delivered', 'cancelled'].findIndex(s => s == this.orderStatus)
-    this.currentLevel = this.gs.activeUser.level //needed in HTML but gs is private, so not direct usable
+    this.statusNr = ['new', 'closed', 'approved', 'processed', 'delivered', 'cancelled'].findIndex(s => s === this.orderStatus)
+    this.currentLevel = this.gs.activeUser.level // needed in HTML but gs is private, so not direct usable
   }
 
   clicked(brwClick: {fld: string, rec: {}}) {
-    if(this.statusNr > 0){
+    if (this.statusNr > 0) {
       this.ps.buttonDialog('Order reeds afgesloten.', 'OK')
       return
     }
-    let rec = brwClick.fld == 'insert' ? {} : brwClick.rec
-    const pricefld = this.formConfig.find(c => c.name == 'price_unit')
-    if(pricefld) pricefld.label = `Prijs${this.organisationRec ? ' (' + this.organisationRec['currency'] + ')' : ''}`
-    if(!['insert','selection'].includes(brwClick.fld)){
+    const rec = brwClick.fld === 'insert' ? {} : brwClick.rec
+    const pricefld = this.formConfig.find(c => c.name === 'price_unit')
+    if (pricefld) { pricefld.label = `Prijs${this.organisationRec ? ' (' + this.organisationRec['currency'] + ')' : ''}` }
+    if (!['insert', 'selection'].includes(brwClick.fld)) {
       this.cs.changeDeleteDialog(this.formConfig, rec, this.orderLineSrv.entityPath, brwClick.fld, this['embeds'] ? this['embeds'] : undefined).catch(err => console.log(err))
       return
-    }    
-    if(brwClick.fld == 'insert'){
+    }
+    if (brwClick.fld === 'insert') {
       this.formConfig.map(fld => fld.value = '')
       // this.isLoading = true
       this.cs.insertDialog(this.formConfig, rec, this.orderLineSrv.entityPath, this['embeds'] ? this['embeds'] : undefined).then(id => {this.isLoading = false}).catch(err => {this.isLoading = false; console.log(err)})
       return
     }
   }
-  
+
   ngOnDestroy() {
     this.ngUnsubscribe.next()
-    this.ngUnsubscribe.complete()    
+    this.ngUnsubscribe.complete()
   }
 
 }

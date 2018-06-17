@@ -21,4 +21,4 @@ export const fullNavList = [
     {module: 'app',   level: 100, text: 'Email Adressen',   icon: 'email',         link: 'app-super/emailaddresses'},
   ]
 
-  //bgBGdJTa1xXBDlrYqwNG (tenant van Orsouw)
+  // bgBGdJTa1xXBDlrYqwNG (tenant van Orsouw)

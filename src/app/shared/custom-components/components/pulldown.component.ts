@@ -1,12 +1,14 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
 
-import { LookupItem } from '../models/lookup-item.model';
+import {of as observableOf,  Observable, Subject } from 'rxjs'
 
-import { Observable, Subject } from 'rxjs';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/startWith';
-import { MatAutocompleteTrigger } from '@angular/material';
+import {switchMap, debounceTime, startWith} from 'rxjs/operators'
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, OnChanges } from '@angular/core'
+import { FormControl } from '@angular/forms'
+
+import { LookupItem } from '../models/lookup-item.model'
+
+
+import { MatAutocompleteTrigger } from '@angular/material'
 
 @Component({
   selector: 'app-pulldown',
@@ -22,48 +24,48 @@ import { MatAutocompleteTrigger } from '@angular/material';
   </mat-form-field>
   `
 })
-export class PulldownComponent {
+export class PulldownComponent implements OnChanges {
   private ngUnsubscribe = new Subject<string>()
   @Input() value: string
   @Input() lookupPlaceholder: string
   @Input() lookupItems: LookupItem[]
-  @Output() itemChosen = new EventEmitter();
-  @Input() isDisabled = false;
+  @Output() itemChosen = new EventEmitter()
+  @Input() isDisabled = false
   lookupCtrl: FormControl
   filteredLookupItems: LookupItem[] = []
 
   constructor() {
-    this.lookupCtrl = new FormControl();
-    this.lookupCtrl.valueChanges
-    .startWith('')
-    .debounceTime(350)
-    .switchMap((input: string) => {
-      if(this.lookupItems != undefined){
+    this.lookupCtrl = new FormControl()
+    this.lookupCtrl.valueChanges.pipe(
+    startWith(''),
+    debounceTime(350),
+    switchMap((input: string) => {
+      if (this.lookupItems !== undefined) {
         this.filteredLookupItems = this.lookupItems.filter((item: LookupItem) => {
-          let x = '' + input, inputLower = x.toLowerCase()
-          let searchLower = (item.display + item.subDisplay + item.addSearch).toLowerCase()
-          return (searchLower.indexOf(inputLower) != -1)
-        })  
+          const x = '' + input, inputLower = x.toLowerCase()
+          const searchLower = (item.display + item.subDisplay + item.addSearch).toLowerCase()
+          return (searchLower.indexOf(inputLower) !== -1)
+        })
       }
-      return Observable.of(input)
-    }).subscribe()
+      return observableOf(input)
+    }), ).subscribe()
   }
 
   onChoice(selection?) {
-    if(selection){
-      let selected = this.lookupItems.find((item: LookupItem) => {return item.display == selection})
+    if (selection) {
+      const selected = this.lookupItems.find((item: LookupItem) => item.display === selection)
       this.itemChosen.emit(selected.id)
       return
     }
-    if(this.filteredLookupItems.length == 1){
+    if (this.filteredLookupItems.length === 1) {
       this.itemChosen.emit(this.filteredLookupItems[0].id)
     } else {
-      this.itemChosen.emit('')      
+      this.itemChosen.emit('')
     }
   }
 
   ngOnChanges() {
-    this.lookupCtrl.setValue(this.displayLookup(this.lookupItems.find((item: LookupItem) => {return item.id == this.value})))
+    this.lookupCtrl.setValue(this.displayLookup(this.lookupItems.find((item: LookupItem) => item.id === this.value)))
   }
 
   displayLookup(item?: LookupItem): string | undefined {
@@ -71,7 +73,7 @@ export class PulldownComponent {
   }
 
   openPanel() {
-    if(!this.lookupCtrl.value){
+    if (!this.lookupCtrl.value) {
       this.filteredLookupItems = this.lookupItems
     }
   }

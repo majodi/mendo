@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core'
 
-import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
+import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template'
 import { Organisation, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './organisation.model'
-import { OrganisationService } from './organisation.service';
+import { OrganisationService } from './organisation.service'
 
-import { BrwBaseClass } from '../../../baseclasses/browse';
-import { MatDialogRef } from '@angular/material';
-import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
+import { BrwBaseClass } from '../../../baseclasses/browse'
+import { MatDialogRef } from '@angular/material'
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface'
 
 @Component({
   selector: 'app-organisations-brw',
@@ -18,15 +18,15 @@ export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> impl
   nameOnEntry = ''
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value, formAction?) => {
-      if(ctrl == 'address.email'){
-        if(formAction == undefined && value && value != this.emailOnEntry){
+      if (ctrl === 'address.email') {
+        if (formAction === undefined && value && value !== this.emailOnEntry) {
           this.db.syncEmailRecord(value, this.formConfig, 'address.name', 'tenant')
         } else {
           this.emailOnEntry = value
         }
       }
-      if(ctrl == 'address.name'){
-        if(formAction == undefined && value && this.emailOnEntry && value != this.nameOnEntry){
+      if (ctrl === 'address.name') {
+        if (formAction === undefined && value && this.emailOnEntry && value !== this.nameOnEntry) {
           this.db.syncEmailRecord(this.emailOnEntry, this.formConfig, 'address.name', 'tenant')
         } else {
           this.nameOnEntry = value
@@ -34,7 +34,7 @@ export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> impl
       }
     }},
     {type: 'beforeChgDialog', code: (rec, fld) => {
-      if(fld == 'employees'){
+      if (fld === 'employees') {
         this.gs.navigateWithQuery('app-tenant/employees', 'organisation', '==', rec['id'])
         return true
       }
@@ -47,16 +47,16 @@ export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> impl
     private injectorService: Injector,
     private entityService: OrganisationService
   ) {
-    super(dialogRef, entityService, injectorService);
+    super(dialogRef, entityService, injectorService)
   }
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.initialSortOrder = {fld: 'address.name', sortOrder: 'desc'}
-    super.ngOnInit() //volgorde van belang!
+    super.ngOnInit() // volgorde van belang!
   }
 
 }

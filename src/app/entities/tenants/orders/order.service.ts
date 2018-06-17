@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable } from 'rxjs';
+import { AngularFirestore } from 'angularfire2/firestore'
+import { Observable } from 'rxjs'
 
-import { GlobService } from '../../../services/glob.service';
-import { EntityBaseClass } from '../../../baseclasses/entity';
-import { Order } from './order.model';
+import { GlobService } from '../../../services/glob.service'
+import { EntityBaseClass } from '../../../baseclasses/entity'
+import { Order } from './order.model'
 
 
 @Injectable()
@@ -19,7 +19,8 @@ export class OrderService extends EntityBaseClass {
     private glob: GlobService
   ) {
     super(afService)
-    if(this.glob.activeUser.level <= 25){
+    console.log('active user before setting ent q: ', this.glob.activeUser)
+    if (this.glob.activeUser.level <= 25) {
       this.entityQueries = [{fld: 'organisation', operator: '==', value: this.glob.activeUser.organisation}]
     }
   }

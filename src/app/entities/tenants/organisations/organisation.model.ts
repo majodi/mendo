@@ -1,17 +1,17 @@
-import { Validators } from '@angular/forms';
-import { EntityMeta } from '../../../models/entity-meta.model';
-import { Address } from '../../../models/address.model';
-import { forceCapitalize, forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
-import { ArticlesBrwComponent } from '../articles/articles.brw';
+import { Validators } from '@angular/forms'
+import { EntityMeta } from '../../../models/entity-meta.model'
+import { Address } from '../../../models/address.model'
+import { forceCapitalize, forceUppercase } from '../../../shared/dynamic-form/models/form-functions'
+import { ArticlesBrwComponent } from '../articles/articles.brw'
 
 export interface Organisation {
-    id: string;
-    meta: EntityMeta;
-    address: Address;
-    logo?: string; // asset
-    packageSelection: boolean;
-    currency: string;
-    branches: string;
+    id: string
+    meta: EntityMeta
+    address: Address
+    logo?: string // asset
+    packageSelection: boolean
+    currency: string
+    branches: string
 }
 
 export const defaultTitle = 'Organisaties'
@@ -33,7 +33,7 @@ export const defaultFormConfig = [
     {type: 'input', label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
     {type: 'input', label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'input', label: 'Contactpersoon',name: 'address.contact',      placeholder: 'Contactpersoon',value: '', validation: [Validators.required]},
+    {type: 'input', label: 'Contactpersoon', name: 'address.contact',      placeholder: 'Contactpersoon', value: '', validation: [Validators.required]},
     {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},
     {type: 'input', label: 'Valuta',        name: 'currency',             placeholder: 'Valuta',        value: ''},
     {type: 'input', label: 'Filialen',      name: 'branches',             placeholder: 'Filialen',      value: ''}

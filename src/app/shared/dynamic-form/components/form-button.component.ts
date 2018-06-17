@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component } from '@angular/core'
+import { FormGroup } from '@angular/forms'
 
-import { Field } from '../models/field.interface';
-import { FieldConfig } from '../models/field-config.interface';
+import { Field } from '../models/field.interface'
+import { FieldConfig } from '../models/field-config.interface'
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'form-button',
   template: `
-  <div 
+  <div
     class="dynamic-field form-button"
     [formGroup]="group">
     <button mat-button
@@ -20,13 +21,13 @@ import { FieldConfig } from '../models/field-config.interface';
 `
 })
 export class FormButtonComponent implements Field {
-  config: FieldConfig;
-  group: FormGroup;
-  onValueChg: Function;
+  config: FieldConfig
+  group: FormGroup
+  onValueChg: Function
 
   buttonClick(e) {
-    if(this.config.buttonClick != undefined){
-      this.config.buttonClick(e) //call function in form context (where funct was defined)
+    if (this.config.buttonClick !== undefined) {
+      this.config.buttonClick(e) // call function in form context (where funct was defined)
     }
   }
 }

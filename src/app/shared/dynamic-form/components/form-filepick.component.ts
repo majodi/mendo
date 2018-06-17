@@ -1,12 +1,13 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Output, EventEmitter } from '@angular/core'
+import { FormGroup } from '@angular/forms'
 
 // Wrapper for filepick custom component to work in dynamic form as dynamic field
 
-import { Field } from '../models/field.interface';
-import { FieldConfig } from '../models/field-config.interface';
+import { Field } from '../models/field.interface'
+import { FieldConfig } from '../models/field-config.interface'
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'form-filepick',
   template: `
     <div [formGroup]="group">
@@ -15,9 +16,9 @@ import { FieldConfig } from '../models/field-config.interface';
   `
 })
 export class FormFilepickComponent implements Field {
-  config: FieldConfig;
-  group: FormGroup;
-  onValueChg: Function;
+  config: FieldConfig
+  group: FormGroup
+  onValueChg: Function
 
   filePicked(file) {
     this.config.customFile = file

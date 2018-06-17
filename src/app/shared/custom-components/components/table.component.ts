@@ -1,13 +1,16 @@
-import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, trigger, transition, style, animate, ViewChild, ElementRef } from '@angular/core';
-import { MatTableDataSource, MatSort } from '@angular/material';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
-import { Observable, Subject } from 'rxjs';
+import {distinctUntilChanged, debounceTime, takeUntil} from 'rxjs/operators'
+import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core'
+import { trigger, transition, style, animate } from '@angular/animations'
+import { MatTableDataSource, MatSort } from '@angular/material'
+import { ObservableMedia, MediaChange } from '@angular/flex-layout'
 
-import { UploadService } from '../../../services/upload.service';
+import { Observable, Subject } from 'rxjs'
+
+import { UploadService } from '../../../services/upload.service'
 import { ColumnDefenition } from '../models/column-defenition.model'
-import { SelectionModel } from '@angular/cdk/collections';
-import { SortOrder } from '../models/sort-order.model';
+import { SelectionModel } from '@angular/cdk/collections'
+import { SortOrder } from '../models/sort-order.model'
 
 @Component({
   selector: 'app-table',
@@ -65,7 +68,7 @@ import { SortOrder } from '../models/sort-order.model';
           <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.name">
               <ng-container *ngIf="col.headerSelect; then headerSelect_tpl else noHeaderSelect_tpl"></ng-container>
               <ng-template #headerSelect_tpl>
-                <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort"> 
+                <mat-header-cell [fxFlex]="col.flex" *matHeaderCellDef mat-sort-header [disabled]="!col.sort">
                 <mat-select [placeholder]="col.header" style="text-align: left; width: 80%" [(value)]="col.headerSelectValue">
                 <mat-option *ngFor="let hchoice of col.headerSelect" [value]="hchoice.value">
                   {{ hchoice.viewValue }}
@@ -131,9 +134,9 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   @Input() itemSelectParent
   @Input() data = []
   @Input() columnDefs: ColumnDefenition[] = []
-  @Input() initialSortOrder: SortOrder //= {fld: undefined, sortOrder: undefined}
+  @Input() initialSortOrder: SortOrder // = {fld: undefined, sortOrder: undefined}
   @Input() parentPrintHeaderRef: ElementRef
-  @Output() clicked = new EventEmitter();
+  @Output() clicked = new EventEmitter()
   itemSelection = new SelectionModel<Element>(true, [])
   displayedColumns = []
   mediaIsXs: boolean
@@ -150,45 +153,45 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     this.mediaIsXs = this.media.isActive('xs')
     this.mediaLtMd = this.media.isActive('lt-md')
 
-    media.asObservable().takeUntil(this.ngUnsubscribe).subscribe((change: MediaChange) => {
-        if ( this.media.isActive('lt-md') != this.mediaLtMd) {this.mediaLtMd = this.media.isActive('lt-md')}
-        if ( this.media.isActive('xs') != this.mediaIsXs) {
+    media.asObservable().pipe(takeUntil(this.ngUnsubscribe)).subscribe((change: MediaChange) => {
+        if ( this.media.isActive('lt-md') !== this.mediaLtMd) {this.mediaLtMd = this.media.isActive('lt-md')}
+        if ( this.media.isActive('xs') !== this.mediaIsXs) {
             this.mediaIsXs = this.media.isActive('xs')
             this.setColumns()
         }
-      })        
+      })
   }
 
   ngOnInit() {
     //   this.itemSelect = true // test purpose
-    this.filterKeyUp
-    .takeUntil(this.ngUnsubscribe)
-    .debounceTime(400)
-    .distinctUntilChanged()
+    this.filterKeyUp.pipe(
+    takeUntil(this.ngUnsubscribe),
+    debounceTime(400),
+    distinctUntilChanged(), )
     .subscribe(v => this.applyFilter(v))
   }
 
   ngOnChanges() {
-      this.columnDefs.forEach(cd =>{
-        if(cd.headerSelectValue) cd.headerSelectValue = ''
+      this.columnDefs.forEach(cd => {
+        if (cd.headerSelectValue) { cd.headerSelectValue = '' }
       })
       this.setColumns()
       this.selectionButtonColor = this.selectionActive ? 'warn' : ''
   }
 
   setColumns() {
-    if(this.media.isActive('xs')){
+    if (this.media.isActive('xs')) {
       this.buttonText_Nieuw = ''
       this.buttonText_Kies = ''
-      this.buttonText_Selectie = ''  
+      this.buttonText_Selectie = ''
     } else {
       this.buttonText_Nieuw = 'Nieuw'
       this.buttonText_Kies = 'Kies'
-      this.buttonText_Selectie = 'Selectie'  
+      this.buttonText_Selectie = 'Selectie'
     }
     this.displayedColumns = this.itemSelect ? ['select'] : []
     this.columnDefs.forEach(coldef => {
-        if(!(this.media.isActive('xs') && coldef.hideXs)) {
+        if (!(this.media.isActive('xs') && coldef.hideXs)) {
             this.displayedColumns.push(coldef.name)
         }
         coldef.header = coldef.header || coldef.name
@@ -196,8 +199,8 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     // console.log('this.data: ', this.data)
     this.dataSource = new MatTableDataSource(this.data)
 
-    this.dataSource.sortingDataAccessor =(item, property) => {
-      return property.indexOf('.') == -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      return property.indexOf('.') === -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
       // initial sort, add to table tag: matSortActive="address.name" matSortDirection="asc"
       // console.log('item, property: ', item, property)
       // if(property == 'address.name'){
@@ -205,39 +208,49 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
       // } else {
       //   return property.indexOf('.') == -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
       // }
-    };
-    this.sort.sort({id: this.initialSortOrder != undefined ? this.initialSortOrder.fld : '', start: this.initialSortOrder != undefined && ['asc', 'desc'].indexOf(this.initialSortOrder.sortOrder) >= 0 ? this.initialSortOrder.sortOrder : 'asc', disableClear: false});
-    this.dataSource.sort = this.sort;
-    this.dataSource.filterPredicate = (data, filter: string):boolean => {
+    }
+    this.sort.sort(
+      {
+        id: this.initialSortOrder !== undefined ?
+        this.initialSortOrder.fld :
+        '',
+        start: this.initialSortOrder !== undefined && ['asc', 'desc'].indexOf(this.initialSortOrder.sortOrder) >= 0 ?
+        this.initialSortOrder.sortOrder :
+        'asc',
+        disableClear: false
+      }
+    )
+    this.dataSource.sort = this.sort
+    this.dataSource.filterPredicate = (data, filter: string): boolean => {
         let flatDataStr = ''
-        Object.keys(data).filter(v => !['id','meta'].includes(v)).map(l1 => {
-                if(typeof data[l1] == 'object' && data[l1] != null) {
+        Object.keys(data).filter(v => !['id', 'meta'].includes(v)).map(l1 => {
+                if (typeof data[l1] === 'object' && data[l1] != null) {
                     Object.keys(data[l1]).map(l2 => flatDataStr += data[l1][l2] ? data[l1][l2] : '')
-                } else {flatDataStr += data[l1] ? data[l1] : ''}  
-        })      
-        return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) != -1;
+                } else {flatDataStr += data[l1] ? data[l1] : ''}
+        })
+        return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1
       }
 
-    if(this.data != undefined){
-        let wasLoading = this.isLoading
+    if (this.data !== undefined) {
+        const wasLoading = this.isLoading
         this.isLoading = true
         this.data.filter(rec => rec[this.itemSelectEntity] && rec[this.itemSelectEntity][this.itemSelectParent]).forEach(row => this.itemSelection.select(row))
-        this.isLoading = wasLoading    
+        this.isLoading = wasLoading
     }
   }
 
   isAllSelected() {
-    const numSelected = this.itemSelection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    const numSelected = this.itemSelection.selected.length
+    const numRows = this.dataSource.data.length
+    return numSelected === numRows
   }
 
   masterToggle() {
     this.isAllSelected() ?
         this.itemSelection.clear() :
-        this.dataSource.data.forEach(row => this.itemSelection.select(row));
+        this.dataSource.data.forEach(row => this.itemSelection.select(row))
   }
-  
+
   resolveObjPath(obj, path) {
     return path.split('.').reduce(function(prev, curr) {
         return prev ? prev[curr] : null
@@ -255,7 +268,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   click(fld, rec) {
-    this.clicked.emit({fld: fld, rec:rec, itemSelection:this.itemSelection.selected})
+    this.clicked.emit({fld: fld, rec: rec, itemSelection: this.itemSelection.selected})
   }
 
   applyFilter(filterValue: string) {
@@ -263,9 +276,9 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   print() {
-    let printContents, popupWin;
-    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    popupWin.document.open();
+    let popupWin
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto')
+    popupWin.document.open()
     popupWin.document.write(`
       <html>
         <head>
@@ -294,15 +307,15 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
           }
           </style>
         </head>
-        <body onload="window.print();window.close()">${this.parentPrintHeaderRef != undefined ? this.parentPrintHeaderRef.nativeElement.innerHTML : ''}${this.printAreaRef.nativeElement.innerHTML}</body>
+        <body onload="window.print();window.close()">${this.parentPrintHeaderRef !== undefined ? this.parentPrintHeaderRef.nativeElement.innerHTML : ''}${this.printAreaRef.nativeElement.innerHTML}</body>
       </html>`
-    );
-    popupWin.document.close();
+    )
+    popupWin.document.close()
   }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next()
     this.ngUnsubscribe.complete()
-  }  
+  }
 
 }

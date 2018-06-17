@@ -1,17 +1,17 @@
-import { Validators } from '@angular/forms';
-import { EntityMeta } from '../../../models/entity-meta.model';
-import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
+import { Validators } from '@angular/forms'
+import { EntityMeta } from '../../../models/entity-meta.model'
+import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions'
 
 export interface Image {
-    id: string;
-    meta: EntityMeta;
-    code: string;
-    description: string;
-    name: string; // url original upload
-    thumbName: string; // url thumb
-    fileName: string; // pure filename
-    thumbUpdated: boolean;
-    tagList: {};
+    id: string
+    meta: EntityMeta
+    code: string
+    description: string
+    name: string // url original upload
+    thumbName: string // url thumb
+    fileName: string // pure filename
+    thumbUpdated: boolean
+    tagList: {}
 }
 
 export const defaultTitle = 'Afbeeldingen'

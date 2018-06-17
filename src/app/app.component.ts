@@ -1,13 +1,13 @@
-import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
-import { MatIconRegistry, MatSidenav } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MediaMatcher } from '@angular/cdk/layout';
-import { Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
-import { GlobService } from './services/glob.service';
-import { PopupService } from './services/popup.service';
-import { DbService } from './services/db.service';
+import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy } from '@angular/core'
+import { Location } from '@angular/common'
+import { MatIconRegistry, MatSidenav } from '@angular/material'
+import { DomSanitizer } from '@angular/platform-browser'
+import { MediaMatcher } from '@angular/cdk/layout'
+import { Router } from '@angular/router'
+import { AuthService } from './services/auth.service'
+import { GlobService } from './services/glob.service'
+import { PopupService } from './services/popup.service'
+import { DbService } from './services/db.service'
 
 @Component({
   selector: 'app-root',
@@ -35,18 +35,18 @@ template: `
       <h1 class="app-name" (click)="about()">{{formatTenantName(_as.tenantName)}}</h1>
     </ng-container>
     <span class="spacer"></span>
-    <h1 *ngIf="!mobileQuery.matches" class="user-name">{{_as.user?.displayName}}</h1>    
+    <h1 *ngIf="!mobileQuery.matches" class="user-name">{{_as.user?.displayName}}</h1>
     <mat-menu #accountMenu="matMenu">
       <button mat-menu-item [matMenuTriggerFor]="legalSubMenu">Juridisch</button>
       <button mat-menu-item routerLink="/profile"> Profiel </button>
       <button mat-menu-item [disabled]="!_as.user?.isAnonymous" routerLink="/login"> Aanmelden </button>
       <button mat-menu-item [disabled]="_as.user?.isAnonymous" (click)="signOut()"> Afmelden </button>
-    </mat-menu>  
+    </mat-menu>
     <mat-menu #legalSubMenu="matMenu">
       <button mat-menu-item (click)="getLegal('Privacy_verklaring')"> Privacy verklaring </button>
-      <button mat-menu-item> Disclaimer </button>
-      <button mat-menu-item> Algemene voorwaarden </button>
-    </mat-menu>  
+      <button mat-menu-item (click)="getLegal('Disclaimer')"> Disclaimer </button>
+      <button mat-menu-item (click)="getLegal('Algemene_voorwaarden')"> Algemene voorwaarden </button>
+    </mat-menu>
     <img src="{{_as.user?.photoURL}}" class="avatar-img" alt="" [matMenuTriggerFor]="accountMenu">
   </mat-toolbar>
   <mat-sidenav-container class="sidenav-container"
@@ -64,9 +64,9 @@ template: `
 </div>
 `
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'Mendo'
-  @ViewChild('snav') sidenav: MatSidenav;
+  @ViewChild('snav') sidenav: MatSidenav
   mobileQuery: MediaQueryList
   private _mobileQueryListener: () => void
 
@@ -83,9 +83,9 @@ export class AppComponent {
     private db: DbService,
   ) {
     iconReg.addSvgIcon('google', sanitizer.bypassSecurityTrustResourceUrl('/assets/google.svg'))
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
+    this.mobileQuery = media.matchMedia('(max-width: 600px)')
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges()
+    this.mobileQuery.addListener(this._mobileQueryListener)
   }
 
   ngOnInit() {
@@ -110,25 +110,42 @@ export class AppComponent {
   }
 
   about() {
-    this.ps.buttonDialog(`Mendo PWA-platform v0.32 (16/05/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.5 (15/06/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
   }
 
   formatTenantName(fullName: string) {
-    return this.mobileQuery.matches && fullName.length > 20 ? fullName.substr(0,20).padEnd(25, '...  ') : fullName
+    return this.mobileQuery.matches && fullName.length > 20 ? fullName.substr(0, 20).padEnd(25, '...  ') : fullName
   }
 
   getLegal(doc) {
-    if(this._as.userLevel >= 50){
-      // this.db.getFirst(`tenants/${this._gs.mendo}/documents`, [{fld: 'tagList.'+doc, operator: '==', value: true}])
+    if (doc === 'Privacy_verklaring') {
       this.db.getFirst(`tenants/${this._gs.mendo}/documents`, [{fld: 'tagList', operator: '==', value: {'Privacy_verklaring': true}}])
-      .subscribe(v => console.log('v: ', v), e => console.log('e: ', e), () => console.log('complete: ', ))
-    } else {
-      // this.db.getFirst()
+      .subscribe(foundDoc => {
+        if (foundDoc['name']) {
+          this.ps.buttonDialog('Privacy verklaring', 'Sluit', undefined, undefined, undefined, undefined, foundDoc['name'])
+        }
+      })
+    }
+    if (doc === 'Disclaimer') {
+      this.db.getFirst(`tenants/${this._gs.mendo}/documents`, [{fld: 'tagList', operator: '==', value: {'Disclaimer': true}}])
+      .subscribe(foundDoc => {
+        if (foundDoc['name']) {
+          this.ps.buttonDialog('Disclaimer', 'Sluit', undefined, undefined, undefined, undefined, foundDoc['name'])
+        }
+      })
+    }
+    if (doc === 'Algemene_voorwaarden') {
+      this.db.getFirst(`tenants/${this._gs.mendo}/documents`, [{fld: 'tagList', operator: '==', value: {'Algemene_voorwaarden': true}}])
+      .subscribe(foundDoc => {
+        if (foundDoc['name']) {
+          this.ps.buttonDialog('Algemene voorwaarden', 'Sluit', undefined, undefined, undefined, undefined, foundDoc['name'])
+        }
+      })
     }
   }
 
   ngOnDestroy(): void {
-    this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.mobileQuery.removeListener(this._mobileQueryListener)
   }
 
 }

@@ -1,15 +1,15 @@
-import { Validators } from '@angular/forms';
-import { EntityMeta } from '../../../models/entity-meta.model';
-import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
+import { Validators } from '@angular/forms'
+import { EntityMeta } from '../../../models/entity-meta.model'
+import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions'
 
 export interface Document {
-    id: string;
-    meta: EntityMeta;
-    code: string;
-    description: string;
-    name: string; // url original upload
-    fileName: string; // pure filename
-    tagList: {};
+    id: string
+    meta: EntityMeta
+    code: string
+    description: string
+    name: string // url original upload
+    fileName: string // pure filename
+    tagList: {}
 }
 
 export const defaultTitle = 'Documenten'
@@ -21,7 +21,7 @@ export const defaultColDef = [
 export const defaultFormConfig = [
     {type: 'input',     label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input',     label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
-    {type: 'chiplist',  label: 'Labels',        name: 'tagList',      placeholder: 'Labels',        value: '', options: 'Privacy_verklaring, Disclaimer, Algemene_voorwaarden'},
+    {type: 'chiplist',  label: 'Labels',        name: 'tagList',      placeholder: 'Labels',        value: '', options: 'Privacy_verklaring,Disclaimer,Algemene_voorwaarden'},
     {type: 'filepick',  label: 'Document',      name: 'name',         placeholder: 'Document',      value: '', validation: [Validators.required]},
     {type: 'button',    label: 'Download',      name: 'download',     placeholder: 'Download',      value: ''},
   ]

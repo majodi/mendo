@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy, Injector, Inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, OnInit, OnDestroy, Injector, Inject } from '@angular/core'
+import { MatDialogRef } from '@angular/material'
 
-import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
+import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template'
 import { Bulletin, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './bulletin.model'
-import { BulletinService } from './bulletin.service';
-import { ImagesBrwComponent } from '../images/images.brw';
+import { BulletinService } from './bulletin.service'
+import { ImagesBrwComponent } from '../images/images.brw'
 
-import { BrwBaseClass } from '../../../baseclasses/browse';
-import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
+import { BrwBaseClass } from '../../../baseclasses/browse'
+import { Embed } from '../../../shared/dynamic-form/models/embed.interface'
 
 @Component({
   selector: 'app-bulletins-brw',
@@ -17,16 +17,16 @@ import { Embed } from '../../../shared/dynamic-form/models/embed.interface';
 export class BulletinsBrwComponent extends BrwBaseClass<Bulletin[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value, formAction?) => {
-      if(ctrl == 'sticky'){
-        let stickyDate: Date = new Date('01/01/2100')
+      if (ctrl === 'sticky') {
+        const stickyDate: Date = new Date('01/01/2100')
         stickyDate.setHours(6)
-        let todayDate: Date = new Date()
+        const todayDate: Date = new Date()
         todayDate.setHours(6)
-        const dateConfig = this.formConfig[this.formConfig.findIndex(c => c.name == 'date')]
+        const dateConfig = this.formConfig[this.formConfig.findIndex(c => c.name === 'date')]
         dateConfig.hidden = value ? value : false
-        let currentDate: Date = dateConfig.value ? dateConfig.value : todayDate
-        if(typeof currentDate == 'object'){
-          dateConfig.value = value ? stickyDate : currentDate.toDateString() == stickyDate.toDateString() ? todayDate : currentDate
+        const currentDate: Date = dateConfig.value ? dateConfig.value : todayDate
+        if (typeof currentDate === 'object') {
+          dateConfig.value = value ? stickyDate : currentDate.toDateString() === stickyDate.toDateString() ? todayDate : currentDate
         }
       }
     }},
@@ -35,9 +35,9 @@ export class BulletinsBrwComponent extends BrwBaseClass<Bulletin[]> implements O
       rec['date'].setHours(6)
     }},
     {type: 'beforeChgDialog', code: (rec, fld) => {
-      if(!rec['date']){
+      if (!rec['date']) {
         rec['date'] = new Date()
-        rec['date'].setHours(6)  
+        rec['date'].setHours(6)
       }
     }},
     {type: 'beforeSave', code: (action, o) => {
@@ -51,17 +51,17 @@ export class BulletinsBrwComponent extends BrwBaseClass<Bulletin[]> implements O
     private injectorService: Injector,
     private entityService: BulletinService,
   ) {
-    super(dialogRef, entityService, injectorService);
+    super(dialogRef, entityService, injectorService)
   }
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
     // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     super.setLookupComponent(ImagesBrwComponent, 'image', 'code', 'description')
-    super.ngOnInit() //volgorde van belang!
+    super.ngOnInit() // volgorde van belang!
   }
 
 }

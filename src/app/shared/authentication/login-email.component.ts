@@ -1,7 +1,8 @@
-import { Component, OnInit, trigger, transition, style, animate } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { trigger, transition, style, animate } from '@angular/animations'
+import { Router } from '@angular/router'
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service'
 
 @Component({
   selector: 'app-login-email',
@@ -12,13 +13,13 @@ import { AuthService } from '../../services/auth.service';
   img {display: block; margin: 0px auto 10px;}
   .spacer {-webkit-box-flex: 1; -ms-flex: 1 1 auto; flex: 1 1 auto;}
     `],
-  template: 
+  template:
   `
 <div [@pageAnim] fxLayout="row" fxLayoutAlign="center center" style="margin-top:100px">
   <mat-card style="width:250px; background-color:aliceblue">
     <mat-card-header>
         <span class="spacer"></span><button mat-button style="margin:0; padding:0; min-width:auto"><mat-icon routerLink="/homepage">close</mat-icon></button>
-    </mat-card-header>    
+    </mat-card-header>
     <div fxLayout="column" fxLayoutAlign="center center">
       <a mat-button routerLink="/login">Ga terug</a>
       <h2>Aanmelden Met Email</h2>
@@ -47,7 +48,7 @@ export class LoginEmailComponent implements OnInit {
 
   constructor(
     private as: AuthService,
-    private router: Router    
+    private router: Router
   ) {}
 
   ngOnInit() {}

@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, OnChanges, ElementRef, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormControl } from '@angular/forms';
-import { GlobService } from '../../../services/glob.service';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, OnChanges, ElementRef, ViewChild } from '@angular/core'
+import { FormGroup } from '@angular/forms'
+import { FormControl } from '@angular/forms'
+import { GlobService } from '../../../services/glob.service'
 
 @Component({
   selector: 'app-filepick',
@@ -31,8 +31,8 @@ import { GlobService } from '../../../services/glob.service';
 export class FilepickComponent implements OnInit, OnChanges {
   @Input() value: string
   @Input() placeholder: string
-  @Output() picked = new EventEmitter();
-  @Input() isDisabled = false;
+  @Output() picked = new EventEmitter()
+  @Input() isDisabled = false
   @ViewChild('preview') private previewRef: ElementRef
   fileCtrl: FormControl
   error: string
@@ -43,7 +43,7 @@ export class FilepickComponent implements OnInit, OnChanges {
   constructor(
     private gs: GlobService,
   ) {
-    this.fileCtrl = new FormControl();
+    this.fileCtrl = new FormControl()
   }
 
   ngOnInit() {
@@ -52,39 +52,39 @@ export class FilepickComponent implements OnInit, OnChanges {
 
   isImg(name: string) {
     this.fileName = name
-    if(name.toUpperCase().startsWith('HTTPS://')){
+    if (name.toUpperCase().startsWith('HTTPS://')) {
       this.fileName = this.getFilePath(name)
     }
     const parts = this.fileName ? this.fileName.split('.') : ['']
-    const ext = parts.length > 1 ? parts[parts.length-1].toUpperCase() : ''
+    const ext = parts.length > 1 ? parts[parts.length - 1].toUpperCase() : ''
     const imgExt = ['JPG', 'JPEG', 'PNG', 'GIF', 'SVG']
     return imgExt.includes(ext)
   }
 
   getFilePath(url, root?) {
-    if(root == undefined) {root = `${this.gs.entityBasePath}/`}
+    if (root === undefined) {root = `${this.gs.entityBasePath}/`}
     const fullPath = decodeURIComponent(url).split('?')[0]
     const pathFromRoot = fullPath.slice(fullPath.indexOf(root))
     const parts = pathFromRoot ? pathFromRoot.split('/') : ['']
-    const bareFileName = parts.length > 1 ? parts[parts.length-1] : ''
+    const bareFileName = parts.length > 1 ? parts[parts.length - 1] : ''
     return bareFileName
   }
 
   selectFile(e) {
-    let file: File = e.target.files.item(0)
-    if(file){
+    const file: File = e.target.files.item(0)
+    if (file) {
       this.error = ''
-      if(file.size > 999000){
+      if (file.size > 999000) {
         this.error = 'Filesize too big, please compress/resize'
         return
       }
       this.fileCtrl.setValue(file.name)
       this.picked.emit(file)
-      if(this.isImg(file.name)){
+      if (this.isImg(file.name)) {
         this.reader.onload = (r) => {
           this.previewRef.nativeElement.src = r.target['result']
-        };
-        this.reader.readAsDataURL(file)        
+        }
+        this.reader.readAsDataURL(file)
       }
     }
   }

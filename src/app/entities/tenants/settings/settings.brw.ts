@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core'
 
-import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template';
+import { defaultTableTemplate } from '../../../shared/custom-components/models/table-template'
 import { Setting, defaultTitle, defaultTitleIcon, defaultColDef, defaultFormConfig } from './setting.model'
-import { SettingService } from './setting.service';
+import { SettingService } from './setting.service'
 
-import { BrwBaseClass } from '../../../baseclasses/browse';
-import { MatDialogRef } from '@angular/material';
+import { BrwBaseClass } from '../../../baseclasses/browse'
+import { MatDialogRef } from '@angular/material'
 
 @Component({
   selector: 'app-settings-brw',
@@ -19,16 +19,16 @@ export class SettingsBrwComponent extends BrwBaseClass<Setting[]> implements OnI
     private injectorService: Injector,
     private entityService: SettingService,
   ) {
-    super(dialogRef, entityService, injectorService);
+    super(dialogRef, entityService, injectorService)
   }
 
   ngOnInit() {
     this.colDef = defaultColDef
-    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x));
+    this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
     // this.formConfig = defaultFormConfig
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    super.ngOnInit() //volgorde van belang!
+    super.ngOnInit() // volgorde van belang!
   }
 
 }

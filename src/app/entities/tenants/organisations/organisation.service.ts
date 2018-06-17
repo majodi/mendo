@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore'
 
-import { Organisation } from './organisation.model';
-import { GlobService } from '../../../services/glob.service';
-import { EntityBaseClass } from '../../../baseclasses/entity';
+import { Organisation } from './organisation.model'
+import { GlobService } from '../../../services/glob.service'
+import { EntityBaseClass } from '../../../baseclasses/entity'
 
 
 @Injectable()

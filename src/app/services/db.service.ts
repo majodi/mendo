@@ -1,21 +1,26 @@
-import { Injectable, ElementRef } from '@angular/core';
 
-import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
-import * as firebase from 'firebase/app';
-import * as firestore from 'firebase/firestore';
-import { Observable } from 'rxjs/Rx';
+import {of as observableOf} from 'rxjs'
 
-import { EntityMeta } from '../models/entity-meta.model';
-import { AuthService } from './auth.service'; ///// hoeft niet meer met gs = globalSettings service, later verbeteren
+import {take, map} from 'rxjs/operators'
+import { Injectable, ElementRef } from '@angular/core'
+
+import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore'
+import * as firebase from 'firebase/app'
+import * as firestore from 'firebase/firestore'
+// import { Observable } from 'rxjs/Rx'
+import { Observable } from 'rxjs/observable'
+
+import { EntityMeta } from '../models/entity-meta.model'
+import { AuthService } from './auth.service' ///// hoeft niet meer met gs = globalSettings service, later verbeteren
 // import { PopupService } from './popup.service'; CAN NOT ADD - Circular refference!!
-import { UploadService } from './upload.service';
-import { GlobService } from './glob.service';
-import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface';
-import { DocumentData, SetOptions } from '@firebase/firestore-types';
-import { Setting } from '../entities/tenants/settings/setting.model';
-import { QueryItem } from '../models/query-item.interface';
-import { MatDialog } from '@angular/material';
-import { PopupDialog } from '../shared/custom-components/components/popupdialog.component';
+import { UploadService } from './upload.service'
+import { GlobService } from './glob.service'
+import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface'
+import { DocumentData, SetOptions } from '@firebase/firestore-types'
+import { Setting } from '../entities/tenants/settings/setting.model'
+import { QueryItem } from '../models/query-item.interface'
+import { MatDialog } from '@angular/material'
+import { PopupDialog } from '../shared/custom-components/components/popupdialog.component'
 
 @Injectable()
 export class DbService {
@@ -29,23 +34,23 @@ export class DbService {
   ) { }
 
   getMeta(): EntityMeta {
-    let now = new Date()
-    let meta = {
+    const now = new Date()
+    const meta = {
       creator:  this.as.user.uid,
       created:  now.toISOString(),
       modifier: this.as.user.uid,
       modified: now.toISOString()
     }
-    return meta    
+    return meta
   }
 
   getSetting(code: string | string[]): Observable<string> {
-    if(code && (typeof code == 'string') && (code.indexOf('SETTINGS:') != -1)){
+    if (code && (typeof code === 'string') && (code.indexOf('SETTINGS:') !== -1)) {
       code = code.split(':')[1]
-      if(code){
-        return this.getUniqueValueId(this.gs.entityBasePath+'/settings', 'code', code).map((rec: Setting) => rec != undefined ? rec.setting : '')
-      } else return Observable.of(null)
-    } else return Observable.of(null)
+      if (code) {
+        return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined ? rec.setting : ''))
+      } else { return observableOf(null) }
+    } else { return observableOf(null) }
   }
 
   addDoc(data, collection: string) {
@@ -54,32 +59,34 @@ export class DbService {
   }
 
   setDoc(data, path: string, options?: SetOptions) {
-    if(options != undefined){return this.db.doc(path).set(data, options)} else {return this.db.doc(path).set(data)}
+    if (options !== undefined) {return this.db.doc(path).set(data, options)} else {return this.db.doc(path).set(data)}
   }
 
   updateDoc(data, path: string) {
     return this.db.doc(path).update(data)
   }
 
-  //don't use... possible hanger
+  // don't use... possible hanger
   updateWithQuery(data, collection: string, queries?: QueryItem[]) {
     this.db.collection(collection, ref => {
-      let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;
-      if(queries){
+      // let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;
+      let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref
+      if (queries) {
         queries.forEach(q => {
-          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
+          const qop: firebase.firestore.WhereFilterOp = q.operator === '<' ? '<' : q.operator === '<=' ? '<=' : q.operator === '==' ? '==' : q.operator === '>=' ? '>=' : q.operator === '>' ? '>' : '==' // '==' // q.operator
+          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, qop, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
         })
       }
-      return query;
+      return query
     })
-    .snapshotChanges()
-    .map(actions => {
+    .snapshotChanges().pipe(
+    map(actions => {
       return actions.map(a => {
-        const data = a.payload.doc.data()
+        const pldata = a.payload.doc.data()
         const id = a.payload.doc.id
-        return { id, ...data }
+        return { id, ...pldata }
       })
-    })
+    }))
     .subscribe(items => {
       items.forEach(item => {
         this.db.doc(`${collection}/${item.id}`).update(data)
@@ -93,93 +100,95 @@ export class DbService {
 
   getDoc(path) {
     return new Promise((resolve, reject) => {
-      this.db.doc(path).snapshotChanges().take(1).toPromise().then(data => {
-        if(data.payload.exists) {resolve(data.payload.data())} else {reject('no such document!')}
+      this.db.doc(path).snapshotChanges().pipe(take(1)).toPromise().then(data => {
+        if (data.payload.exists) {resolve(data.payload.data())} else {reject('no such document!')}
       })
     })
   }
 
   buttonDialog(text, button1, button2?) {
-    let dialogRef = this.dialog.open(PopupDialog, {
+    const dialogRef = this.dialog.open(PopupDialog, {
       width: '250px',
       data: { text: text, but1: button1, but2: button2 }
-    });
+    })
 
     return dialogRef.afterClosed().toPromise().then(result => {
       return result
-    });
+    })
   }
 
-  syncEmailRecord(emailToCheck, formConfig, nameFld, tag){
-    if(!this.gs.emailRegex.test(String(emailToCheck).toLowerCase())){
+  syncEmailRecord(emailToCheck, formConfig, nameFld, tag) {
+    if (!this.gs.emailRegex.test(String(emailToCheck).toLowerCase())) {
       this.buttonDialog('Email adres ongeldig!', 'OK')
       return
     }
-    const currentName: string = formConfig.find(c => c.name == nameFld)['value']
+    const currentName: string = formConfig.find(c => c.name === nameFld)['value']
     let prefix = '', lastName = '', firstName = ''
-    if(currentName != undefined){
+    if (currentName !== undefined) {
       const nameArray = currentName.split(' ')
       firstName = nameArray[0]
       prefix = '', lastName = ''
-      if(nameArray.length > 1) {lastName = nameArray[nameArray.length-1]}
-      if(nameArray.length > 2) {prefix = nameArray.slice(1, nameArray.length-1).join(' ')}
+      if (nameArray.length > 1) {lastName = nameArray[nameArray.length - 1]}
+      if (nameArray.length > 2) {prefix = nameArray.slice(1, nameArray.length - 1).join(' ')}
       this.getDoc(`${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`)
       .then(email => {
-        const emailName = `${email['firstName']}${email['prefix'] ? ' '+email['prefix']+' ' : ' '}${email['lastName']}`
-        if(currentName != undefined && currentName != emailName){
+        const emailName = `${email['firstName']}${email['prefix'] ? ' ' + email['prefix'] + ' ' : ' '}${email['lastName']}`
+        if (currentName !== undefined && currentName !== emailName) {
           this.buttonDialog(`${emailToCheck} gevonden in mailing-bestand met afwijkende naam: ${emailName} \r\n\r\nDeze naam als ontvanger behouden in mailing-bestand of aanpassen naar ${currentName}?`, 'behouden', 'aanpassen')
           .then(choice => {
-            if(choice == 2){
+            if (choice === 2) {
               let typetag = {}
               typetag[tag] = true
-              if(email['typetag'] != undefined) {typetag = Object.assign(typetag, email['typetag'])}
+              if (email['typetag'] !== undefined) {typetag = Object.assign(typetag, email['typetag'])}
               this.updateDoc({firstName: firstName, prefix: prefix, lastName: lastName, typetag: typetag}, `${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`)
             }
           })
         }
       })
       .catch(e => {
-        if(currentName != undefined){
-          this.setDoc({firstName: firstName, prefix: prefix, lastName: lastName, typetag: {medewerker: true}}, `${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`).catch(e => {})
+        if (currentName !== undefined) {
+          this.setDoc({firstName: firstName, prefix: prefix, lastName: lastName, typetag: {medewerker: true}}, `${this.gs.entityBasePath}/emailaddresses/${emailToCheck}`)
         }
       })
     }
   }
-  
+
   getFirst(collection: string, queries: QueryItem[]) {
     return this.db.collection(collection, ref => {
-      let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;
-      if (queries){
+      let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref
+      if (queries) {
         queries.forEach(q => {
-          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
+          const qop: firebase.firestore.WhereFilterOp = q.operator === '<' ? '<' : q.operator === '<=' ? '<=' : q.operator === '==' ? '==' : q.operator === '>=' ? '>=' : q.operator === '>' ? '>' : '==' // '==' // q.operator
+          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, qop, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
         })
       }
-      return query.limit(1);
+      return query.limit(1)
     })
-    .snapshotChanges()
-    .map(actions => {
-      if(actions.length > 0){
+    .snapshotChanges().pipe(
+    map(actions => {
+      if (actions.length > 0) {
         const data = actions[0].payload.doc.data()
         const id = actions[0].payload.doc.id
         return { id, ...data }
       } else {return {}}
-    }).take(1)
+    }), take(1), )
   }
 
   getCount(collection: string, queries: QueryItem[]) {
     return this.db.collection(collection, ref => {
-      let query : firebase.firestore.CollectionReference | firestore.firestore.Query = ref;
-      if (queries){
+      let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref
+      if (queries) {
         queries.forEach(q => {
-          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, q.operator, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
+          const qop: firebase.firestore.WhereFilterOp = q.operator === '<' ? '<' : q.operator === '<=' ? '<=' : q.operator === '==' ? '==' : q.operator === '>=' ? '>=' : q.operator === '>' ? '>' : '==' // '==' // q.operator
+          if (q.value) { query = q.fld.indexOf('tag') < 0 ? query.where(q.fld, qop, q.value) : query.where(`${q.fld}.${Object.keys(q.value)[0]}`, '==', true)}
         })
       }
-      return query;
+      return query
     })
-    .snapshotChanges()
-    .map(children => {
+    .snapshotChanges().pipe(
+    map(children => {
       return children.length
-    })
+    }))
   }
 
   getIncrementedCounter(counterName: string) {
@@ -187,38 +196,54 @@ export class DbService {
     const counterRef = firebase.firestore().doc(`${this.gs.entityBasePath}/settings/${counterName}`)
     return firebase.firestore().runTransaction(t => {
       return t.get(counterRef).then(doc => {
-          if(doc.exists){new_count = doc.data().count + 1}
-          t.set(counterRef, { count: new_count });
+          if (doc.exists) {new_count = doc.data().count + 1}
+          t.set(counterRef, { count: new_count })
       })
-    }).then(v => {return new_count})
+    }).then(v => new_count)
   }
 
   getUniqueValueId(collection: string, field: string, value: string, asNumber?: boolean) {
-    if(value){
-      if(field == 'id'){
-        return this.db.doc(collection+'/'+value).snapshotChanges().map(rec => {
-          return {id: value, ...rec.payload.data()}
-        })
+    if (value) {
+      if (field === 'id') {
+        return this.db.doc(collection + '/' + value).snapshotChanges().pipe(take(1), map(rec => {
+          const data = rec.payload.data()
+          this.convert(data)
+          return { id: value, ...data }
+          // return {id: value, ...rec.payload.data()}
+        }))
       } else {
         let startAt, endAt
-        if(asNumber != undefined && asNumber == true){
+        if (asNumber !== undefined && asNumber === true) {
           startAt = Number(value)
           endAt = Number(value)
         } else {
-          const lsPart = value.slice(0,value.length-1)
-          const msPartASCII = value.charCodeAt(value.length-1)
-          startAt = lsPart+String.fromCharCode(msPartASCII-1)
-          endAt = lsPart+String.fromCharCode(msPartASCII+1)  
+          const lsPart = value.slice(0, value.length - 1)
+          const msPartASCII = value.charCodeAt(value.length - 1)
+          startAt = lsPart + String.fromCharCode(msPartASCII - 1)
+          endAt = lsPart + String.fromCharCode(msPartASCII + 1)
         }
         return this.db.collection(collection, ref => ref
         .limit(2)
         .orderBy(field)
         .startAt(startAt).endAt(endAt))
-        .snapshotChanges().map(recs => {
-          if(recs.length == 1) return {id: recs[0].payload.doc.id, ...recs[0].payload.doc.data()}; else return null;
-        })    
-      }  
-    } else return Observable.of(null)
+        .snapshotChanges().pipe(take(1), map(recs => {
+          if (recs.length === 1) {
+            const data = recs[0].payload.doc.data()
+            this.convert(data)
+            const id = recs[0].payload.doc.id
+            return { id, ...data }
+          } else { return null}
+        }))
+      }
+    } else { return observableOf(null) }
+  }
+
+  convert(o) {
+    Object.keys(o).forEach((key) => {
+      if (o[key] && o[key].constructor.name === 'Timestamp') {
+        o[key] = o[key].toDate()
+      }
+    })
   }
 
 }

@@ -1,20 +1,20 @@
-import { Validators } from '@angular/forms';
-import { forceCapitalize, forceUppercase } from '../../../../shared/dynamic-form/models/form-functions';
-import { EntityMeta } from '../../../../models/entity-meta.model';
-import { Address } from '../../../../models/address.model';
-import { SelectionField } from '../../../../shared/dynamic-form/models/selection-field.interface';
+import { Validators } from '@angular/forms'
+import { forceCapitalize, forceUppercase } from '../../../../shared/dynamic-form/models/form-functions'
+import { EntityMeta } from '../../../../models/entity-meta.model'
+import { Address } from '../../../../models/address.model'
+import { SelectionField } from '../../../../shared/dynamic-form/models/selection-field.interface'
 
 export interface Employee {
-    id: string;
-    meta: EntityMeta;
-    organisation: string;
-    branch: string;
-    employeeNumber: number;
-    address: Address;
-    budget: number;
-    bugetYear: number;
-    spent: number;
-    propertiesAllowed: {};
+    id: string
+    meta: EntityMeta
+    organisation: string
+    branch: string
+    employeeNumber: number
+    address: Address
+    budget: number
+    bugetYear: number
+    spent: number
+    propertiesAllowed: {}
 }
 
 export const defaultTitle = 'Medewerkers'
@@ -26,13 +26,26 @@ export const defaultColDef = [
     {name: 'address.city',      header: 'Woonplaats', sort: true},
     {name: 'budget',            header: 'Budget',     sort: true},
     {name: 'spent',             header: 'Verbruikt',  sort: true},
-    {name: 'left',              header: 'Restant',    format: (rec) => isNaN(rec['budget']) || isNaN(rec['spent']) ? '' : rec['budget'] - rec['spent'], fldStyleSelect: (rec) => !isNaN(rec['budget']) && !isNaN(rec['spent']) && rec['spent'] >= rec['budget'] ? {'color': 'red'} : {}, sort: true},
+    {
+      name: 'left',
+      header: 'Restant',
+      format: (rec) => isNaN(rec['budget']) || isNaN(rec['spent']) ? '' : rec['budget'] - rec['spent'], fldStyleSelect: (rec) => !isNaN(rec['budget']) && !isNaN(rec['spent']) && rec['spent'] >= rec['budget'] ? {'color': 'red'} : {},
+      sort: true
+    },
     {name: 'orderAs',           header: 'Bestel Namens', icon: 'shopping_cart', iconColorSelect: (rec) => !isNaN(rec['budget']) && !isNaN(rec['spent']) && rec['spent'] >= rec['budget'] ? 'warn' : 'primary'},
     {name: 'propertiesAllowed', header: 'Keuzes', icon: 'playlist_add_check'},
     {name: 'verificationCode',  header: 'Code', icon: 'verified_user'},
   ]
 export const defaultFormConfig = [
-    {type: 'pulldown',  label: 'Organisatie',   name: 'organisation',         placeholder: 'Organisatie',   value: '', customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'}, customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}, {fld: 'currency', lookupFld: 'currency'}]},
+    {
+      type: 'pulldown',
+      label: 'Organisatie',
+      name: 'organisation',
+      placeholder: 'Organisatie',
+      value: '',
+      customLookupFld: {path: 'organisations', tbl: 'organisation', fld: 'address.name'},
+      customUpdateWithLookup: [{fld: 'branchChoices', lookupFld: 'branches'}, {fld: 'currency', lookupFld: 'currency'}]
+    },
     {type: 'stringdisplay', label: 'Filiaalkeuzes', name: 'branchChoices',    placeholder: 'Filiaalkeuzes',    value: '', doNotPopulate: true},
     {type: 'select',    label: 'Filiaal',       name: 'branch',               placeholder: 'Filiaal',       value: '', options: []},
     {type: 'input',     label: 'Personeelsnummer', name: 'employeeNumber',    placeholder: 'Personeelsnummer', value: ''},
@@ -46,7 +59,7 @@ export const defaultFormConfig = [
     {type: 'stringdisplay', label: 'Valuta',    name: 'currency',             placeholder: 'Valuta',        value: ''},
     {type: 'input',     label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
   ]
-//for selection button
+// for selection button
 export const defaultSelectionFields: SelectionField[] = [
   {name: 'organisation', minimumLevel: 50},
 ]

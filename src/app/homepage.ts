@@ -1,21 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { FieldConfig } from './shared/dynamic-form/models/field-config.interface';
-import { Tile } from './shared/custom-components/models/tile.model';
-import { BulletinService } from './entities/tenants/bulletins/bulletin.service';
-import { DbService } from './services/db.service';
-import { GlobService } from './services/glob.service';
-import { FormFieldService } from './entities/tenants/forms/formfields/formfield.service';
-import { Validators } from '@angular/forms';
-import { forceUppercase, forceCapitalize } from './shared/dynamic-form/models/form-functions';
-import { CrudService } from './services/crud.service';
-import { Embed } from './shared/dynamic-form/models/embed.interface';
-import { AuthService } from './services/auth.service';
-import { SwPush } from '@angular/service-worker';
-import { environment } from '../environments/environment';
-import * as firebase from 'firebase';
-import { PopupService } from './services/popup.service';
+
+import {map, takeUntil} from 'rxjs/operators'
+import { Component, OnInit, OnDestroy } from '@angular/core'
+import { Router } from '@angular/router'
+import { Subject } from 'rxjs'
+import { FieldConfig } from './shared/dynamic-form/models/field-config.interface'
+import { Tile } from './shared/custom-components/models/tile.model'
+import { BulletinService } from './entities/tenants/bulletins/bulletin.service'
+import { DbService } from './services/db.service'
+import { GlobService } from './services/glob.service'
+import { FormFieldService } from './entities/tenants/forms/formfields/formfield.service'
+import { Validators } from '@angular/forms'
+import { forceUppercase, forceCapitalize } from './shared/dynamic-form/models/form-functions'
+import { CrudService } from './services/crud.service'
+import { Embed } from './shared/dynamic-form/models/embed.interface'
+import { AuthService } from './services/auth.service'
+import { SwPush } from '@angular/service-worker'
+import { environment } from '../environments/environment'
+import * as firebase from 'firebase'
+import { PopupService } from './services/popup.service'
 
 @Component({
   selector: 'app-home',
@@ -29,6 +31,7 @@ import { PopupService } from './services/popup.service';
     [maxImageHeight]="'100'"
     [data]="bulletinData"
     [divider]="true"
+    [bulletinStyle]="true"
     (buttonClicked)="onButtonClicked($event)"
   ></app-grid>
   </div>
@@ -40,10 +43,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
   formId: string
   embeds: Embed[] = [
     {type: 'beforeSave', code: (action, o) => {
-      if(action == 1){
+      if (action === 1) {
         o['form'] = this.formId
         return Promise.resolve()
-      } else return Promise.resolve()  
+      } else { return Promise.resolve() }
     }}
   ]
 
@@ -59,8 +62,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
     private formFieldSrv: FormFieldService,
   ) {
     this.BulletinSrv.colDef = [{name: 'image_v'}]
-    this.BulletinSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}},]
-    this.BulletinSrv.initEntity$().takeUntil(this.ngUnsubscribe).subscribe(bulletins => {
+    this.BulletinSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}}, ]
+    this.BulletinSrv.initEntity$().pipe(takeUntil(this.ngUnsubscribe)).subscribe(bulletins => {
       return this.bulletinData = bulletins.map(bulletin => {
         return {
           id: bulletin.id,
@@ -71,8 +74,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
           description: bulletin.text,
           buttonText: bulletin.buttonText,
           buttonLink: bulletin.buttonLink
-        }  
-      }).sort(function(a,b) {return (a['date'] > b['date'] || a['sticky']) ? -1 : ((b['date'] > a['date'] || b['sticky']) ? 1 : 0);})
+        }
+      }).sort(function(a, b) {return (a['date'] > b['date'] || a['sticky']) ? -1 : ((b['date'] > a['date'] || b['sticky']) ? 1 : 0)})
     })
   }
 
@@ -81,10 +84,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
   pushSubscribeFB() {
     navigator.serviceWorker.getRegistration().then(swreg => {
       console.log('swreg with getregistration: ', swreg)
-      if(swreg){
+      if (swreg) {
         firebase.messaging().useServiceWorker(swreg)
         firebase.messaging().requestPermission().then(function() {
-          console.log('Notification permission granted.');
+          console.log('Notification permission granted.')
           firebase.messaging().getToken().then(function(currentToken) {
             if (currentToken) {
               console.log('token: ', currentToken)
@@ -92,19 +95,19 @@ export class HomePageComponent implements OnInit, OnDestroy {
               // updateUIForPushEnabled(currentToken);
             } else {
               // Show permission request.
-              console.log('No Instance ID token available. Request permission to generate one.');
+              console.log('No Instance ID token available. Request permission to generate one.')
               // Show permission UI.
               // updateUIForPushPermissionRequired();
               // setTokenSentToServer(false);
             }
           }).catch(function(err) {
-            console.log('An error occurred while retrieving token. ', err);
+            console.log('An error occurred while retrieving token. ', err)
             // showToken('Error retrieving Instance ID token. ', err);
             // setTokenSentToServer(false);
-          });
+          })
         }).catch(function(err) {
-          console.log('Unable to get permission to notify.', err);
-        });
+          console.log('Unable to get permission to notify.', err)
+        })
       }
     }).catch(err => console.log('could not get SW: ', err))
   }
@@ -114,15 +117,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
       serverPublicKey: environment.vapidPublic
     })
     .then((pushSubscription: PushSubscription) => {
-      return this._as.setSubscription(pushSubscription) //.then(v => {console.log('pushSubscription written: ', pushSubscription, v)})
+      return this._as.setSubscription(pushSubscription) // .then(v => {console.log('pushSubscription written: ', pushSubscription, v)})
     })
     .catch(e => {console.log('error request subscription: ', e)})
   }
 
   onButtonClicked(e) {
     const link: string = e['buttonLink']
-    if(link.toUpperCase().startsWith('HTTP')){this.pushSubscribe(); window.open(link); return}
-    if(link.toUpperCase().startsWith('FORM:')){this.openUserForm(link.toUpperCase().split(':')[1]); return} // subscribe on form save (below)
+    if (link.toUpperCase().startsWith('HTTP')) {this.pushSubscribe(); window.open(link); return}
+    if (link.toUpperCase().startsWith('FORM:')) {this.openUserForm(link.toUpperCase().split(':')[1]); return} // subscribe on form save (below)
     this.pushSubscribe()
     this.router.navigate([e['buttonLink']])
   }
@@ -132,28 +135,28 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.formId = form['id']
       const postMessage = form['postMessage']
       const formConfig = []
-      this.formFieldSrv.initEntity$([{fld: 'form', operator: '==', value: form['id']}])
-      .map(flds => flds.sort(function(a,b) {return (a['order'] > b['order']) ? 1 : ((b['order'] > a['order']) ? -1 : 0);}))
+      this.formFieldSrv.initEntity$([{fld: 'form', operator: '==', value: form['id']}]).pipe(
+      map(flds => flds.sort(function(a, b) {return (a['order'] > b['order']) ? 1 : ((b['order'] > a['order']) ? -1 : 0)})))
       .subscribe(flds => {flds.forEach(fld => {
-          const fieldType = ['input', 'select', 'checkbox', 'stringdisplay', 'imagedisplay'][['invoer', 'keuze', 'vink', 'tekst', 'afbeelding'].findIndex(t => t == fld['type'])]
-          let validation = []
-          if(fld['required']){validation.push(Validators.required)}
-          if(!isNaN(fld['minLength'])){validation.push(Validators.minLength(+fld['minLength']))}
-          let transform = [undefined, forceUppercase, forceCapitalize][['geen', 'hoofdletters', 'woord-hoofdletter'].findIndex(t => t == fld['transform'])]
-          if(fieldType == 'imagedisplay'){
+          const fieldType = ['input', 'select', 'checkbox', 'stringdisplay', 'imagedisplay'][['invoer', 'keuze', 'vink', 'tekst', 'afbeelding'].findIndex(t => t === fld['type'])]
+          const validation = []
+          if (fld['required']) {validation.push(Validators.required)}
+          if (!isNaN(fld['minLength'])) {validation.push(Validators.minLength(+fld['minLength']))}
+          const transform = [undefined, forceUppercase, forceCapitalize][['geen', 'hoofdletters', 'woord-hoofdletter'].findIndex(t => t === fld['transform'])]
+          if (fieldType === 'imagedisplay') {
             this.db.getUniqueValueId(`${this.gs.entityBasePath}/images`, 'id', fld['image']).subscribe(rec => {
-              if(rec){
-                //async dus op dat moment naar juiste index zoeken:
-                formConfig[formConfig.findIndex(c => c.name == fld['name'])].value = rec.name
+              if (rec) {
+                // async dus op dat moment naar juiste index zoeken:
+                formConfig[formConfig.findIndex(c => c.name === fld['name'])].value = rec.name
               }
-            })          
+            })
           }
           const optionsStr: string = fld['options']; const options = optionsStr ? optionsStr.split(',') : []
           formConfig.push({type: fieldType, label: fld['label'], name: fld['name'], placeholder: fld['label'], value: fld['value'], options: options, validation: validation, inputValueTransform: transform})
         })
         this.cs.insertDialog(formConfig, {}, `${this.gs.entityBasePath}/formresults`, this['embeds'] ? this['embeds'] : undefined, 'Invulformulier')
         .then(id => {
-          if(postMessage){
+          if (postMessage) {
             this.ps.buttonDialog(postMessage, 'OK')
           }
           this.pushSubscribe()

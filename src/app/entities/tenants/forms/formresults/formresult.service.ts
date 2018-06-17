@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore'
 
-import { GlobService } from '../../../../services/glob.service';
-import { EntityBaseClass } from '../../../../baseclasses/entity';
+import { GlobService } from '../../../../services/glob.service'
+import { EntityBaseClass } from '../../../../baseclasses/entity'
 
-import { FormResult } from './formresult.model';
+import { FormResult } from './formresult.model'
 
 @Injectable()
 export class FormResultService extends EntityBaseClass {

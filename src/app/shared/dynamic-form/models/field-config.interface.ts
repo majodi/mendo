@@ -1,17 +1,19 @@
-import { Type } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
-import { LookupItem } from '../../custom-components/models/lookup-item.model';
-import { ComponentType } from '@angular/core/src/render3';
+import { Type } from '@angular/core'
+import { ValidatorFn } from '@angular/forms'
+import { LookupItem } from '../../custom-components/models/lookup-item.model'
+import { ComponentType } from '@angular/core/src/render3'
 
+// tslint:disable-next-line:class-name
 export interface lookupFld {
   path: string,
   tbl: string,
   fld: string,
-  overruleVirtual?: string  //normally fld will be used to set table/brw virtual, here an other field can be used (like an image...)
+  overruleVirtual?: string  // normally fld will be used to set table/brw virtual, here an other field can be used (like an image...)
 }
 
 // overruleFunction?: Function //if available this function will be used to determine value. Input parameters are (record, field) where field is either fld or overruleVirtual
 
+// tslint:disable-next-line:class-name
 export interface updateWithLookup {
   fld: string,
   lookupFld?: string,
@@ -39,7 +41,7 @@ export interface FieldConfig {
   customValueChg?: Function,
   customValidator?: Function,
   customLookupItems?: LookupItem[],
-  customLookupUniqueId?: Function, //kan toch weg, db dependancy direct in lookup component...
+  customLookupUniqueId?: Function, // kan toch weg, db dependancy direct in lookup component...
   customLookupFld?: lookupFld,
   customLookupComponent?: Type<any>,
   customLookupItem?: LookupItem,

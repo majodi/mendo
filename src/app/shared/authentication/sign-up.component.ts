@@ -1,7 +1,8 @@
-import { Component, OnInit, trigger, transition, style, animate } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { trigger, transition, style, animate } from '@angular/animations'
+import { Router } from '@angular/router'
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service'
 
 @Component({
   selector: 'app-sign-up',
@@ -12,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
   img {display: block; margin: 0px auto 10px;}
   .spacer {-webkit-box-flex: 1; -ms-flex: 1 1 auto; flex: 1 1 auto;}
     `],
-  template: 
+  template:
   `
 <div [@pageAnim] fxLayout="row" fxLayoutAlign="center center" style="margin-top:100px">
   <mat-card style="width:250px; background-color:aliceblue">
@@ -44,7 +45,7 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private as: AuthService,
-    private router: Router    
+    private router: Router
   ) {}
 
   ngOnInit() {}
@@ -64,5 +65,5 @@ export class SignUpComponent implements OnInit {
       this.info = e
     })
   }
-  
+
 }

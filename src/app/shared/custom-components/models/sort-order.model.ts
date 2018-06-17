@@ -1,5 +1,5 @@
 export interface SortOrder {
-    fld: string;
-    sortOrder: 'asc' | 'desc';
+    fld: string
+    sortOrder: 'asc' | 'desc'
 }
-  
+

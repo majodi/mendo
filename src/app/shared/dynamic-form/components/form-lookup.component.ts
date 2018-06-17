@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component } from '@angular/core'
+import { FormGroup } from '@angular/forms'
 
-import { Field } from '../models/field.interface';
-import { FieldConfig } from '../models/field-config.interface';
+import { Field } from '../models/field.interface'
+import { FieldConfig } from '../models/field-config.interface'
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'form-lookup',
   template: `
 <div *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group">
@@ -25,13 +26,13 @@ import { FieldConfig } from '../models/field-config.interface';
 `
 })
 export class FormLookupComponent implements Field {
-  config: FieldConfig;
-  group: FormGroup;
-  onValueChg: Function;
+  config: FieldConfig
+  group: FormGroup
+  onValueChg: Function
 
   valueChanged(rec) {
     this.config.customValueChg(this.config.name, rec)
     this.config.value = rec.id
   }
-  
+
 }

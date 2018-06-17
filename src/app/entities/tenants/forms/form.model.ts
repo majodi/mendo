@@ -1,13 +1,13 @@
-import { Validators } from '@angular/forms';
-import { EntityMeta } from '../../../models/entity-meta.model';
-import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
+import { Validators } from '@angular/forms'
+import { EntityMeta } from '../../../models/entity-meta.model'
+import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions'
 
 export interface Form {
-    id: string;
-    meta: EntityMeta;
-    code: string;
-    description: string;
-    postMessage: string;
+    id: string
+    meta: EntityMeta
+    code: string
+    description: string
+    postMessage: string
 }
 
 export const defaultTitle = 'Formulieren'

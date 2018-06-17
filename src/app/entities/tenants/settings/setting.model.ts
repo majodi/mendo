@@ -1,12 +1,12 @@
-import { Validators } from '@angular/forms';
-import { EntityMeta } from '../../../models/entity-meta.model';
-import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions';
+import { Validators } from '@angular/forms'
+import { EntityMeta } from '../../../models/entity-meta.model'
+import { forceUppercase } from '../../../shared/dynamic-form/models/form-functions'
 
 export interface Setting {
-    id: string;
-    meta: EntityMeta;
-    code: string;
-    setting: string;
+    id: string
+    meta: EntityMeta
+    code: string
+    setting: string
 }
 
 export const defaultTitle = 'Instellingen'

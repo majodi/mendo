@@ -1,0 +1,113 @@
+Package                                  Current           Wanted         Latest  Location
+@angular/animations                        5.2.3           5.2.11          6.0.3  mendo
+@angular/cdk                               5.1.1            5.2.5          6.2.1  mendo
+@angular/cli                               1.6.7            1.6.7          6.0.7  mendo
+@angular/common                            5.2.3           5.2.11          6.0.3  mendo
+@angular/compiler                          5.2.3           5.2.11          6.0.3  mendo
+@angular/compiler-cli                      5.2.3           5.2.11          6.0.3  mendo
+@angular/core                              5.2.3           5.2.11          6.0.3  mendo
+@angular/flex-layout               2.0.0-beta.12       2.0.0-rc.1  5.0.0-beta.14  mendo
+@angular/forms                             5.2.3           5.2.11          6.0.3  mendo
+@angular/http                              5.2.3           5.2.11          6.0.3  mendo
+@angular/language-service                  5.2.3           5.2.11          6.0.3  mendo
+@angular/material                          5.1.1            5.2.5          6.2.1  mendo
+@angular/platform-browser                  5.2.3           5.2.11          6.0.3  mendo
+@angular/platform-browser-dynamic          5.2.3           5.2.11          6.0.3  mendo
+@angular/router                            5.2.3           5.2.11          6.0.3  mendo
+@angular/service-worker                    5.2.3           5.2.11          6.0.3  mendo
+@types/jasmine                             2.8.6            2.8.8          2.8.8  mendo
+@types/node                               6.0.96          6.0.112         10.3.1  mendo
+angularfire2                          5.0.0-rc.6  5.0.0-rc.5-next    5.0.0-rc.10  mendo
+codelyzer                                  4.1.0            4.3.0          4.3.0  mendo
+core-js                                    2.5.3            2.5.7          2.5.7  mendo
+firebase                                   4.9.1           4.13.1          5.0.4  mendo
+jasmine-core                               2.8.0            2.8.0          3.1.0  mendo
+karma                                      2.0.0            2.0.2          2.0.2  mendo
+karma-coverage-istanbul-reporter           1.4.1            1.4.3          2.0.1  mendo
+karma-jasmine                              1.1.1            1.1.2          1.1.2  mendo
+karma-jasmine-html-reporter                0.2.2            0.2.2          1.1.0  mendo
+protractor                                 5.1.2            5.1.2          5.3.2  mendo
+rxjs                                       5.5.6           5.5.11          6.2.0  mendo
+ts-node                                    4.1.0            4.1.0          6.1.0  mendo
+tslint                                     5.9.1            5.9.1         5.10.0  mendo
+typescript                                 2.5.3            2.5.3          2.9.1  mendo
+zone.js                                   0.8.20           0.8.26         0.8.26  mendo
+
+na rxjs-5-to-6-migrate -p ~/dev/angular/mendo
+
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/services/auth.service.ts
+Fixed 10 error(s) in /Users/majodi/dev/angular/mendo/src/app/services/db.service.ts
+Fixed 4 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/pulldown.component.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/table.component.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/grid.component.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/lookup.component.ts
+Fixed 6 error(s) in /Users/majodi/dev/angular/mendo/src/app/baseclasses/entity.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/homepage.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/baseclasses/browse.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/articles/articles.brw.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/messages/message.service.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/organisations/employees/employees.brw.ts
+Fixed 12 error(s) in /Users/majodi/dev/angular/mendo/src/app/rxjs-operators.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/forms/formresults/formresults.brw.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/orderlines/orderlines.brw.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/store/store.ts
+
+WARNING: /Users/majodi/dev/angular/mendo/src/app/baseclasses/browse.ts[2, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/baseclasses/entity.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/baseclasses/entity.ts[6, 22]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/baseclasses/entity.ts[8, 20]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/baseclasses/entity.ts[10, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/articles/articles.brw.ts[2, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/forms/formresults/formresults.brw.ts[2, 20]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/forms/formresults/formresults.brw.ts[4, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/messages/message.service.ts[2, 21]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/orderlines/orderlines.brw.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/orderlines/orderlines.brw.ts[4, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/orderlines/orderlines.brw.ts[6, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/organisations/employees/employees.brw.ts[2, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/organisations/employees/employees.brw.ts[4, 21]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/store/store.ts[2, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/store/store.ts[4, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/homepage.ts[2, 20]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/homepage.ts[4, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/services/auth.service.ts[2, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/services/db.service.ts[4, 21]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/services/db.service.ts[6, 20]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/grid.component.ts[2, 37]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/grid.component.ts[4, 29]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/grid.component.ts[6, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/lookup.component.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/lookup.component.ts[4, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/lookup.component.ts[6, 29]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/lookup.component.ts[8, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/pulldown.component.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/pulldown.component.ts[4, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/pulldown.component.ts[6, 29]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/pulldown.component.ts[8, 26]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/table.component.ts[2, 37]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/table.component.ts[4, 29]: outdated import path
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/table.component.ts[6, 26]: outdated import path
+
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/services/auth.service.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/services/db.service.ts
+Fixed 5 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/pulldown.component.ts
+Fixed 3 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/table.component.ts
+Fixed 3 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/grid.component.ts
+Fixed 5 error(s) in /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/lookup.component.ts
+Fixed 5 error(s) in /Users/majodi/dev/angular/mendo/src/app/baseclasses/entity.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/homepage.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/baseclasses/browse.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/articles/articles.brw.ts
+Fixed 1 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/messages/message.service.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/organisations/employees/employees.brw.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/forms/formresults/formresults.brw.ts
+Fixed 4 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/orderlines/orderlines.brw.ts
+Fixed 2 error(s) in /Users/majodi/dev/angular/mendo/src/app/entities/tenants/store/store.ts
+
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/forms/formresults/formresults.brw.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/organisations/employees/employees.brw.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/entities/tenants/store/store.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/homepage.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/services/db.service.ts[4, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/grid.component.ts[2, 1]: duplicate RxJS import
+WARNING: /Users/majodi/dev/angular/mendo/src/app/shared/custom-components/components/table.component.ts[2, 1]: duplicate RxJS import

@@ -15,5 +15,5 @@ export const defaultTableTemplate = `
   [initialSortOrder]="initialSortOrder"
   [columnDefs]="colDef"
   (clicked)="clicked($event)"
-></app-table>  
+></app-table>
 `

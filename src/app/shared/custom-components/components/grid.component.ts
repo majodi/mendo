@@ -1,9 +1,12 @@
-import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, trigger, transition, style, animate, ViewChild, ElementRef } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
+import {distinctUntilChanged, debounceTime, takeUntil} from 'rxjs/operators'
+import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core'
+import { trigger, transition, style, animate } from '@angular/animations'
 
-import { Tile } from '../models/tile.model';
-import { ObservableMedia } from '@angular/flex-layout';
+import { Observable, Subject } from 'rxjs'
+
+import { Tile } from '../models/tile.model'
+import { ObservableMedia } from '@angular/flex-layout'
 
 @Component({
   selector: 'app-grid',
@@ -14,6 +17,7 @@ styles: [`
 .outer {white-space: nowrap; overflow-x:scroll; background-color: aliceblue}
 .inner {margin: 0.5% 0.5% 0.5%; display: inline-block;}
 .item-title {font-size: calc(16px + 0.25vw); line-height: calc(22px + 0.25vw); margin-bottom: 0}
+.bulletin-title {font-size: calc(16px + 1vw); line-height: calc(22px + 1vw); margin-bottom: 0; margin-top:22px}
 .badge {margin: 0px; padding: 2px 6px 0px; border: 1px solid black; color: white; border-radius: 20px 20px; background: red; width: 10px; height: 20px;}
 .left {position: relative; top: -150px;}
 .right {position: relative; top: -150px; float: right;}
@@ -35,18 +39,31 @@ template: `
   <div #scrollarea [ngClass]="{'outer': singleRow}">
     <div *ngFor="let tile of tiles" class="inner" [ngStyle]="getItemStyle(tile)">
       <div fxLayout="column" fxLayoutAlign="start center" (click)="onClick(tile)">
-        <div>
+        <div *ngIf="tile.image">
           <img src="{{tile.image}}" onerror="this.onerror=null;this.src='assets/image.svg'" [ngStyle]="getImageStyle()">
         </div>
-        <div style="white-space:normal">
+        <div *ngIf="!bulletinStyle" style="white-space:normal">
           <p class="mat-headline item-title"><b>{{tile.title}}</b></p>
         </div>
+        <div *ngIf="bulletinStyle" style="white-space:normal">
+          <p class="mat-headline bulletin-title"><b>{{tile.title}}</b></p>
+        </div>
         <div>
-          <p class="mat-body-2" style="line-height:18px; margin:0; white-space:pre-wrap;">{{tile.description}}</p>
+          <p *ngIf="!bulletinStyle" class="mat-body-2" style="line-height:18px; margin:0; white-space:pre-wrap; max-width:1024px">{{tile.description}}</p>
           <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
         </div>
-        <div *ngIf="buttonText || tile.buttonText" fxFlex="20" fxFlexAlign="start">
+        <div>
+          <p *ngIf="bulletinStyle" class="mat-subheading-2" style="line-height:18px; margin:0; white-space:pre-wrap; max-width:1024px">{{tile.description}}</p>
+          <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
+        </div>
+        <div *ngIf="!bulletinStyle && (buttonText || tile.buttonText)" fxFlex="20" fxFlexAlign="start">
           <button mat-button color="primary" (click)="onButtonClick(tile, $event)"><mat-icon>{{buttonIcon}}</mat-icon>{{tile.buttonText ? tile.buttonText : buttonText}}</button>
+          <br/><br/>
+        </div>
+        <div *ngIf="bulletinStyle && (buttonText || tile.buttonText)">
+          <button mat-button color="primary" (click)="onButtonClick(tile, $event)" style="font-size:30px; margin-top:30px">
+            <mat-icon style="font-size:40px; margin-right:20px; padding-bottom:16px">{{buttonIcon}}</mat-icon>{{tile.buttonText ? tile.buttonText : buttonText}}
+          </button>
           <br/><br/>
         </div>
       </div>
@@ -82,9 +99,10 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   @Input() divider: boolean
   @Input() highlightSelected: boolean
   @Input() backButton: boolean
-  @Output() clicked = new EventEmitter();
-  @Output() buttonClicked = new EventEmitter();
-  @Output() actionButtonClicked = new EventEmitter();
+  @Input() bulletinStyle: boolean
+  @Output() clicked = new EventEmitter()
+  @Output() buttonClicked = new EventEmitter()
+  @Output() actionButtonClicked = new EventEmitter()
   tiles: Tile[]
   selected: Tile
 
@@ -92,17 +110,17 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
     public media: ObservableMedia,
   ) {
     this.mediaIsXs = this.media.isActive('xs')
-    media.asObservable().takeUntil(this.ngUnsubscribe).subscribe((change) => {
+    media.asObservable().pipe(takeUntil(this.ngUnsubscribe)).subscribe((change) => {
       this.mediaIsXs = this.media.isActive('xs')
     })
   }
 
   ngOnInit() {
-    this.scrollWidth = this.maxItemWidth != undefined ? parseInt(this.maxItemWidth)/100 : 0.3
-    this.filterKeyUp
-    .takeUntil(this.ngUnsubscribe)
-    .debounceTime(400)
-    .distinctUntilChanged()
+    this.scrollWidth = this.maxItemWidth !== undefined ? parseInt(this.maxItemWidth, 10) / 100 : 0.3
+    this.filterKeyUp.pipe(
+    takeUntil(this.ngUnsubscribe),
+    debounceTime(400),
+    distinctUntilChanged(), )
     .subscribe(v => this.applyFilter(v))
   }
 
@@ -117,44 +135,44 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   applyFilter(filter) {
     this.tiles = this.data.filter(item => {
       let flatDataStr = ''
-      Object.keys(item).filter(v => !['id','meta'].includes(v)).map(l1 => {
-              if(typeof item[l1] == 'object' && item[l1] != null) {
+      Object.keys(item).filter(v => !['id', 'meta'].includes(v)).map(l1 => {
+              if (typeof item[l1] === 'object' && item[l1] != null) {
                   Object.keys(item[l1]).map(l2 => flatDataStr += item[l1][l2] ? item[l1][l2] : '')
-              } else {flatDataStr += item[l1] ? item[l1] : ''}  
-      })      
-      return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) != -1;    
+              } else {flatDataStr += item[l1] ? item[l1] : ''}
+      })
+      return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1
     })
   }
 
   getItemStyle(tile) {
     return {
       'width': '100%',
-      'max-width': this.maxItemWidth != undefined ? this.maxItemWidth + '%': '30%', // leave default at 30% for store module
-      'border': this.highlightSelected && tile == this.selected ? '3px solid grey' : ''
+      'max-width': this.maxItemWidth !== undefined ? this.maxItemWidth + '%' : '30%', // leave default at 30% for store module
+      'border': this.highlightSelected && tile === this.selected ? '3px solid grey' : ''
     }
   }
 
   getImageStyle() {
     return {
-      'max-width':'100%',
-      'max-height': this.maxImageHeight != undefined ? this.maxImageHeight + 'vw' : '20vw'
+      'max-width': '100%',
+      'max-height': this.maxImageHeight !== undefined ? this.maxImageHeight + 'vw' : '20vw'
     }
   }
 
   onClick(tile) {
-    if(tile == 'back') {
+    if (tile === 'back') {
       this.clicked.emit({id: 'back'})
     } else {
       this.selected = tile
-      this.clicked.emit(tile)  
+      this.clicked.emit(tile)
     }
   }
 
   onButtonClick(e, event?) {
     this.buttonClicked.emit(e)
-    if(event != undefined){
-      event.preventDefault();
-      event.stopPropagation();  
+    if (event !== undefined) {
+      event.preventDefault()
+      event.stopPropagation()
     }
   }
 
@@ -163,47 +181,47 @@ export class GridComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   scrollRight() {
-    this.scrollTo(this.scrollAreaRef.nativeElement, this.scrollAreaRef.nativeElement.scrollLeft + this.scrollAreaRef.nativeElement.clientWidth*this.scrollWidth)
+    this.scrollTo(this.scrollAreaRef.nativeElement, this.scrollAreaRef.nativeElement.scrollLeft + this.scrollAreaRef.nativeElement.clientWidth * this.scrollWidth)
   }
 
   scrollLeft() {
-    this.scrollTo(this.scrollAreaRef.nativeElement, this.scrollAreaRef.nativeElement.scrollLeft - this.scrollAreaRef.nativeElement.clientWidth*this.scrollWidth)
+    this.scrollTo(this.scrollAreaRef.nativeElement, this.scrollAreaRef.nativeElement.scrollLeft - this.scrollAreaRef.nativeElement.clientWidth * this.scrollWidth)
   }
 
   scrollTo(element, to = 0, duration = 1000) {
-    const start = element.scrollLeft;
-    const change = to - start;
-    const increment = 20;
-    let currentTime = 0;
+    const start = element.scrollLeft
+    const change = to - start
+    const increment = 20
+    let currentTime = 0
 
     const animateScroll = (() => {
 
-      currentTime += increment;
+      currentTime += increment
 
-      const val = this.easeInOutQuad(currentTime, start, change, duration);
+      const val = this.easeInOutQuad(currentTime, start, change, duration)
 
-      element.scrollLeft = val;
+      element.scrollLeft = val
 
       if (currentTime < duration) {
-        setTimeout(animateScroll, increment);
+        setTimeout(animateScroll, increment)
       }
-    });
+    })
 
-    animateScroll();
-  };
+    animateScroll()
+  }
 
   easeInOutQuad(t, b, c, d) {
-    t /= d/2;
-    if (t < 1) return c/2*t*t + b;
-    t--;
-    return -c/2 * (t*(t-2) - 1) + b;
-  };
+    t /= d / 2
+    if (t < 1) { return c / 2 * t * t + b }
+    t--
+    return -c / 2 * (t * (t - 2) - 1) + b
+  }
 
   setColumns() {}
 
   ngOnDestroy() {
     this.ngUnsubscribe.next()
     this.ngUnsubscribe.complete()
-  }  
+  }
 
 }

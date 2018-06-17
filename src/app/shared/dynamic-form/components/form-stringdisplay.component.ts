@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component } from '@angular/core'
+import { FormGroup } from '@angular/forms'
 
-import { Field } from '../models/field.interface';
-import { FieldConfig } from '../models/field-config.interface';
-import { Observable } from 'rxjs';
+import { Field } from '../models/field.interface'
+import { FieldConfig } from '../models/field-config.interface'
+import { Observable } from 'rxjs'
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'form-stringdisplay',
   template: `
   <div *ngIf="!config.hidden && !config.doNotPopulate">
@@ -14,7 +15,7 @@ import { Observable } from 'rxjs';
   `
 })
 export class FormStringdisplayComponent implements Field {
-  config: FieldConfig;
-  group: FormGroup;
-  onValueChg: Function;
+  config: FieldConfig
+  group: FormGroup
+  onValueChg: Function
 }

@@ -1,8 +1,8 @@
-import { NgModule }             from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
 
-import { AuthGuard } from '../../auth-guard.service';
-import { StoreComponent } from '../../entities/tenants/store/store';
+import { AuthGuard } from '../../auth-guard.service'
+import { StoreComponent } from '../../entities/tenants/store/store'
 
 const store_userRoutes: Routes = [
   { path: '', canActivate: [AuthGuard],
@@ -10,7 +10,7 @@ const store_userRoutes: Routes = [
       { path: 'store', component: StoreComponent },
     ]
   }
-];
+]
 
 @NgModule({
   imports: [

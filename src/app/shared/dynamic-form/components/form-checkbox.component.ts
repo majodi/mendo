@@ -1,10 +1,11 @@
-import { Component, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, ViewContainerRef } from '@angular/core'
+import { FormGroup } from '@angular/forms'
 
-import { Field } from '../models/field.interface';
-import { FieldConfig } from '../models/field-config.interface';
+import { Field } from '../models/field.interface'
+import { FieldConfig } from '../models/field-config.interface'
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'form-checkbox',
   template: `
 <div *ngIf="!config.doNotPopulate" [formGroup]="group">
@@ -16,13 +17,13 @@ import { FieldConfig } from '../models/field-config.interface';
   `
 })
 export class FormCheckboxComponent implements Field {
-  config: FieldConfig;
-  group: FormGroup;
-  onValueChg: Function;
+  config: FieldConfig
+  group: FormGroup
+  onValueChg: Function
 
-  onChange(e) { //checkbox not included in customValueChg, so after change
+  onChange(e) { // checkbox not included in customValueChg, so after change
     this.config.value = e.checked
-    if(this.onValueChg != undefined) this.onValueChg(this.config.name, this.config.value);
+    if (this.onValueChg !== undefined) { this.onValueChg(this.config.name, this.config.value) }
   }
-  
+
 }
