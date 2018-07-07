@@ -6,6 +6,8 @@ import { GlobService } from '../../../../services/glob.service'
 import { DbService } from '../../../../services/db.service'
 
 import { FieldConfig } from '../../models/field-config.interface'
+import { MatDialogRef } from '@angular/material'
+import { FormDialogComponent } from '../form-dialog/form-dialog.component'
 
 @Component({
   exportAs: 'dynamicForm',
@@ -23,7 +25,9 @@ import { FieldConfig } from '../../models/field-config.interface'
         [config]="field"
         [group]="form"
         [formAction]="formAction"
-        [onValueChg]="onValueChg">
+        [onValueChg]="onValueChg"
+        [form]="form"
+        [dialogRef]="dialogRef">
       </ng-container>
       <mat-hint *ngIf="info" align="end" style="color:red">{{info}}</mat-hint>
       <mat-progress-bar *ngIf="us.progress > 0" mode="determinate" [value]="us.progress"></mat-progress-bar>
@@ -48,6 +52,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   @Input() config: FieldConfig[] = []
   @Input() formAction = 0
   @Input() onValueChg: Function
+  @Input() dialogRef: MatDialogRef<FormDialogComponent>
   @Output() submit: EventEmitter<any> = new EventEmitter<any>()
   form: FormGroup
   toPopulate: FieldConfig[] = []
@@ -119,6 +124,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   handleSubmit(action: string, event?: Event) {
+    // console.log('handle: ', action, event)
     if (event !== undefined) {
       event.preventDefault()
       event.stopPropagation()
@@ -130,11 +136,13 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       if (config.type === 'filepick' && this.formAction === 1) { // only on insert!!
         this.waitOnUpload = true
         this.us.pushUpload(config.customFile).subscribe(url => {
-          this.waitOnUpload = false
-          this.us.progress = 0
-          this.value['fileName'] = config.customFile.name
-          this.value[config.name] = url
-          this.submit.emit({response: action, value: this.value})
+          if (url) {
+            this.waitOnUpload = false
+            this.us.progress = 0
+            this.value['fileName'] = config.customFile.name
+            this.value[config.name] = url
+            this.submit.emit({response: action, value: this.value})
+        }
         })
       }
       if (config.type === 'input' && config.inputValueTransform !== undefined) {

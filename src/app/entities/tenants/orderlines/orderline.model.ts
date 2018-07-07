@@ -32,7 +32,8 @@ export const defaultColDef = [
 export const defaultFormConfig: FieldConfig[] = [
     {type: 'lookup',        label: 'Artikel',   name: 'article',    placeholder: 'Artikel',  value: '', doNotPopulate: false,
         inputValueTransform: forceUppercase,
-        customLookupFld: {path: 'articles', tbl: 'article', fld: 'description_s'},
+        // customLookupFld: {path: 'articles', tbl: 'article', fld: 'description_s'},
+        customLookupFld: {path: 'articles', tbl: 'article', fld: 'code'},
         customLookupComponent: ArticlesBrwComponent,
         customLookupItem: {id: '', display: 'code', subDisplay: 'description_s', addSearch: 'description_l'},
         customUpdateWithLookup: [
@@ -50,7 +51,7 @@ export const defaultFormConfig: FieldConfig[] = [
             {fld: 'imageid', lookupFld: 'image'}
         ]
     },
-    {type: 'lookup',        label: 'Besteller',     name: 'meta.modifier',  placeholder: 'Besteller',   value: '', doNotPopulate: false, customLookupFld: {path: 'users', tbl: 'user', fld: 'displayName'}},
+    {type: 'lookup',        label: 'Besteller',     name: 'meta.modifier',  placeholder: 'Besteller',   value: '', doNotPopulate: false, hidden: true, customLookupFld: {path: 'users', tbl: 'user', fld: 'displayName'}},
     {type: 'stringdisplay', label: 'Afbeelding',    name: 'imageid',        placeholder: 'Afbeelding',  value: '', doNotPopulate: true},
     {type: 'imagedisplay',  label: 'Afbeelding',    name: 'imagedisplay',   placeholder: 'Afbeelding',  value: '', imageStyle: {'width': '50%'}},
     {type: 'stringdisplay', label: 'Artikel',       name: 'description_s',  placeholder: 'Artikel',     value: '', doNotPopulate: true},

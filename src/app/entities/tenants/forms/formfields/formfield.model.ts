@@ -18,6 +18,8 @@ export interface FormField {
     label: string
     transform: string
     required: boolean
+    isEmail: boolean
+    emailNameField: string
     minLength: number
     options: string
     value: string
@@ -34,14 +36,16 @@ export const defaultColDef = [
     {name: 'type',  header: 'Type'},
   ]
 export const defaultFormConfig = [
-    {type: 'input',         label: 'Veldnaam',            name: 'name',             placeholder: 'Veldnaam',              value: '', validation: [Validators.required]},
-    {type: 'select',        label: 'Type',                name: 'type',             placeholder: 'Veld Type',             value: '', options: ['invoer', 'keuze', 'vink', 'tekst', 'afbeelding']},
-    {type: 'input',         label: 'Prompt',              name: 'label',            placeholder: 'Prompt',                value: ''},
-    {type: 'select',        label: 'Transformatie',       name: 'transform',        placeholder: 'Invoer transformatie',  value: '', options: ['geen', 'hoofdletters', 'woord-hoofdletter']},
-    {type: 'checkbox',      label: 'Verplicht',           name: 'required',         placeholder: 'Invoer verplicht',      value: false},
-    {type: 'input',         label: 'Min. Lengte',         name: 'minLength',        placeholder: 'Minimale lengte',       value: '', inputType: 'number'},
-    {type: 'input',         label: 'Keuze Opties',        name: 'options',          placeholder: 'Keuze Opties',          value: ''},
-    {type: 'input',         label: 'Waarde',              name: 'value',            placeholder: 'Veld Waarde',           value: ''},
+    {type: 'input',     label: 'Veldnaam',      name: 'name',       placeholder: 'Veldnaam',                value: '', validation: [Validators.required]},
+    {type: 'select',    label: 'Type',          name: 'type',       placeholder: 'Veld Type',               value: '', options: ['invoer', 'keuze', 'vink', 'tekst', 'afbeelding']},
+    {type: 'input',     label: 'Prompt',        name: 'label',      placeholder: 'Prompt',                  value: ''},
+    {type: 'select',    label: 'Transformatie', name: 'transform',  placeholder: 'Invoer transformatie',    value: '', options: ['geen', 'hoofdletters', 'woord-hoofdletter']},
+    {type: 'checkbox',  label: 'Verplicht',     name: 'required',   placeholder: 'Invoer verplicht',        value: false},
+    {type: 'checkbox',  label: 'Is Email',      name: 'isEmail',    placeholder: 'Is Email',                value: false},
+    {type: 'input',     label: 'Email naam veld', name: 'emailNameField', placeholder: 'Email naam veld',   value: ''},
+    {type: 'input',     label: 'Min. Lengte',   name: 'minLength',  placeholder: 'Minimale lengte',         value: '', inputType: 'number'},
+    {type: 'input',     label: 'Keuze Opties',  name: 'options',    placeholder: 'Keuze Opties',            value: ''},
+    {type: 'input',     label: 'Waarde',        name: 'value',      placeholder: 'Veld Waarde',             value: ''},
     {
         type: 'lookup',
         label: 'Afbeelding',

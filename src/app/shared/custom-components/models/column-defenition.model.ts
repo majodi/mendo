@@ -7,6 +7,7 @@ export interface headerSelectItem {
 export interface ColumnDefenition {
     name: string
     header?: string
+    requiredModules?: string[]
     hideXs?: boolean
     sort?: boolean
     filter?: boolean

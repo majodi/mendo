@@ -3,11 +3,8 @@ export const fullNavList = [
     {module: 'app',   level: 50,  text: 'Bulletins',        icon: 'event_note',    link: 'app-tenant/bulletins'},
     {module: 'store', level: 0,   text: 'Winkel',           icon: 'store',         link: 'store-user/store'},
     {module: 'store', level: 25,  text: 'Orders',           icon: 'list',          link: 'store-tenant/orders'},
-    // {module: 'store', level: 50,  text: 'Orderregels',      icon: 'view_list',     link: 'store-tenant/orderlines'},
     {module: 'app',   level: 50,  text: 'Settings',         icon: 'settings',      link: 'app-tenant/settings'},
     {module: 'app',   level: 50,  text: 'Formulieren',      icon: 'art_track',     link: 'app-tenant/forms'},
-    // {module: 'app',   level: 50,  text: 'Formuliervelden',  icon: 'drag_handle',   link: 'app-tenant/formfields'},
-    // {module: 'app',   level: 50,  text: 'Formulierwaarden', icon: 'help_outline',  link: 'app-tenant/formresults'},
     {module: 'app',   level: 100, text: 'Tenants',          icon: 'store',         link: 'app-super/tenants'},
     {module: 'app',   level: 50,  text: 'Organisaties',     icon: 'business',      link: 'app-tenant/organisations'},
     {module: 'app',   level: 25,  text: 'Medewerkers',      icon: 'person',        link: 'app-tenant/employees'},
@@ -19,6 +16,9 @@ export const fullNavList = [
     {module: 'app',   level: 50,  text: 'Berichten',        icon: 'message',       link: 'app-tenant/messages'},
     {module: 'app',   level: 50,  text: 'Gebruikers',       icon: 'verified_user', link: 'app-tenant/users'},
     {module: 'app',   level: 100, text: 'Email Adressen',   icon: 'email',         link: 'app-super/emailaddresses'},
+    {module: 'trip',  level: 100, text: 'Trip registratie', icon: 'trip_origin',   link: '@trip'},
+    {module: 'trip',  level: 100, text: 'Trip Adressen',    icon: 'trip_origin',   link: '#trip-tenant/tripaddresses'},
+    {module: 'trip',  level: 100, text: 'Voertuigen',       icon: 'directions_car', link: '#trip-tenant/vehicles'},
   ]
 
   // bgBGdJTa1xXBDlrYqwNG (tenant van Orsouw)

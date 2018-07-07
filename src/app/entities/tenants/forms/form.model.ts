@@ -16,6 +16,7 @@ export const defaultColDef = [
     {name: 'code',        header: 'Code', sort: true},
     {name: 'description', header: 'Omschrijving'},
     {name: 'edit',        header: 'Velden', icon: 'edit'},
+    {name: 'copy',        header: 'Kopie', icon: 'file_copy'},
     {name: 'results',     header: 'Data', icon: 'inbox'},
   ]
 export const defaultFormConfig = [

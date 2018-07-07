@@ -5,6 +5,8 @@ import { FormGroup } from '@angular/forms'
 
 import { Field } from '../models/field.interface'
 import { FieldConfig } from '../models/field-config.interface'
+import { MatDialogRef } from '@angular/material'
+import { FormDialogComponent } from '../containers/form-dialog/form-dialog.component'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -14,6 +16,7 @@ import { FieldConfig } from '../models/field-config.interface'
       <app-pulldown
       ngDefaultControl
       [isDisabled]="config.disabled"
+      [dialogRef]="dialogRef"
       [value]="config.value"
       [formControlName]="config.name"
       [lookupPlaceholder]="config.placeholder"
@@ -27,6 +30,8 @@ export class FormPulldownComponent implements Field {
   config: FieldConfig
   group: FormGroup
   onValueChg: Function
+  form: FormGroup
+  dialogRef: MatDialogRef<FormDialogComponent>
 
   valueChanged(value) {
     this.config.customValueChg(this.config.name, value)

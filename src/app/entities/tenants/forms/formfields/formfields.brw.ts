@@ -18,13 +18,6 @@ import { Validators } from '@angular/forms'
 })
 export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements OnInit, OnDestroy {
 
-  // HIDE
-  // 'invoer'                                                      'options',  'value',  'image', 'imagedisplay'
-  // 'keuze'                 'transform', 'required', 'minLength',             'value',  'image', 'imagedisplay'
-  // 'vink'                  'transform', 'required', 'minLength', 'options',  'value',  'image', 'imagedisplay'
-  // 'tekst'       'label',  'transform', 'required', 'minLength', 'options',  'value',  'image', 'imagedisplay'
-  // 'afbeelding'  'label',  'transform', 'required', 'minLength', 'options',  'value'
-
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value, formAction?) => {
       // console.log('embed onvaluechg, ctrl: ', ctrl, formAction)
@@ -35,10 +28,12 @@ export class FormFieldsBrwComponent extends BrwBaseClass<FormField[]> implements
           if (c.name === 'value' || c.name === 'order') {c.doNotPopulate = false}
           if ((c.name === 'name' || c.name === 'type') && (formAction === undefined || formAction !== 2)) {c.doNotPopulate = false}
 
-          if (['tabelinstelling', 'showInBrw', 'hideXs', 'allowSort', 'allowfilter'].includes(c.name) && ['invoer', 'keuze', 'vink'].includes(value)) {c.doNotPopulate = false}
+          if (['tabelinstelling', 'showInBrw', 'hideXs', 'allowSort', 'allowfilter'].includes(c.name) && ['invoer', 'keuze', 'vink', 'tekst'].includes(value)) {c.doNotPopulate = false}
           if (c.name === 'label'        && ['invoer', 'keuze', 'vink', 'tekst'].includes(value)) {c.doNotPopulate = false}
           if (c.name === 'transform'    && value === 'invoer') {c.doNotPopulate = false}
           if (c.name === 'required'     && value === 'invoer') {c.doNotPopulate = false}
+          if (c.name === 'isEmail'      && value === 'invoer') {c.doNotPopulate = false}
+          if (c.name === 'emailNameField' && value === 'invoer') {c.doNotPopulate = false}
           if (c.name === 'minLength'    && value === 'invoer') {c.doNotPopulate = false}
           if (c.name === 'options'      && value === 'keuze') {c.doNotPopulate = false}
           if (c.name === 'image'        && value === 'afbeelding') {c.doNotPopulate = false}

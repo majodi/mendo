@@ -116,6 +116,7 @@ export class OrderLinesBrwComponent implements OnInit, OnDestroy {
           const sizes = this.db.getUniqueValueId(`${this.gs.entityBasePath}/properties`, 'id', sizesId).subscribe((property: Property) => {
             if (property) {
               const defaultSizesChoices = property['choices'].split(',')
+              // console.log('def sizes: ', defaultSizesChoices)
               const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleSizes')].value
               if (overruleSizes) {
                 const overruleSizesChoices = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleSizesChoices')].value

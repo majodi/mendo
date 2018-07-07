@@ -2,6 +2,7 @@ import { Type } from '@angular/core'
 import { ValidatorFn } from '@angular/forms'
 import { LookupItem } from '../../custom-components/models/lookup-item.model'
 import { ComponentType } from '@angular/core/src/render3'
+import { Observable } from 'rxjs'
 
 // tslint:disable-next-line:class-name
 export interface lookupFld {
@@ -36,6 +37,8 @@ export interface FieldConfig {
   initWithCounter?: string,
   buttonClick?: Function,
   inputValueTransform?: Function,
+  suggestions?: (string) => Observable<any[]>,
+  emailNameField?: string,
   inputLines?: number,
   inputType?: string,
   customValueChg?: Function,

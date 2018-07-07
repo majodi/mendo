@@ -17,6 +17,8 @@ import { FormChiplistComponent } from './form-chiplist.component'
 import { Field } from '../models/field.interface'
 import { FieldConfig } from '../models/field-config.interface'
 import { FormSelectChildrenComponent } from './form-selectchildren.component'
+import { MatDialogRef } from '@angular/material'
+import { FormDialogComponent } from '../containers/form-dialog/form-dialog.component'
 
 const components: {[type: string]: Type<Field>} = {
   button: FormButtonComponent,
@@ -50,6 +52,12 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
   @Input()
   onValueChg: Function
 
+  @Input()
+  form: FormGroup
+
+  @Input()
+  dialogRef: MatDialogRef<FormDialogComponent>
+
   component: ComponentRef<Field>
 
   constructor(
@@ -79,5 +87,7 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
     this.component.instance.config = this.config
     this.component.instance.group = this.group
     this.component.instance.onValueChg = this.onValueChg
+    this.component.instance.form = this.form
+    this.component.instance.dialogRef = this.dialogRef
   }
 }

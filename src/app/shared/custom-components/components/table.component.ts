@@ -11,6 +11,7 @@ import { UploadService } from '../../../services/upload.service'
 import { ColumnDefenition } from '../models/column-defenition.model'
 import { SelectionModel } from '@angular/cdk/collections'
 import { SortOrder } from '../models/sort-order.model'
+import { AuthService } from '../../../services/auth.service'
 
 @Component({
   selector: 'app-table',
@@ -38,7 +39,7 @@ import { SortOrder } from '../models/sort-order.model'
           </mat-form-field>
           <button mat-button fxFlex="10" fxFlexAlign="center" (click)="print()"><mat-icon>print</mat-icon></button>
           <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
-              <button class="lg-button" *ngIf="insertButton && !itemSelect" mat-button (click)="click('insert','')"><mat-icon>create</mat-icon>{{buttonText_Nieuw}}</button>
+              <button class="lg-button" *ngIf="insertButton && !itemSelect" mat-button accesskey="n" (click)="click('insert','')"><mat-icon>create</mat-icon>{{buttonText_Nieuw}}</button>
               <button *ngIf="itemSelect && itemSelection.selected.length > 0" class="lg-button" mat-button (click)="click('acceptItemSelect','')"><mat-icon>playlist_add_check</mat-icon>{{buttonText_Kies}}</button>
               <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon>{{buttonText_Selectie}}</button>
           </div>
@@ -148,6 +149,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     public media: ObservableMedia,
+    private as: AuthService,
     private us: UploadService,
   ) {
     this.mediaIsXs = this.media.isActive('xs')
@@ -191,7 +193,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     }
     this.displayedColumns = this.itemSelect ? ['select'] : []
     this.columnDefs.forEach(coldef => {
-        if (!(this.media.isActive('xs') && coldef.hideXs)) {
+        if (!(this.media.isActive('xs') && coldef.hideXs) && this.requiredModules(coldef.requiredModules)) {
             this.displayedColumns.push(coldef.name)
         }
         coldef.header = coldef.header || coldef.name
@@ -236,6 +238,14 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         this.isLoading = true
         this.data.filter(rec => rec[this.itemSelectEntity] && rec[this.itemSelectEntity][this.itemSelectParent]).forEach(row => this.itemSelection.select(row))
         this.isLoading = wasLoading
+    }
+  }
+
+  requiredModules(requiredModules) {
+    if (requiredModules === undefined) {
+      return true
+    } else {
+      return requiredModules.every(v => this.as.tenantModules.includes(v))
     }
   }
 

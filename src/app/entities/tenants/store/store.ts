@@ -112,7 +112,7 @@ export class StoreComponent implements OnInit, OnDestroy {
             if (property) {
               // console.log('property: ', property)
               let defaultSizesChoices = property['choices'].split(',')
-              // console.log('defaultSizes: ', defaultSizesChoices)
+              // console.log('shop defaultSizes: ', defaultSizesChoices)
               const overruleSizes = this.formConfig[this.formConfig.findIndex(c => c.name === 'overruleSizes')].value
               // console.log('overrule?: ', overruleSizes)
               const allowedChoices: string[] = this.employeePropertiesAllowed ? this.employeePropertiesAllowed[property['id']] ? this.employeePropertiesAllowed[property['id']].split(',') : [] : []

@@ -20,7 +20,6 @@ export class CrudService {
           const saveEmbed = this.getEmbed(embeds, 'beforeSave')
           if (saveEmbed !== undefined) {
             saveEmbedPromise = saveEmbed(1, frmResult.value)
-            console.log('saveEmbedPromise: ', saveEmbedPromise)
           }
           saveEmbedPromise
           .then(() => {
@@ -58,7 +57,15 @@ export class CrudService {
               this.us.deleteUpload(rec[eachConfig.name])
             }
           })
-          return this.db.deleteDoc(`${path}/${rec['id']}`)
+          let deleteEmbedPromise = Promise.resolve()
+          const deleteEmbed = this.getEmbed(embeds, 'beforeDelete')
+          if (deleteEmbed !== undefined) {
+            deleteEmbedPromise = deleteEmbed(1, rec )
+          }
+          deleteEmbedPromise.then(() => {
+            // return Promise.resolve()
+            return this.db.deleteDoc(`${path}/${rec['id']}`)
+          }).catch(e => this.ps.buttonDialog('Verwijderen mislukt \r\n' + e, 'OK'))
         }
       })
     }

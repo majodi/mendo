@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'app-super', loadChildren: 'app/modules/app_super.module#AppSuperModule', canLoad: [AuthGuard] },
   { path: 'store-user', loadChildren: 'app/modules/store/store_user.module#StoreUserModule', canLoad: [AuthGuard] },
   { path: 'store-tenant', loadChildren: 'app/modules/store/store_tenant.module#StoreTenantModule', canLoad: [AuthGuard] },
+  { path: 'trip-tenant', loadChildren: 'app/modules/trip/trip_tenant.module#TripTenantModule', canLoad: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'login-email', component: LoginEmailComponent },
   { path: 'sign-up', component: SignUpComponent },

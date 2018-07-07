@@ -1,5 +1,5 @@
 
-import {takeUntil, take} from 'rxjs/operators'
+import {takeUntil, take, map} from 'rxjs/operators'
 import { Component, OnInit, OnDestroy, Injector } from '@angular/core'
 
 import { defaultTableTemplate } from '../../../../shared/custom-components/models/table-template'
@@ -82,6 +82,18 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields
+    // this.formConfig.find(c => c.name === 'address.email').suggestions = (inp: string): Observable<any[]> => {
+    this.formConfig.find(c => c.name === 'address.email').suggestions = (inp) => {
+      const suggestions = this.db.getOnKeyOrder(`${this.gs.entityBasePath}/emailaddresses`, inp, 3)
+      .pipe(
+        map(sugs => sugs.map(sug => {
+          const retval = {}
+          retval['suggestion'] = sug.id
+          return retval
+        }))
+      )
+      return suggestions
+    }
     super.setPulldownItems(this.organisationSrv.initEntity$(), 'organisation', 'address.name', 'address.city')
     super.ngOnInit() // volgorde van belang!
   }
@@ -148,7 +160,6 @@ export class EmployeesBrwComponent extends BrwBaseClass<Employee[]> implements O
             if (b === 2) {
               // call backend
               this.as.createAndLinkAccount(rec.id).subscribe(res => {
-                console.log('res: ', res.body)
                 this.ps.buttonDialog(`Account ${rec.address.name} succesvol gecreëerd\r\n\r\nInitieel wachtwoord:\r\n${res.body}`, 'Sluit', 'Stuur email', undefined, res.body).then(b2 => {
                   if (b2 === 2) {
                     this.messageSrv.sendSystemMail('employee', rec.id, 'Inloggegevens ' + this.gs.tenantName, `

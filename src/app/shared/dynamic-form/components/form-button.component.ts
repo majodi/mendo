@@ -3,6 +3,8 @@ import { FormGroup } from '@angular/forms'
 
 import { Field } from '../models/field.interface'
 import { FieldConfig } from '../models/field-config.interface'
+import { MatDialogRef } from '@angular/material'
+import { FormDialogComponent } from '../containers/form-dialog/form-dialog.component'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -24,6 +26,8 @@ export class FormButtonComponent implements Field {
   config: FieldConfig
   group: FormGroup
   onValueChg: Function
+  form: FormGroup
+  dialogRef: MatDialogRef<FormDialogComponent>
 
   buttonClick(e) {
     if (this.config.buttonClick !== undefined) {

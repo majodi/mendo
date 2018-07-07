@@ -14,6 +14,7 @@ import { DynamicFormComponent } from '../../containers/dynamic-form/dynamic-form
         [config]="data.fieldConfig"
         [formAction]="data.action"
         [onValueChg]="data.onValueChg"
+        [dialogRef]="dialogRef"
         #form="dynamicForm"
         (submit)="submit($event)">
       </dynamic-form>

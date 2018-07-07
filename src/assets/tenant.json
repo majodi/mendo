@@ -6,7 +6,7 @@
         {
             "id": "l9XCh71vsxXg3M3nJ7aw",
             "name": "Mendo",
-            "modules": ["store"]
+            "modules": ["store", "trip"]
         },
         {
             "id": "bgBGdJTa1xXBDlrYqwNG",
@@ -16,7 +16,7 @@
         {
             "id": "4cSsKIXusX6a40QhQ7Nc",
             "name": "St. Jeugd & Jongeren",
-            "modules": []
+            "modules": ["association"]
         }
     ],
     "hosts": [

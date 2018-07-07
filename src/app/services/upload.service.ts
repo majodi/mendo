@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core'
 
 import { GlobService } from './glob.service'
 import { AngularFireUploadTask, AngularFireStorage } from 'angularfire2/storage'
-import { finalize } from 'rxjs/operators'
+import { finalize, map } from 'rxjs/operators'
+import { BehaviorSubject } from 'rxjs'
 
 @Injectable()
 export class UploadService {
   progress = 0
-  // thumbsToCheck: string[]
+  downloadUrl = new BehaviorSubject('')
 
     constructor(private gs: GlobService, private afStorage: AngularFireStorage) {}
 
@@ -15,10 +16,10 @@ export class UploadService {
       this.progress = 0
       const task: AngularFireUploadTask = this.afStorage.upload(`${this.gs.entityBasePath}/${file.name}`, file)
       task.percentageChanges().subscribe(percentage => this.progress = percentage)
-      // return task.downloadURL()
-      return task.snapshotChanges().pipe(
-        finalize(() => this.afStorage.ref(`${this.gs.entityBasePath}/${file.name}`).getDownloadURL())
-      )
+      task.snapshotChanges().pipe(
+        finalize(() => {this.afStorage.ref(`${this.gs.entityBasePath}/${file.name}`).getDownloadURL().toPromise().then((url) => {this.downloadUrl.next(url)})})
+      ).subscribe()
+      return this.downloadUrl
     }
 
     deleteUpload(url) {

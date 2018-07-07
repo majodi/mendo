@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy } from '@angular/core'
+import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy, PipeTransform} from '@angular/core'
 import { Location } from '@angular/common'
 import { MatIconRegistry, MatSidenav } from '@angular/material'
 import { DomSanitizer } from '@angular/platform-browser'
@@ -54,7 +54,19 @@ template: `
     <mat-sidenav #snav [style.width]="'200px'" class="mendo-dark-theme" [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <mat-nav-list>
-        <a mat-list-item *ngFor="let item of _as.navList" [routerLink]="item.link" (click)="navClick(item)"><mat-icon>{{item.icon}}</mat-icon>{{item.text}}</a>
+        <mat-list-item *ngFor="let item of _as.navList">
+          <a *ngIf="item.link.charAt(0) == '@'" [matMenuTriggerFor]="navModuleSubMenu" (click)="navClick(item)">
+            <mat-icon>{{item.icon}}</mat-icon>{{item.text}}
+          </a>
+          <a *ngIf="item.link.charAt(0) != '@' && item.link.charAt(0) != '#'" [routerLink]="item.link" (click)="navClick(item)">
+            <mat-icon>{{item.icon}}</mat-icon>{{item.text}}
+          </a>
+          <mat-menu #navModuleSubMenu="matMenu">
+            <div *ngFor="let subitem of _as.navList">
+              <button *ngIf="subitem.module == item.link.substring(1) && subitem.link.charAt(0) == '#'" mat-menu-item [routerLink]="subitem.link.substring(1)"><mat-icon>{{subitem.icon}}</mat-icon> {{subitem.text}} </button>
+            </div>
+          </mat-menu>
+        </mat-list-item>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

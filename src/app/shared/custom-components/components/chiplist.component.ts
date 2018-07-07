@@ -37,6 +37,7 @@ export class ChiplistComponent implements OnInit, OnChanges {
   ngOnInit() {}
 
   ngOnChanges() {
+    // console.log('ngChanges this.tagList: ', this.tagList)
     if (this.tagOptions !== undefined && this.tagList !== undefined) {
       if (typeof this.tagOptions === 'string') {
         this.tagOptionsArr = this.tagOptions ? this.tagOptions.split(',') : []

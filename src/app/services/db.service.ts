@@ -33,13 +33,31 @@ export class DbService {
     private dialog: MatDialog,
   ) { }
 
+  gmtToLocale(gmt?: string, format?: number): string {
+    // gmt is a time (can be a zulu=gmt=iso formatted string or other) on the clock in Greenwich.
+    // it will be converted to the time on the local clock at that moment
+    // default gmt = now
+    // 1 = yy-mm-dd hh:mm:ss ==> default
+    // 2 = yy-mm-dd
+    // 3 = hh:mm:ss
+    const date = gmt === undefined ? new Date() : new Date(gmt)
+    const isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString()
+    return  format === undefined || format === 1 ? isoDate.substr(0, 10) + ' ' + isoDate.substr(11, 8) :
+            format === 2 ? isoDate.substr(0, 10) :
+            format === 3 ? isoDate.substr(11, 8) :
+            isoDate
+  }
+
   getMeta(): EntityMeta {
-    const now = new Date()
+    // const now = new Date()
+    const now = this.gmtToLocale()
     const meta = {
       creator:  this.as.user.uid,
-      created:  now.toISOString(),
+      // created:  now.toISOString(),
+      created:  now,
       modifier: this.as.user.uid,
-      modified: now.toISOString()
+      // modified: now.toISOString()
+      modified: now
     }
     return meta
   }
@@ -48,7 +66,7 @@ export class DbService {
     if (code && (typeof code === 'string') && (code.indexOf('SETTINGS:') !== -1)) {
       code = code.split(':')[1]
       if (code) {
-        return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined ? rec.setting : ''))
+        return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined && rec !== null ? rec.setting : ''))
       } else { return observableOf(null) }
     } else { return observableOf(null) }
   }
@@ -63,7 +81,15 @@ export class DbService {
   }
 
   updateDoc(data, path: string) {
-    return this.db.doc(path).update(data)
+    const currentMeta = this.getMeta()
+    return this.db.doc(path).update(data).then(() => {
+      return this.db.doc(path).set({
+        meta: {
+          modifier: currentMeta.modifier,
+          modified: currentMeta.modified
+        },
+      }, {merge: true})
+    })
   }
 
   // don't use... possible hanger
@@ -124,7 +150,7 @@ export class DbService {
     }
     const currentName: string = formConfig.find(c => c.name === nameFld)['value']
     let prefix = '', lastName = '', firstName = ''
-    if (currentName !== undefined) {
+    if (currentName !== undefined && currentName !== null) {
       const nameArray = currentName.split(' ')
       firstName = nameArray[0]
       prefix = '', lastName = ''
@@ -151,6 +177,18 @@ export class DbService {
         }
       })
     }
+  }
+
+  getOnKeyOrder(collection: string, start: string, nr: number) {
+    return this.db.collection(collection, ref => ref.where(firebase.firestore.FieldPath.documentId(), '>=', start).limit(nr))
+    .snapshotChanges().pipe(
+    map(actions => {
+      return actions.map(a => {
+        const data = a.payload.doc.data()
+        const id = a.payload.doc.id
+        return { id, ...data }
+      })
+    }), take(1), )
   }
 
   getFirst(collection: string, queries: QueryItem[]) {
