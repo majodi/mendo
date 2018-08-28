@@ -107,7 +107,7 @@ export class FormInputComponent implements Field {
   }
 
   onBlur(e) { // input not included in customValueChg, so after blur
-    if (!this.lookupPanel.panelOpen) {
+    if (this.lookupPanel !== undefined && !this.lookupPanel.panelOpen) {
       this.config.value = e.target.value
       if (this.onValueChg !== undefined) { this.onValueChg(this.config.name, this.config.value) }
     }

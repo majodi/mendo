@@ -122,7 +122,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   about() {
-    this.ps.buttonDialog(`Mendo PWA-platform v0.5 (15/06/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.7 (07/07/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
   }
 
   formatTenantName(fullName: string) {

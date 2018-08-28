@@ -157,7 +157,7 @@ embeds: Embed[] = [
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    this.initialSortOrder = {fld: 'meta.created', sortOrder: 'asc'}
+    this.initialSortOrder = {fld: 'meta.created', sortOrder: 'desc'}
     super.setLookupComponent(UsersBrwComponent, 'user', 'displayName', 'email')
     super.setLookupComponent(EmployeesBrwComponent, 'employee', 'address.name', 'address.city')
     super.setPulldownItems(this.organisationSrv.initEntity$(), 'organisation', 'address.name', 'address.city')

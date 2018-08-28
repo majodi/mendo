@@ -2,7 +2,7 @@
 import {takeUntil} from 'rxjs/operators'
 import { Input, Output, EventEmitter, Type, Inject, Injector, OnInit, OnDestroy } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
-import { MatDialogRef } from '@angular/material'
+import { MatDialogRef, MatSnackBar } from '@angular/material'
 import { ActivatedRoute } from '@angular/router'
 
 // import { LookupItem } from '../../../shared/custom-components/models/lookup-item.model';

@@ -44,16 +44,3 @@ import {MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material'
   }
 
 }
-
-
-// template: `
-// <div></div>
-// <p class="mat-title" style="white-space: pre-line">{{data.text}}</p>
-// <br><br>
-// <p *ngIf="data.field != undefined" class="mat-title" style="white-space: pre-line">{{data.field.label}}</p>
-// <input *ngIf="data.field != undefined" matInput [(ngModel)]="data.field.value" [placeholder]="data.field.placeholder">
-// <br><br>
-// <button mat-button (click)="dialogRef.close(1)">{{data.but1}}</button>
-// <button mat-button (click)="dialogRef.close(2)">{{data.but2}}</button>
-// <button *ngIf="data.copyToClipboard" mat-button (click)="copyToClipboard(data.copyToClipboard)">Kopieer naar klembord</button>
-// `,

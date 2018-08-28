@@ -37,8 +37,11 @@ import { AuthService } from '../../../services/auth.service'
           <mat-form-field fxFlex="40">
               <input matInput (keyup)="filterKeyUp.next($event.target.value)" placeholder="Filter">
           </mat-form-field>
-          <button mat-button fxFlex="10" fxFlexAlign="center" (click)="print()"><mat-icon>print</mat-icon></button>
-          <div fxFlex="20" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
+          <div fxFlex="15" fxFlexAlign="center" fxLayout="row" fxLayoutAlign="space-around start">
+            <button mat-button style="min-width:40px; padding:5%;" (click)="print()"><mat-icon>print</mat-icon></button>
+            <button mat-button style="min-width:40px; padding:5%;" (click)="download()"><mat-icon>cloud_download</mat-icon></button>
+          </div>
+          <div fxFlex="15" [fxFlexOffset]="5" fxLayout="column" fxLayoutAlign="space-between stretch">
               <button class="lg-button" *ngIf="insertButton && !itemSelect" mat-button accesskey="n" (click)="click('insert','')"><mat-icon>create</mat-icon>{{buttonText_Nieuw}}</button>
               <button *ngIf="itemSelect && itemSelection.selected.length > 0" class="lg-button" mat-button (click)="click('acceptItemSelect','')"><mat-icon>playlist_add_check</mat-icon>{{buttonText_Kies}}</button>
               <button class="lg-button" *ngIf="selectionButton" mat-button (click)="click('selection','')" [color]="selectionButtonColor"><mat-icon>filter_list</mat-icon>{{buttonText_Selectie}}</button>
@@ -146,6 +149,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   buttonText_Nieuw = 'Nieuw'
   buttonText_Kies = 'Kies'
   buttonText_Selectie = 'Selectie'
+  initialSortDone = false
 
   constructor(
     public media: ObservableMedia,
@@ -198,31 +202,17 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         }
         coldef.header = coldef.header || coldef.name
     })
-    // console.log('this.data: ', this.data)
     this.dataSource = new MatTableDataSource(this.data)
-
+    if (this.data !== undefined && this.initialSortOrder !== undefined && !this.initialSortDone) {
+      this.sort.sort(
+        {id: this.initialSortOrder.fld, start: this.initialSortOrder.sortOrder, disableClear: true}
+      )
+      this.initialSortDone = true
+    }
+    this.dataSource.sort = this.sort
     this.dataSource.sortingDataAccessor = (item, property) => {
       return property.indexOf('.') === -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
-      // initial sort, add to table tag: matSortActive="address.name" matSortDirection="asc"
-      // console.log('item, property: ', item, property)
-      // if(property == 'address.name'){
-      //   return item['address']['name'] == 'Janus' ? ' ' : item['address']['name']
-      // } else {
-      //   return property.indexOf('.') == -1 ? item[property] : item[property.split('.')[0]][property.split('.')[1]]
-      // }
     }
-    this.sort.sort(
-      {
-        id: this.initialSortOrder !== undefined ?
-        this.initialSortOrder.fld :
-        '',
-        start: this.initialSortOrder !== undefined && ['asc', 'desc'].indexOf(this.initialSortOrder.sortOrder) >= 0 ?
-        this.initialSortOrder.sortOrder :
-        'asc',
-        disableClear: false
-      }
-    )
-    this.dataSource.sort = this.sort
     this.dataSource.filterPredicate = (data, filter: string): boolean => {
         let flatDataStr = ''
         Object.keys(data).filter(v => !['id', 'meta'].includes(v)).map(l1 => {
@@ -232,14 +222,11 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
         })
         return flatDataStr.toLowerCase().indexOf(filter.trim().toLowerCase()) !== -1
       }
-
     if (this.data !== undefined) {
-        const wasLoading = this.isLoading
-        this.isLoading = true
-        this.data.filter(rec => rec[this.itemSelectEntity] && rec[this.itemSelectEntity][this.itemSelectParent]).forEach(row => this.itemSelection.select(row))
-        this.isLoading = wasLoading
+      this.data.filter(rec => rec[this.itemSelectEntity] && rec[this.itemSelectEntity][this.itemSelectParent]).forEach(row => this.itemSelection.select(row))
+      this.isLoading = false
     }
-  }
+}
 
   requiredModules(requiredModules) {
     if (requiredModules === undefined) {
@@ -274,7 +261,7 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onBlurInp(e) {
-    console.log('onblurinp: ', e)
+    // console.log('onblurinp: ', e)
   }
 
   click(fld, rec) {
@@ -322,6 +309,96 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     )
     popupWin.document.close()
   }
+
+  download() {
+    let str = ''; const fields: {name: string, format: Function, colval: string}[] = []
+    for (let i = 0; i < this.columnDefs.length; i++) {
+      if (!this.columnDefs[i].icon && !this.columnDefs[i].iconSelect) {
+        // const headerSelect = this.columnDefs[i].headerSelect !== undefined ? this.columnDefs[i].headerSelect.find(hs => hs.value === this.columnDefs[i].headerSelectValue).viewValue : this.columnDefs[i].header
+        const headerSelect = this.columnDefs[i].headerSelect !== undefined ? this.columnDefs[i].headerSelect.find(hs => hs.value === this.columnDefs[i].headerSelectValue) : undefined
+        const header = headerSelect !== undefined ? headerSelect.viewValue : this.columnDefs[i].header
+        fields.push({name: this.columnDefs[i].name, format: this.columnDefs[i].format, colval: this.columnDefs[i].headerSelectValue})
+        str += header + ','
+      }
+    }
+    str = str.substr(0, str.length - 1) + '\r\n'
+    for (let i = 0; i < this.data.length; i++) {
+      for (let fld = 0; fld < fields.length; fld++) {
+        let fieldData = ''
+        if (fields[fld].format) {
+          fieldData = fields[fld].format(this.data[i], fields[fld].colval) + ''
+        } else {
+          fieldData = this.resolveObjPath(this.data[i], fields[fld].name) + ''
+        }
+        str += fieldData.replace(/\r?\n|\r|,/g, '') + ','
+      }
+      str = str.substr(0, str.length - 1) + '\r\n'
+    }
+    const blob = new Blob([str], { type: 'text/csv' })
+    const url  = window.URL.createObjectURL(blob)
+    window.open(url)
+  }
+
+  // download() {
+  //   let str = ''
+  //   const fields: {level1: string, level2: string}[] = []
+  //   for (let i = 0; i < this.data.length; i++) {
+  //     for (const prop in this.data[i]) {
+  //       if (this.data[i].hasOwnProperty(prop) && fields.find(el => el.level1 === prop) === undefined) {
+  //         if (this.data[i][prop] !== null && typeof this.data[i][prop] === 'object') {
+  //           for (const level2prop in this.data[i][prop]) {
+  //             if (this.data[i][prop].hasOwnProperty(level2prop) && fields.find(el => el.level1 === prop && el.level2 === level2prop) === undefined) {
+  //               fields.push({level1: prop, level2: level2prop})
+  //             }
+  //           }
+  //         } else {
+  //           fields.push({level1: prop, level2: ''})
+  //         }
+  //       }
+  //     }
+  //   }
+  //   for (let i = 0; i < fields.length; i++) {
+  //     str += fields[i].level2 ? fields[i].level1 + '.' + fields[i].level2 + ',' : fields[i].level1 + ','
+  //   }
+  //   str = str.substr(0, str.length - 1) + '\r\n'
+  //   for (let i = 0; i < this.data.length; i++) {
+  //     for (let fld = 0; fld < fields.length; fld++) {
+  //       const fieldData = fields[fld].level2 ? this.data[i][fields[fld].level1][fields[fld].level2] + '' : this.data[i][fields[fld].level1] + ''
+  //       str += fieldData.replace(/\r?\n|\r|,/g, '') + ','
+  //     }
+  //     str = str.endsWith(',') ? str.substr(0, str.length - 1) + '\r\n' : str + '\r\n'
+  //   }
+  //   const blob = new Blob([str], { type: 'text/csv' })
+  //   const url  = window.URL.createObjectURL(blob)
+  //   window.open(url)
+  // }
+
+  // download() {
+  //   let str = ''; let header = ''
+  //   for (let i = 0; i < this.data.length; i++) {
+  //     let line = ''
+  //     for (const prop in this.data[i]) {
+  //       if (this.data[i].hasOwnProperty(prop)) {
+  //         if (this.data[i][prop] !== null && typeof this.data[i][prop] === 'object') {
+  //           for (const level2prop in this.data[i][prop]) {
+  //             if (this.data[i][prop].hasOwnProperty(level2prop)) {
+  //               line += this.data[i][prop][level2prop] + ','
+  //               header = header.indexOf(level2prop) === -1 ? header += level2prop + ',' : header
+  //             }
+  //           }
+  //         } else {
+  //           line += this.data[i][prop] + ','
+  //           header = header.indexOf(prop) === -1 ? header += prop + ',' : header
+  //         }
+  //       }
+  //     }
+  //     str += line + '\r\n'
+  //   }
+  //   str = header.endsWith(',') ? header.substr(0, header.length - 1) + '\r\n' + str : str
+  //   const blob = new Blob([str], { type: 'text/csv' })
+  //   const url  = window.URL.createObjectURL(blob)
+  //   window.open(url)
+  // }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next()

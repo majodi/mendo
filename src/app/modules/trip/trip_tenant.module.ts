@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common'
 import { MatIconBase, MatButtonModule, MatIconModule } from '@angular/material'
 
 import { SharedModule } from '../../shared/shared.module'
+import { TripBrwComponent } from '../../entities/tenants/trips/trips.brw'
+import { TripService } from '../../entities/tenants/trips/trip.service'
 import { TripAddressBrwComponent } from '../../entities/tenants/tripaddresses/tripaddresses.brw'
 import { TripAddressService } from '../../entities/tenants/tripaddresses/tripaddress.service'
 import { VehiclesBrwComponent } from '../../entities/tenants/vehicles/vehicles.brw'
@@ -20,15 +22,18 @@ import { AppLookupModule } from '../app_lookup.module'
       TripTenantRoutingModule,
     ],
   declarations: [
+      TripBrwComponent,
       TripAddressBrwComponent,
       VehiclesBrwComponent,
     ],
   exports: [
+      TripBrwComponent,
       TripAddressBrwComponent,
       VehiclesBrwComponent,
     ],
   entryComponents: [],
   providers: [
+      TripService,
       TripAddressService,
       VehicleService,
     ]

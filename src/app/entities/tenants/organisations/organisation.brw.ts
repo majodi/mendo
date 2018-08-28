@@ -55,7 +55,7 @@ export class OrganisationsBrwComponent extends BrwBaseClass<Organisation[]> impl
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    this.initialSortOrder = {fld: 'address.name', sortOrder: 'desc'}
+    this.initialSortOrder = {fld: 'address.name', sortOrder: 'asc'}
     super.ngOnInit() // volgorde van belang!
   }
 

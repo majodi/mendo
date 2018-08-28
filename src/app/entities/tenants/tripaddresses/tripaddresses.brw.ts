@@ -28,7 +28,7 @@ export class TripAddressBrwComponent extends BrwBaseClass<TripAddress[]> impleme
     this.formConfig = defaultFormConfig.map(x => Object.assign({}, x))
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
-    this.initialSortOrder = {fld: 'name', sortOrder: 'desc'}
+    this.initialSortOrder = {fld: 'name', sortOrder: 'asc'}
     super.ngOnInit() // volgorde van belang!
   }
 

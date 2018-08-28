@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core'
+import { MatSnackBar } from '@angular/material'
 
 import { DbService } from './db.service'
 import { PopupService } from './popup.service'
@@ -8,25 +9,33 @@ import { Embed } from '../shared/dynamic-form/models/embed.interface'
 @Injectable()
 export class CrudService {
 
-    constructor(private db: DbService, private ps: PopupService, private us: UploadService) { }
+    constructor(private db: DbService, private ps: PopupService, private us: UploadService, public sb: MatSnackBar) { }
 
     insertDialog(config, rec, path, embeds?: Embed[], alternativeFormActionTitle?: string) {
       const beforeInsertDialogEmbed: Function = this.getEmbed(embeds, 'beforeInsertDialog')
       if (beforeInsertDialogEmbed !== undefined) {if (beforeInsertDialogEmbed(rec)) { return Promise.resolve() }}
       config.forEach(eachConfig => this.db.getSetting(eachConfig.options).subscribe(setting => {eachConfig.options = setting ? setting : eachConfig.options}))
-      return this.ps.formDialog(1, config, rec, this.getEmbed(embeds, 'onValueChg'), alternativeFormActionTitle).then((frmResult: {response: string, value: {}}) => {
-        if (frmResult && (frmResult.response === 'save')) {
-          let saveEmbedPromise = Promise.resolve()
-          const saveEmbed = this.getEmbed(embeds, 'beforeSave')
-          if (saveEmbed !== undefined) {
-            saveEmbedPromise = saveEmbed(1, frmResult.value)
+      let beforeInsertDialogEmbedAsyncPromise = Promise.resolve()
+      const beforeInsertDialogEmbedAsync = this.getEmbed(embeds, 'beforeInsertDialogAsync')
+      if (beforeInsertDialogEmbedAsync !== undefined) {
+        beforeInsertDialogEmbedAsyncPromise = beforeInsertDialogEmbedAsync(rec)
+      }
+      return beforeInsertDialogEmbedAsyncPromise.then(() => {
+        return this.ps.formDialog(1, config, rec, this.getEmbed(embeds, 'onValueChg'), alternativeFormActionTitle).then((frmResult: {response: string, value: {}}) => {
+          if (frmResult && (frmResult.response === 'save')) {
+            const snackBarRef = this.sb.open('Bewaren...', undefined, {duration: 1500})
+            let saveEmbedPromise = Promise.resolve()
+            const saveEmbed = this.getEmbed(embeds, 'beforeSave')
+            if (saveEmbed !== undefined) {
+              saveEmbedPromise = saveEmbed(1, frmResult.value)
+            }
+            saveEmbedPromise
+            .then(() => {
+              return this.db.addDoc(this.fixSubProperties(frmResult.value), path)
+            })
+            .catch(e => this.ps.buttonDialog('Bewaren mislukt \r\n' + e, 'OK'))
           }
-          saveEmbedPromise
-          .then(() => {
-            return this.db.addDoc(this.fixSubProperties(frmResult.value), path)
-          })
-          .catch(e => this.ps.buttonDialog('Bewaren mislukt \r\n' + e, 'OK'))
-        }
+        })
       })
     }
 
@@ -41,6 +50,7 @@ export class CrudService {
       config.forEach(eachConfig => this.db.getSetting(eachConfig.options).subscribe(setting => {eachConfig.options = setting ? setting : eachConfig.options}))
       return this.ps.formDialog(2, config, rec, this.getEmbed(embeds, 'onValueChg'), alternativeFormActionTitle).then((frmResult: {response: string, value: {}}) => {
         if (frmResult && (frmResult.response === 'save')) {
+          const snackBarRef = this.sb.open('Bewaren...', undefined, {duration: 1500})
           let saveEmbedPromise = Promise.resolve()
           const saveEmbed = this.getEmbed(embeds, 'beforeSave')
           if (saveEmbed !== undefined) {

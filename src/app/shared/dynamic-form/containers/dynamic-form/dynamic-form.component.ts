@@ -155,6 +155,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   setDisabled(name: string, disable: boolean) {
+    // console.log(': ', this.form.controls)
     if (this.form.controls[name]) {
       const method = disable ? 'disable' : 'enable'
       this.form.controls[name][method]()

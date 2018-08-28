@@ -19,6 +19,7 @@ export const fullNavList = [
     {module: 'trip',  level: 100, text: 'Trip registratie', icon: 'trip_origin',   link: '@trip'},
     {module: 'trip',  level: 100, text: 'Trip Adressen',    icon: 'trip_origin',   link: '#trip-tenant/tripaddresses'},
     {module: 'trip',  level: 100, text: 'Voertuigen',       icon: 'directions_car', link: '#trip-tenant/vehicles'},
+    {module: 'trip',  level: 100, text: 'Trips',            icon: 'directions', link: '#trip-tenant/trips'},
   ]
 
   // bgBGdJTa1xXBDlrYqwNG (tenant van Orsouw)

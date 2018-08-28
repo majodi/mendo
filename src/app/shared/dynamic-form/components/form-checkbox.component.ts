@@ -26,6 +26,7 @@ export class FormCheckboxComponent implements Field {
   dialogRef: MatDialogRef<FormDialogComponent>
 
   onChange(e) { // checkbox not included in customValueChg, so after change
+    console.log('e.checked, typeof e.checked: ', e.checked, typeof e.checked)
     this.config.value = e.checked
     if (this.onValueChg !== undefined) { this.onValueChg(this.config.name, this.config.value) }
   }

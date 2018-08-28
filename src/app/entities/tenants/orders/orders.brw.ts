@@ -57,7 +57,7 @@ export class OrdersBrwComponent extends BrwBaseClass<Order[]> implements OnInit,
     this.title = defaultTitle
     this.titleIcon = defaultTitleIcon
     this.selectionFields = defaultSelectionFields
-    this.initialSortOrder = {fld: 'number', sortOrder: 'asc'}
+    this.initialSortOrder = {fld: 'number', sortOrder: 'desc'}
     super.setLookupComponent(EmployeesBrwComponent, 'employee', 'address.name', 'address.city')
     super.setLookupComponent(OrganisationsBrwComponent, 'organisation', 'address.name', 'address.city')
     super.ngOnInit() // volgorde van belang!

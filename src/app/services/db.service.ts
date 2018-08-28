@@ -5,9 +5,9 @@ import {take, map} from 'rxjs/operators'
 import { Injectable, ElementRef } from '@angular/core'
 
 import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore'
-import * as firebase from 'firebase/app'
-import * as firestore from 'firebase/firestore'
-// import { Observable } from 'rxjs/Rx'
+import * as firebase from 'firebase'
+// import '@firebase/firestore'
+// import { DocumentData, SetOptions } from '@firebase/firestore-types'
 import { Observable } from 'rxjs/observable'
 
 import { EntityMeta } from '../models/entity-meta.model'
@@ -16,7 +16,6 @@ import { AuthService } from './auth.service' ///// hoeft niet meer met gs = glob
 import { UploadService } from './upload.service'
 import { GlobService } from './glob.service'
 import { FieldConfig } from '../shared/dynamic-form/models/field-config.interface'
-import { DocumentData, SetOptions } from '@firebase/firestore-types'
 import { Setting } from '../entities/tenants/settings/setting.model'
 import { QueryItem } from '../models/query-item.interface'
 import { MatDialog } from '@angular/material'
@@ -76,7 +75,8 @@ export class DbService {
     return this.db.collection(collection).add(data)
   }
 
-  setDoc(data, path: string, options?: SetOptions) {
+  // setDoc(data, path: string, options?: SetOptions) {
+  setDoc(data, path: string, options?: any) {
     if (options !== undefined) {return this.db.doc(path).set(data, options)} else {return this.db.doc(path).set(data)}
   }
 
@@ -179,6 +179,32 @@ export class DbService {
     }
   }
 
+  getOnOrder(collection: string, orderFld: string, orderDirection: string, value: string, asNumber: boolean, nr: number) {
+    let startAt, direction
+    if (orderDirection === 'desc') { direction = 'desc'} else { direction = 'asc'}
+    if (asNumber) {
+      startAt = Number(value)
+    } else {
+      const lsPart = value.slice(0, value.length - 1)
+      const msPartASCII = value.charCodeAt(value.length - 1)
+      startAt = lsPart + String.fromCharCode(msPartASCII - 1)
+    }
+    return this.db.collection(collection, ref => ref
+    .limit(nr)
+    .orderBy(orderFld, direction)
+    .startAt(startAt)
+    )
+    .snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data()
+          const id = a.payload.doc.id
+          return { id, ...data }
+        })
+      }), take(1)
+    )
+  }
+
   getOnKeyOrder(collection: string, start: string, nr: number) {
     return this.db.collection(collection, ref => ref.where(firebase.firestore.FieldPath.documentId(), '>=', start).limit(nr))
     .snapshotChanges().pipe(
@@ -278,8 +304,10 @@ export class DbService {
 
   convert(o) {
     Object.keys(o).forEach((key) => {
-      if (o[key] && o[key].constructor.name === 'Timestamp') {
-        o[key] = o[key].toDate()
+      if (typeof o[key] === 'object') {
+        if (o[key] !== null && o[key].hasOwnProperty('nanoseconds')) {
+          o[key] = o[key].toDate()
+        }
       }
     })
   }

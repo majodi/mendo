@@ -86,9 +86,10 @@ export class EntityBaseClass {
 
   convert(o) {
     Object.keys(o).forEach((key) => {
-      if (o[key] && o[key].constructor.name === 'Timestamp') {
-        // console.log('key - value: ', key, o[key])
-        o[key] = o[key].toDate()
+      if (typeof o[key] === 'object') {
+        if (o[key] !== null && o[key].hasOwnProperty('nanoseconds')) {
+          o[key] = o[key].toDate()
+        }
       }
     })
   }
