@@ -11,7 +11,7 @@
         {
             "id": "bgBGdJTa1xXBDlrYqwNG",
             "name": "Van Orsouw Veiligheidskleding",
-            "modules": ["store"]
+            "modules": ["store", "trip"]
         },
         {
             "id": "4cSsKIXusX6a40QhQ7Nc",

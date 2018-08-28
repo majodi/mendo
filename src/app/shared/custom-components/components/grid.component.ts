@@ -50,11 +50,11 @@ template: `
         </div>
         <div>
           <p *ngIf="!bulletinStyle" class="mat-body-2" style="line-height:18px; margin:0; white-space:pre-wrap; max-width:1024px">{{tile.description}}</p>
-          <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
+          <p *ngIf="!bulletinStyle && tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
         </div>
         <div>
           <p *ngIf="bulletinStyle" class="mat-subheading-2" style="line-height:18px; margin:0; white-space:pre-wrap; max-width:1024px">{{tile.description}}</p>
-          <p *ngIf="tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
+          <p *ngIf="bulletinStyle && tile.price" class="mat-body-2" style="line-height:18px; margin:0; color:red">{{tile.price}} {{tile.currency}}</p>
         </div>
         <div *ngIf="!bulletinStyle && (buttonText || tile.buttonText)" fxFlex="20" fxFlexAlign="start">
           <button mat-button color="primary" (click)="onButtonClick(tile, $event)"><mat-icon>{{buttonIcon}}</mat-icon>{{tile.buttonText ? tile.buttonText : buttonText}}</button>
