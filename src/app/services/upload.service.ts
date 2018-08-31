@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core'
 import { GlobService } from './glob.service'
 import { AngularFireUploadTask, AngularFireStorage } from 'angularfire2/storage'
 import { finalize, map } from 'rxjs/operators'
-import { BehaviorSubject } from 'rxjs'
+import { Subject } from 'rxjs'
 
 @Injectable()
 export class UploadService {
   progress = 0
-  downloadUrl = new BehaviorSubject('')
+  downloadUrl = new Subject()
 
     constructor(private gs: GlobService, private afStorage: AngularFireStorage) {}
 

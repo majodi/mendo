@@ -60,15 +60,11 @@ export const defaultFormConfig = [
     {type: 'input',     label: 'Plaats',        name: 'address.city',         placeholder: 'Plaats',        value: '', inputValueTransform: forceCapitalize},
     {type: 'input',     label: 'Telefoon',      name: 'address.telephone',    placeholder: 'Telefoon',      value: ''},
     {type: 'input',     label: 'Email',         name: 'address.email',        placeholder: 'Email',         value: ''},
-    {type: 'stringdisplay', label: 'Valuta',    name: 'currency',             placeholder: 'Valuta',        value: ''},
-    {type: 'input',     label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: ''}
+    {type: 'stringdisplay', label: 'Valuta',    name: 'currency',             placeholder: 'Valuta',        value: '', requiredModules: ['store']},
+    {type: 'input',     label: 'Budget',        name: 'budget',               placeholder: 'Budget',        value: '', requiredModules: ['store']}
   ]
 // for selection button
 export const defaultSelectionFields: SelectionField[] = [
   {name: 'activitytags'},
   {name: 'organisation', minimumLevel: 50},
 ]
-
-
-// {type: 'input', label: 'Web',           name: 'address.web',          placeholder: 'Web',           value: ''},
-// {type: 'input', label: 'Logo',          name: 'logo',                 placeholder: 'Logo',          value: ''},

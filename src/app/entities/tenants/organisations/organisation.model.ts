@@ -25,7 +25,7 @@ export const defaultColDef = [
   ]
 export const defaultFormConfig = [
     {type: 'input', label: 'Naam',          name: 'address.name',         placeholder: 'Naam',          value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
-    {type: 'selectchildren', label: 'Pakketselectie', name: 'packageSelection', placeholder: 'Pakketselectie', value: false, customSelectChildrenComponent: ArticlesBrwComponent},
+    {type: 'selectchildren', label: 'Pakketselectie', name: 'packageSelection', placeholder: 'Pakketselectie', value: false, customSelectChildrenComponent: ArticlesBrwComponent, requiredModules: ['store']},
     {type: 'input', label: 'Omschrijving',  name: 'address.description',  placeholder: 'Omschrijving',  value: ''},
     {type: 'input', label: 'Adres',         name: 'address.address',      placeholder: 'Adres',         value: '', inputValueTransform: forceCapitalize, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input', label: 'Postcode',      name: 'address.postcode',     placeholder: 'Postcode',      value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(6)]},

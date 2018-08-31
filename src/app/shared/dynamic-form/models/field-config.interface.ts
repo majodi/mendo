@@ -52,5 +52,6 @@ export interface FieldConfig {
   customUpdateWithLookup?: updateWithLookup[],
   customSelectChildrenComponent?: Type<any>,
   customSelectChildrenCurrentParent?: string,
-  imageStyle?: any
+  imageStyle?: any,
+  requiredModules?: string[]
 }

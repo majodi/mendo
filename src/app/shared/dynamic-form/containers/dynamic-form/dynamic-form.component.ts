@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms'
 import { UploadService } from '../../../../services/upload.service'
 import { GlobService } from '../../../../services/glob.service'
 import { DbService } from '../../../../services/db.service'
+import { AuthService } from '../../../../services/auth.service'
 
 import { FieldConfig } from '../../models/field-config.interface'
 import { MatDialogRef } from '@angular/material'
@@ -70,6 +71,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
     public  us: UploadService,
     private gs: GlobService,
     private db: DbService,
+    private as: AuthService,
   ) {}
 
   ngOnInit() {
@@ -142,7 +144,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
             this.value['fileName'] = config.customFile.name
             this.value[config.name] = url
             this.submit.emit({response: action, value: this.value})
-        }
+          }
         })
       }
       if (config.type === 'input' && config.inputValueTransform !== undefined) {
@@ -217,8 +219,16 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   setToPopulate() {
     this.toPopulate = this.config
     .filter(c => {
-      return !(c.doNotPopulate !== undefined && c.doNotPopulate)
+      return (!(c.doNotPopulate !== undefined && c.doNotPopulate) && (this.requiredModules(c.requiredModules)))
     })
+  }
+
+  requiredModules(requiredModules) {
+    if (requiredModules === undefined) {
+      return true
+    } else {
+      return requiredModules.every(v => this.as.tenantModules.includes(v))
+    }
   }
 
   objectValue(o, key) {
