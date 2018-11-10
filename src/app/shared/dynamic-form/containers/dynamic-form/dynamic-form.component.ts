@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, ViewChildren, AfterViewInit, ElementRef } from '@angular/core'
 import { FormGroup, FormBuilder } from '@angular/forms'
 
 import { UploadService } from '../../../../services/upload.service'
@@ -9,6 +9,7 @@ import { AuthService } from '../../../../services/auth.service'
 import { FieldConfig } from '../../models/field-config.interface'
 import { MatDialogRef } from '@angular/material'
 import { FormDialogComponent } from '../form-dialog/form-dialog.component'
+import { DynamicFieldDirective } from '../../components/dynamic-field.directive'
 
 @Component({
   exportAs: 'dynamicForm',
@@ -20,6 +21,7 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component'
       class="dynamic-form"
       [formGroup]="form"
       (submit)="handleSubmit('save', $event)">
+      <input type="text" (focus)="onFocus($event)" style="width:0; height:0; padding:0; margin:0">
       <ng-container
         *ngFor="let field of toPopulate;"
         dynamicField
@@ -28,7 +30,8 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component'
         [formAction]="formAction"
         [onValueChg]="onValueChg"
         [form]="form"
-        [dialogRef]="dialogRef">
+        [dialogRef]="dialogRef"
+        >
       </ng-container>
       <mat-hint *ngIf="info" align="end" style="color:red">{{info}}</mat-hint>
       <mat-progress-bar *ngIf="us.progress > 0" mode="determinate" [value]="us.progress"></mat-progress-bar>
@@ -49,7 +52,8 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component'
     </form>
   `
 })
-export class DynamicFormComponent implements OnChanges, OnInit {
+export class DynamicFormComponent implements OnChanges, OnInit, AfterViewInit {
+  // @ViewChildren(DynamicFieldDirective) flds: QueryList<any>
   @Input() config: FieldConfig[] = []
   @Input() formAction = 0
   @Input() onValueChg: Function
@@ -80,6 +84,14 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       this.setToPopulate()
     } else {this.toPopulate = this.config}
     this.form = this.createGroup()
+  }
+
+  ngAfterViewInit() {}
+
+  onFocus(e) {
+    const inputs = document.querySelectorAll('input')
+    const focusFld = this.config.findIndex(c => c.defaultFocus) !== undefined ? this.config.findIndex(c => c.defaultFocus) : 1
+    inputs[focusFld + 2].focus() // 0 based + skip first dummy input
   }
 
   ngOnChanges() {
@@ -135,7 +147,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
       if (['datepicker', 'chiplist', 'lookup', 'pulldown', 'stringdisplay', 'selectchildren'].includes(config.type)) {
         this.value[config.name] = config.value
       }
-      if (config.type === 'filepick' && this.formAction === 1) { // only on insert!!
+      if (config.type === 'filepick' && this.formAction === 1 && action == 'save') { // only on insert and save
         this.waitOnUpload = true
         this.us.pushUpload(config.customFile).subscribe(url => {
           if (url) {
@@ -175,6 +187,7 @@ export class DynamicFormComponent implements OnChanges, OnInit {
   }
 
   setFormValue(name, value) {
+    // console.log('setformval: ', name, value)
     if (this.form.controls[name]) {
       this.form.controls[name].setValue(value, {emitEvent: true})
     }

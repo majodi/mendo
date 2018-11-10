@@ -304,9 +304,14 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
           }
           </style>
         </head>
-        <body onload="window.print();window.close()">${this.parentPrintHeaderRef !== undefined ? this.parentPrintHeaderRef.nativeElement.innerHTML : ''}${this.printAreaRef.nativeElement.innerHTML}</body>
+        <body>${this.parentPrintHeaderRef !== undefined ? this.parentPrintHeaderRef.nativeElement.innerHTML : ''}${this.printAreaRef.nativeElement.innerHTML}</body>
       </html>`
     )
+    popupWin.onload = () => {
+      setTimeout(function() {setTimeout(() => {popupWin.print()}, 100)}, 1500)
+      // setTimeout(function() {setTimeout(() => {popupWin.close()}, 100)}, 15000) // for IOS, which doesn't have the afterprint event
+    }
+    popupWin.onafterprint = () => {popupWin.close()}
     popupWin.document.close()
   }
 
@@ -338,67 +343,6 @@ export class TableComponent implements OnInit, OnDestroy, OnChanges {
     const url  = window.URL.createObjectURL(blob)
     window.open(url)
   }
-
-  // download() {
-  //   let str = ''
-  //   const fields: {level1: string, level2: string}[] = []
-  //   for (let i = 0; i < this.data.length; i++) {
-  //     for (const prop in this.data[i]) {
-  //       if (this.data[i].hasOwnProperty(prop) && fields.find(el => el.level1 === prop) === undefined) {
-  //         if (this.data[i][prop] !== null && typeof this.data[i][prop] === 'object') {
-  //           for (const level2prop in this.data[i][prop]) {
-  //             if (this.data[i][prop].hasOwnProperty(level2prop) && fields.find(el => el.level1 === prop && el.level2 === level2prop) === undefined) {
-  //               fields.push({level1: prop, level2: level2prop})
-  //             }
-  //           }
-  //         } else {
-  //           fields.push({level1: prop, level2: ''})
-  //         }
-  //       }
-  //     }
-  //   }
-  //   for (let i = 0; i < fields.length; i++) {
-  //     str += fields[i].level2 ? fields[i].level1 + '.' + fields[i].level2 + ',' : fields[i].level1 + ','
-  //   }
-  //   str = str.substr(0, str.length - 1) + '\r\n'
-  //   for (let i = 0; i < this.data.length; i++) {
-  //     for (let fld = 0; fld < fields.length; fld++) {
-  //       const fieldData = fields[fld].level2 ? this.data[i][fields[fld].level1][fields[fld].level2] + '' : this.data[i][fields[fld].level1] + ''
-  //       str += fieldData.replace(/\r?\n|\r|,/g, '') + ','
-  //     }
-  //     str = str.endsWith(',') ? str.substr(0, str.length - 1) + '\r\n' : str + '\r\n'
-  //   }
-  //   const blob = new Blob([str], { type: 'text/csv' })
-  //   const url  = window.URL.createObjectURL(blob)
-  //   window.open(url)
-  // }
-
-  // download() {
-  //   let str = ''; let header = ''
-  //   for (let i = 0; i < this.data.length; i++) {
-  //     let line = ''
-  //     for (const prop in this.data[i]) {
-  //       if (this.data[i].hasOwnProperty(prop)) {
-  //         if (this.data[i][prop] !== null && typeof this.data[i][prop] === 'object') {
-  //           for (const level2prop in this.data[i][prop]) {
-  //             if (this.data[i][prop].hasOwnProperty(level2prop)) {
-  //               line += this.data[i][prop][level2prop] + ','
-  //               header = header.indexOf(level2prop) === -1 ? header += level2prop + ',' : header
-  //             }
-  //           }
-  //         } else {
-  //           line += this.data[i][prop] + ','
-  //           header = header.indexOf(prop) === -1 ? header += prop + ',' : header
-  //         }
-  //       }
-  //     }
-  //     str += line + '\r\n'
-  //   }
-  //   str = header.endsWith(',') ? header.substr(0, header.length - 1) + '\r\n' + str : str
-  //   const blob = new Blob([str], { type: 'text/csv' })
-  //   const url  = window.URL.createObjectURL(blob)
-  //   window.open(url)
-  // }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next()

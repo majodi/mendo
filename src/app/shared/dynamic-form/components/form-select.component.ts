@@ -10,7 +10,8 @@ import { FormDialogComponent } from '../containers/form-dialog/form-dialog.compo
   // tslint:disable-next-line:component-selector
   selector: 'form-select',
   template: `
-    <mat-form-field *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group" [floatLabel]="config.label">
+  <div *ngIf="!config.hidden && !config.doNotPopulate" [formGroup]="group">
+    <mat-form-field [floatLabel]="config.label">
       <mat-select [formControlName]="config.name" (selectionChange)="onSelectionChange($event)" [(ngModel)]="config.value">
         <mat-option *ngFor="let option of config.options" [value]="option">
           {{ option }}
@@ -18,7 +19,9 @@ import { FormDialogComponent } from '../containers/form-dialog/form-dialog.compo
       </mat-select>
       <mat-placeholder>{{ config.placeholder }}</mat-placeholder>
     </mat-form-field>
+    <mat-icon (click)="clearValue()" style="vertical-align: middle">clear</mat-icon>
     <br>
+  </div>
   `
 })
 export class FormSelectComponent implements Field {
@@ -31,6 +34,10 @@ export class FormSelectComponent implements Field {
   onSelectionChange(e) {
     this.config.value = e.value
     if (this.onValueChg !== undefined) { this.onValueChg(this.config.name, this.config.value) }
+  }
+
+  clearValue() {
+    this.config.value = undefined
   }
 
 }

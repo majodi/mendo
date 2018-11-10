@@ -53,5 +53,7 @@ export interface FieldConfig {
   customSelectChildrenComponent?: Type<any>,
   customSelectChildrenCurrentParent?: string,
   imageStyle?: any,
-  requiredModules?: string[]
+  requiredModules?: string[],
+  valueChgEmbedOnBlur?: boolean,  // run onValueChg embed on blur input field and assign config value to screen var
+  defaultFocus?: boolean // should get field focus on form entry (only first field with true will get the focus)
 }

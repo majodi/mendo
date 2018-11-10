@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy, PipeTransform} from '@angular/core'
 import { Location } from '@angular/common'
-import { MatIconRegistry, MatSidenav } from '@angular/material'
+import { MatIconRegistry, MatSidenav, MatMenuTrigger, MatMenu } from '@angular/material'
 import { DomSanitizer } from '@angular/platform-browser'
 import { MediaMatcher } from '@angular/cdk/layout'
 import { Router } from '@angular/router'
@@ -26,7 +26,10 @@ h1.user-name {margin-right: 8px;}
 template: `
 <div class="main-container" [class.is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="main-toolbar">
-    <button *ngIf="_as.userLevel > 0" mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <button *ngIf="_as.userLevel == 0 && location.path() === '/homepage' && extraPages.length > 0" mat-icon-button [matMenuTriggerFor]="pageMenu"><mat-icon>menu</mat-icon></button>
+    <button *ngIf="_as.userLevel > 0 && location.path() === '/homepage' && extraPages.length > 0 && !sidenav.opened" mat-icon-button (click)="navToggle()"><mat-icon>menu</mat-icon></button>
+    <button *ngIf="_as.userLevel > 0 && location.path() === '/homepage' && extraPages.length > 0 && sidenav.opened" mat-icon-button [matMenuTriggerFor]="pageMenu" (click)="navToggle()"><mat-icon>menu</mat-icon></button>
+    <button *ngIf="_as.userLevel > 0 && location.path() !== '/homepage' || extraPages.length == 0" mat-icon-button (click)="navToggle()"><mat-icon>menu</mat-icon></button>
     <button *ngIf="_gs.backButton" mat-button color="warn" (click)="routerGoBack()">
       <mat-icon>fast_rewind</mat-icon>
       Terug
@@ -73,14 +76,21 @@ template: `
         <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
+  <mat-menu #pageMenu="matMenu">
+    <div *ngFor="let page of extraPages">
+      <button mat-menu-item (click)="setHomePage(page)">{{page}}</button>
+    </div>
+  </mat-menu>
 </div>
 `
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Mendo'
   @ViewChild('snav') sidenav: MatSidenav
+  @ViewChild('pageMenu') pgMenu: MatMenu
   mobileQuery: MediaQueryList
   private _mobileQueryListener: () => void
+  extraPages = []
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
@@ -89,7 +99,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private iconReg: MatIconRegistry,
     private router: Router,
-    private location: Location,
+    public location: Location,
     public _gs: GlobService,
     private ps: PopupService,
     private db: DbService,
@@ -98,6 +108,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.mobileQuery = media.matchMedia('(max-width: 600px)')
     this._mobileQueryListener = () => changeDetectorRef.detectChanges()
     this.mobileQuery.addListener(this._mobileQueryListener)
+    this._as.authReady$.subscribe(() => {
+      if (this._as.isLoggedIn) {
+        this.db.getSetting(['SETTINGS:EXTRA_PAGES']).subscribe(pages => {
+          this.extraPages = Array.isArray(pages) ? pages : pages.split(',').map(item => item.trim())
+          if (this.extraPages.length > 0 && this.extraPages.find(pageChoice => pageChoice === 'Home') === undefined) {this.extraPages = ['Home', ...this.extraPages]}
+        })
+      }
+    })
   }
 
   ngOnInit() {
@@ -110,19 +128,32 @@ export class AppComponent implements OnInit, OnDestroy {
 
   signOut() {this._as.signOut()}
 
+  setHomePage(page?: string) {
+    this._gs.homePageSelected = page
+    this._gs.pageChanged$.next(page)
+  }
+
   navClick() {
     this._gs.backButton = false
     this._gs.NavQueries = []
+  }
+
+  navToggle() {
+    if (this.location.path() === '/homepage') {
+      if (this.sidenav.opened) { return }
+    }
+    this.sidenav.toggle()
   }
 
   routerGoBack() {
     this._gs.backButton = false
     this._gs.NavQueries = []
     this.location.back()
+    this.location.path()
   }
 
   about() {
-    this.ps.buttonDialog(`Mendo PWA-platform v0.81 (31/08/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
+    this.ps.buttonDialog(`Mendo PWA-platform v0.82 (10/09/2018) NickStick B.V.\r\n\r\n${navigator.userAgent}`, 'OK')
   }
 
   formatTenantName(fullName: string) {

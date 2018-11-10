@@ -45,8 +45,9 @@ template: `
         <div *ngIf="!bulletinStyle" style="white-space:normal">
           <p class="mat-headline item-title"><b>{{tile.title}}</b></p>
         </div>
-        <div *ngIf="bulletinStyle" style="white-space:normal">
+        <div *ngIf="bulletinStyle" style="white-space:pre-wrap; margin:0; max-width:1024px">
           <p class="mat-headline bulletin-title"><b>{{tile.title}}</b></p>
+          <p class="mat-headline"><b>{{tile.subtitle}}</b></p>
         </div>
         <div>
           <p *ngIf="!bulletinStyle" class="mat-body-2" style="line-height:18px; margin:0; white-space:pre-wrap; max-width:1024px">{{tile.description}}</p>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { QueryItem } from '../models/query-item.interface'
 import { User } from '../models/user.model'
+import { Subject, BehaviorSubject } from 'rxjs'
 
 @Injectable()
 export class GlobService {
@@ -23,6 +24,9 @@ export class GlobService {
     activeUser: User
 
     orderAs: User
+
+    homePageSelected = 'Home'
+    pageChanged$ = new BehaviorSubject('Home') // Signal homepage selected
 
   constructor(private router: Router) {}
 

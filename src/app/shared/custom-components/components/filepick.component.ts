@@ -74,7 +74,7 @@ export class FilepickComponent implements OnInit, OnChanges {
     const file: File = e.target.files.item(0)
     if (file) {
       this.error = ''
-      if (file.size > 999000) {
+      if (file.size > 1999000) {
         this.error = 'Filesize too big, please compress/resize'
         return
       }

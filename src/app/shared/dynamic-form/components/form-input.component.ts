@@ -45,6 +45,7 @@ import { FormDialogComponent } from '../containers/form-dialog/form-dialog.compo
   </mat-autocomplete>
   `
 })
+
 export class FormInputComponent implements Field {
   config: FieldConfig
   group: FormGroup
@@ -110,6 +111,12 @@ export class FormInputComponent implements Field {
     if (this.lookupPanel !== undefined && !this.lookupPanel.panelOpen) {
       this.config.value = e.target.value
       if (this.onValueChg !== undefined) { this.onValueChg(this.config.name, this.config.value) }
+    }
+    if (this.config.valueChgEmbedOnBlur !== undefined && this.config.valueChgEmbedOnBlur && this.onValueChg !== undefined) {
+      const processedValue = this.onValueChg(this.config.name, this.config.value)
+      e.target.value = processedValue
+      this.config.value = processedValue
+      this.form.controls[this.config.name].setValue(processedValue, {emitEvent:true})
     }
   }
 

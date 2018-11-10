@@ -16,6 +16,9 @@ export class SettingService extends EntityBaseClass {
   constructor(
     private afService: AngularFirestore,
     private glob: GlobService
-  ) {super(afService)}
+  ) {
+    super(afService)
+    this.entityQueries = [{fld: 'code', operator: '>', value: ' '}]
+  }
 
 }

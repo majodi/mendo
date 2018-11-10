@@ -61,13 +61,29 @@ export class DbService {
     return meta
   }
 
-  getSetting(code: string | string[]): Observable<string> {
+  getSetting(code: string | string[]): Observable<string | string[]> {
     if (code && (typeof code === 'string') && (code.indexOf('SETTINGS:') !== -1)) {
       code = code.split(':')[1]
       if (code) {
         return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined && rec !== null ? rec.setting : ''))
       } else { return observableOf(null) }
-    } else { return observableOf(null) }
+    }
+    if (code && (typeof code === 'string') && (code.indexOf('SETTINGS+:') !== -1)) {
+      const extraOptions = (code.split(':')[1]).split('&')[1]
+      code = (code.split(':')[1]).split('&')[0]
+      console.log('code: ', code)
+      console.log('extra: ', extraOptions)
+      if (code) {
+        return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined && rec !== null ? rec.setting + ',' + extraOptions  : ''))
+      } else { return observableOf(null) }
+    }
+    if (code && (typeof code === 'object') && Array.isArray(code) && (code.length === 1) && (code[0].indexOf('SETTINGS:') !== -1)) {
+      code = code[0].split(':')[1]
+      if (code) {
+        return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined && rec !== null ? rec.setting.split(',').map(item => item.trim()) : []))
+      } else { return observableOf(null) }
+    }
+    return observableOf(null)
   }
 
   addDoc(data, collection: string) {

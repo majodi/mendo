@@ -1,6 +1,7 @@
 export interface Tile {
     id: string
     title: string
+    subtitle?: string
     image?: string
     description?: string
     buttonText?: string

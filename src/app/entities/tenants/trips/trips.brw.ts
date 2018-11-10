@@ -19,6 +19,14 @@ import { take } from '../../../../../node_modules/rxjs/operators'
 export class TripBrwComponent extends BrwBaseClass<Trip[]> implements OnInit, OnDestroy {
   embeds: Embed[] = [
     {type: 'onValueChg', code: (ctrl, value, formAction?) => {
+      if (ctrl === 'end_mileage') {
+        const startMileage = this.formConfig.find(fc => fc.name === 'start_mileage').value
+        if ((startMileage.length > value.length) && (value > startMileage.substring(startMileage.length - value.length))) {
+          return startMileage.substr(0, startMileage.length - value.length) + value
+        } else {
+          return ''
+        }
+      }
       const private_tripConfig = this.formConfig.find(fc => fc.name === 'private_trip')
       const private_distConfig = this.formConfig.find(fc => fc.name === 'private_dist')
       const private_tripValue = private_tripConfig !== undefined ? private_tripConfig['value'] : false
@@ -35,8 +43,16 @@ export class TripBrwComponent extends BrwBaseClass<Trip[]> implements OnInit, On
           rec['vehicle'] = last[0]['vehicle']
           rec['start_mileage'] = last[0]['end_mileage']
           rec['start_address'] = last[0]['end_address']
+          let lastDate = last[0]['date']
+          rec['date'] = lastDate
+          if (typeof lastDate === 'object') {
+            if (lastDate !== null && lastDate.hasOwnProperty('nanoseconds')) {
+              lastDate = lastDate.toDate()
+              lastDate.setHours(6) // adjust 00:00 for summer/winter time gotcha's
+              rec['date'] = lastDate.toISOString().substring(0, 10)
+            }
+          }
         }
-        rec['date'] = new Date()
         return Promise.resolve()
       })
     }},

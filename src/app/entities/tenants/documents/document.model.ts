@@ -21,7 +21,7 @@ export const defaultColDef = [
 export const defaultFormConfig = [
     {type: 'input',     label: 'Code',          name: 'code',         placeholder: 'Code',          value: '', inputValueTransform: forceUppercase, validation: [Validators.required, Validators.minLength(4)]},
     {type: 'input',     label: 'Omschrijving',  name: 'description',  placeholder: 'Omschrijving',  value: '', validation: [Validators.required]},
-    {type: 'chiplist',  label: 'Labels',        name: 'tagList',      placeholder: 'Labels',        value: '', options: 'Privacy_verklaring,Disclaimer,Algemene_voorwaarden'},
+    {type: 'chiplist',  label: 'Labels',        name: 'tagList',      placeholder: 'Labels',        value: '', options: 'SETTINGS+:DOCUMENT_LABELS&Privacy_verklaring,Disclaimer,Algemene_voorwaarden'},
     {type: 'filepick',  label: 'Document',      name: 'name',         placeholder: 'Document',      value: '', validation: [Validators.required]},
     {type: 'button',    label: 'Download',      name: 'download',     placeholder: 'Download',      value: ''},
   ]

@@ -54,7 +54,6 @@ export class PulldownComponent implements OnChanges {
           const searchLower = (item.display + item.subDisplay + item.addSearch).toLowerCase()
           return (searchLower.indexOf(inputLower) !== -1)
         })
-        console.log('this.filteredLookupItems: ', this.filteredLookupItems)
         this.exactMatch = this.filteredLookupItems.length === 1 ? true : false
       }
       return observableOf(input)

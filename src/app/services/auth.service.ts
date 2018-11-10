@@ -87,6 +87,10 @@ export class AuthService {
     })
   }
 
+  createPaymentTransaction(reference: string, amount: string) {
+    return this.http.get(`https://us-central1-mendo-app.cloudfunctions.net/mollieCreatePayment?creator=${this.user.uid}&tenant=${this.tenantId}&reference=${reference}&amount=${amount}`, { responseType: 'text', observe: 'response' })
+  }
+
   createAndLinkAccount(employeeId: string) {
     return this.http.get(`https://us-central1-mendo-app.cloudfunctions.net/createAndLinkAccount?creator=${this.user.uid}&tenant=${this.tenantId}&code=${employeeId}`, { responseType: 'text', observe: 'response' })
     // return this.http.get(`http://localhost:4200/api/createAndLinkAccount?creator=${this.user.uid}&tenant=${this.tenantId}&code=${employeeId}`, { responseType: 'text', observe: 'response' })

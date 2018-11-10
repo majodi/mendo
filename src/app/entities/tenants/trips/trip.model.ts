@@ -20,8 +20,16 @@ export interface Trip {
 export const defaultTitle = 'Trips'
 export const defaultTitleIcon = 'directions'
 export const defaultColDef = [
-    {name: 'date',              header: 'Datum',        sort: true},
+    {name: 'date',              header: 'Datum',        format: (rec: Trip) => {
+        if (rec.date && typeof rec.date === 'object') {
+            rec.date.setHours(6) // adjust 00:00 for summer/winter time gotcha's
+            return rec.date.toISOString().substring(0, 10)
+        } else {
+            return rec.date
+        }
+    }},
     {name: 'start_address_v',   header: 'Van',          sort: true},
+    {name: 'via_address_v',     header: 'Via',          sort: true},
     {name: 'end_address_v',     header: 'Naar',         sort: true},
     {name: 'private_kms',       header: 'Private KMs',  format: (rec, colvalue) => rec['private_trip'] ? rec['end_mileage'] - rec['start_mileage'] : rec['private_dist']},
     {name: 'end_mileage',       header: 'Eindstand',    sort: true},
@@ -52,8 +60,9 @@ export const defaultFormConfig = [
         placeholder: 'Eindadres',
         value: '',
         customLookupFld: {path: 'tripaddresses', tbl: 'tripaddress', fld: 'code'},
+        defaultFocus: true
     },
-    {type: 'input',         label: 'Eindstand',     name: 'end_mileage',    placeholder: 'Eindstand',       value: '', validation: [Validators.required]},
+    {type: 'input',         label: 'Eindstand',     name: 'end_mileage',    placeholder: 'Eindstand',       value: '', validation: [Validators.required], valueChgEmbedOnBlur: true},
     {type: 'checkbox',      label: 'Privé',         name: 'private_trip',   placeholder: 'Privé trip',      value: false},
     {
         type: 'pulldown',

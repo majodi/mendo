@@ -3,7 +3,6 @@ import {map, takeUntil} from 'rxjs/operators'
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { Router } from '@angular/router'
 import { Subject } from 'rxjs'
-import { FieldConfig } from './shared/dynamic-form/models/field-config.interface'
 import { Tile } from './shared/custom-components/models/tile.model'
 import { BulletinService } from './entities/tenants/bulletins/bulletin.service'
 import { DbService } from './services/db.service'
@@ -18,6 +17,8 @@ import { SwPush } from '@angular/service-worker'
 import { environment } from '../environments/environment'
 import * as firebase from 'firebase'
 import { PopupService } from './services/popup.service'
+
+// <button (click)="pay()">test</button>
 
 @Component({
   selector: 'app-home',
@@ -63,19 +64,34 @@ export class HomePageComponent implements OnInit, OnDestroy {
   ) {
     this.BulletinSrv.colDef = [{name: 'image_v'}]
     this.BulletinSrv.formConfig = [{type: 'lookup', name: 'image', customLookupFld: {path: 'images', tbl: 'image', fld: 'name'}}, ]
-    this.BulletinSrv.initEntity$().pipe(takeUntil(this.ngUnsubscribe)).subscribe(bulletins => {
-      return this.bulletinData = bulletins.map(bulletin => {
-        return {
-          id: bulletin.id,
-          date: bulletin.date,
-          sticky: bulletin.sticky == null ? false : bulletin.sticky,
-          title: bulletin.title,
-          image: bulletin.image_v,
-          description: bulletin.text,
-          buttonText: bulletin.buttonText,
-          buttonLink: bulletin.buttonLink
-        }
-      }).sort(function(a, b) {return (a['date'] > b['date'] || a['sticky']) ? -1 : ((b['date'] > a['date'] || b['sticky']) ? 1 : 0)})
+    this.gs.pageChanged$.subscribe( (page) => {
+      this.BulletinSrv.initEntity$(page === 'Home' ? undefined : [{fld: 'page', operator: '==', value: page}]).pipe(takeUntil(this.ngUnsubscribe)).subscribe(bulletins => {
+        if (page === 'Home') {bulletins = bulletins.filter(el => (el.page === 'Home' || el.page === undefined || el.page === null))}
+        return this.bulletinData = bulletins.map(bulletin => {
+          return {
+            id: bulletin.id,
+            date: bulletin.date,
+            sticky: bulletin.sticky == null ? false : bulletin.sticky,
+            title: bulletin.title,
+            subtitle: bulletin.subtitle,
+            image: bulletin.image_v,
+            description: bulletin.text,
+            buttonText: bulletin.buttonText,
+            buttonLink: bulletin.buttonLink
+          }
+        }).sort(function(a, b) {return (a['date'] > b['date'] || a['sticky']) ? -1 : ((b['date'] > a['date'] || b['sticky']) ? 1 : 0)})
+      })
+    })
+  }
+
+  // test
+  pay() {
+    // call backend
+    this._as.createPaymentTransaction('testvoucher', '555.22').subscribe(res => {
+      console.log('payment transaction successful: ', res.body)
+    }, e => {
+      console.log('error createPaymentTransaction: ', e.error)
+      this.ps.buttonDialog(`Fout bij aanmaak transactie:\r\n\r\n${e.error}`, 'OK')
     })
   }
 
