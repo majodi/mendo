@@ -15,6 +15,7 @@ import { FormDialogComponent } from '../containers/form-dialog/form-dialog.compo
   <ng-template #input_tpl>
     <input
       #trigger
+      id="{{config.name}}"
       matInput
       [matAutocomplete]="auto"
       [type]="getOverruleType()"

@@ -14,7 +14,7 @@ import { FormDialogComponent } from '../../dynamic-form/containers/form-dialog/f
   selector: 'app-pulldown',
   template: `
   <mat-form-field style="width:100%">
-    <input #trigger (blur)="onChoice()" (keyup.arrowdown)="openPanel()" (keyup.escape)="closeDialog()" matInput [matAutocomplete]="auto" [formControl]="lookupCtrl" placeholder="{{lookupPlaceholder}}" [disabled]=isDisabled>
+    <input #trigger id="{{formControlName}}" (blur)="onChoice()" (keyup.arrowdown)="openPanel()" (keyup.escape)="closeDialog()" matInput [matAutocomplete]="auto" [formControl]="lookupCtrl" placeholder="{{lookupPlaceholder}}" [disabled]=isDisabled>
     <mat-hint *ngIf="filteredLookupItems.length == 0" align="end" style="color:red">geen match</mat-hint>
     <mat-hint *ngIf="exactMatch" align="end" style="color:green">gevonden!, druk tab</mat-hint>
     <mat-autocomplete #auto="matAutocomplete" (opened)="panelOpened()" (closed)="panelClosed()">
@@ -35,6 +35,7 @@ export class PulldownComponent implements OnChanges {
   @Output() itemChosen = new EventEmitter()
   @Input() isDisabled = false
   @Input() dialogRef: MatDialogRef<FormDialogComponent>
+  @Input() formControlName: string
   lookupCtrl: FormControl
   filteredLookupItems: LookupItem[] = []
   exactMatch = false

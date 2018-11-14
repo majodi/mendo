@@ -21,7 +21,7 @@ import { DynamicFieldDirective } from '../../components/dynamic-field.directive'
       class="dynamic-form"
       [formGroup]="form"
       (submit)="handleSubmit('save', $event)">
-      <input type="text" (focus)="onFocus($event)" style="width:0; height:0; padding:0; margin:0">
+      <input *ngIf="initialField" type="text" (focus)="onFocus($event)" style="width:0; height:0; padding:0; margin:0">
       <ng-container
         *ngFor="let field of toPopulate;"
         dynamicField
@@ -54,6 +54,7 @@ import { DynamicFieldDirective } from '../../components/dynamic-field.directive'
 })
 export class DynamicFormComponent implements OnChanges, OnInit, AfterViewInit {
   // @ViewChildren(DynamicFieldDirective) flds: QueryList<any>
+  // @ViewChildren(DynamicFieldDirective, { read: ElementRef }) flds: QueryList<ElementRef>
   @Input() config: FieldConfig[] = []
   @Input() formAction = 0
   @Input() onValueChg: Function
@@ -64,6 +65,7 @@ export class DynamicFormComponent implements OnChanges, OnInit, AfterViewInit {
   deleteState = false
   waitOnUpload = false
   info = ''
+  initialField = ''
 
   get controls() { return this.config.filter(({type}) => !['button', 'imagedisplay', 'stringdisplay'].includes(type)) } // filter controls that have no custom ctrl
   get changes() { return this.form.valueChanges }
@@ -84,14 +86,15 @@ export class DynamicFormComponent implements OnChanges, OnInit, AfterViewInit {
       this.setToPopulate()
     } else {this.toPopulate = this.config}
     this.form = this.createGroup()
+    const focusConfig = this.config.find(c => c.defaultFocus)
+    // console.log('def focus cfg: ', focusConfig)
+    if (focusConfig !== undefined) {this.initialField = this.initialField = focusConfig.name}
   }
 
   ngAfterViewInit() {}
 
   onFocus(e) {
-    const inputs = document.querySelectorAll('input')
-    const focusFld = this.config.findIndex(c => c.defaultFocus) !== undefined ? this.config.findIndex(c => c.defaultFocus) : 1
-    inputs[focusFld + 2].focus() // 0 based + skip first dummy input
+    document.getElementById(this.initialField).focus()
   }
 
   ngOnChanges() {

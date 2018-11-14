@@ -71,8 +71,8 @@ export class DbService {
     if (code && (typeof code === 'string') && (code.indexOf('SETTINGS+:') !== -1)) {
       const extraOptions = (code.split(':')[1]).split('&')[1]
       code = (code.split(':')[1]).split('&')[0]
-      console.log('code: ', code)
-      console.log('extra: ', extraOptions)
+      // console.log('code: ', code)
+      // console.log('extra: ', extraOptions)
       if (code) {
         return this.getUniqueValueId(this.gs.entityBasePath + '/settings', 'code', code).pipe(map((rec: Setting) => rec !== undefined && rec !== null ? rec.setting + ',' + extraOptions  : ''))
       } else { return observableOf(null) }
